@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nos révisions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;800&display=swap">
+<style>
+:root{--bg:#F3F6F2;--paper:#fff;--ink:#1F3340;--muted:#5E7380;--line:#D5DEE2;--accent:#E8643A;--h:#6DB86A;--c:#9B86D0}
+@media (prefers-color-scheme:dark){:root{--bg:#13212B;--paper:#1A2C38;--ink:#EAF2F6;--muted:#A5B8C3;--line:#2E4554;--accent:#F27A50;--h:#4E9B4C;--c:#7D6BB3;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;padding:28px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-family:"Baloo 2",system-ui,sans-serif;font-size:clamp(32px,6vw,48px);margin:0;line-height:1}
+h1 span{color:var(--accent)}
+.kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+section{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+h2{font-family:"Baloo 2",system-ui,sans-serif;font-size:28px;margin:0;display:flex;align-items:center;gap:10px}
+h2 i{width:14px;height:14px;border-radius:50%}
+.cls{color:var(--muted);font-weight:800;font-size:15px}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+a.act{display:flex;justify-content:space-between;gap:8px;text-decoration:none;color:var(--ink);font-weight:800;font-size:18px;border:2px solid var(--line);border-radius:12px;padding:12px 14px}
+a.act:hover,a.act:focus-visible{border-color:var(--accent);outline:none}
+a.act small{color:var(--muted);font-weight:600}
+.empty{color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Nos <span>révisions</span></h1>
+  <div class="kids">
+    <section>
+      <h2><i style="background:var(--h)"></i>Henri</h2>
+      <span class="cls">CM1</span>
+      <ul>
+        <li><a class="act" href="henri/planisphere.html">Mon planisphère <small>Géographie</small></a></li>
+      </ul>
+    </section>
+    <section>
+      <h2><i style="background:var(--c)"></i>Clara</h2>
+      <span class="cls">CM2</span>
+      <p class="empty">Bientôt ses premières activités !</p>
+    </section>
+  </div>
+</div>
+</body>
+</html>
