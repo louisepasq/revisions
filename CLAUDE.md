@@ -1,6 +1,6 @@
 # Nos révisions : consignes pour Claude
 
-Le site de révisions d'Henri (CM1) et de Clara (CM2), fait par Louise et Louis, publié sur GitHub Pages (`louisepasq.github.io/revisions/`). Un push sur `main` met le site à jour.
+Le site de révisions d'Henri (CM1) et de Clara (CM2), fait par Louise et Louis, **servi par Vercel** (compte perso de Louis, projet `revisions`, `https://nos-revisions.vercel.app`) derrière le code familial (`middleware.js`, variable `CODE_FAMILLE`, jamais dans le dépôt). Déploiement : `vercel deploy --prod` depuis ce clone, tant que Vercel n'est pas branché au dépôt. La progression se sauvegarde en ligne (`api/progression`, Upstash Redis). L'ancienne adresse GitHub Pages est à retirer quand le dépôt passera en privé (décision de Louis du 01/11/2026).
 
 - **Le dispositif d'ensemble** (une app par enfant, principes, modules) : [`docs/DISPOSITIF.md`](docs/DISPOSITIF.md). Le détail d'un module vit dans `docs/<module>/`.
 - **Le système de design commun** : `docs/design-system/`, le kit dans `commun/`. Tout module le réutilise. Ce qui a été fait avant lui (portail, planisphère) n'est pas une contrainte de design : on vise les meilleures pratiques des apps pour enfants (décision de Louis du 01/11/2026).
