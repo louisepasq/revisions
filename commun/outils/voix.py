@@ -6,7 +6,8 @@
 
 Usage :
   uv run commun/outils/voix.py echantillons     voix candidates, dans docs/voix/
-  uv run commun/outils/voix.py tables           toutes les phrases du module des tables, dans commun/voix/
+  uv run commun/outils/voix.py tables           toutes les phrases des apps, dans commun/voix/ (un clip trop long est refait)
+  uv run commun/outils/voix.py controler        retire les clips trop longs (consignes lues à voix haute), à refaire par « tables »
 
 La clé GOOGLE_GEMINI_API_KEY vient de l'environnement, sinon de ~/.claude/shared/.env. Elle n'entre jamais dans le site.
 """
@@ -40,8 +41,10 @@ def cle() -> str:
     raise SystemExit("GOOGLE_GEMINI_API_KEY absente")
 
 
-def dire(texte: str, voix: str, notes: str, dst: pathlib.Path, essais: int = 3, rythme: str = "") -> None:
-    corps = {"contents": [{"parts": [{"text": f"### DIRECTOR'S NOTES\n{notes}\n#### TRANSCRIPT\n{texte}"}]}],
+def dire(texte: str, voix: str, notes: str, dst: pathlib.Path, essais: int = 3, rythme: str = "", court: bool = False) -> None:
+    # `court` : une consigne d'une ligne au lieu des notes, pour les textes où Gemini lit ses notes à voix haute.
+    invite = f"Say warmly and clearly: {texte}" if court else f"### DIRECTOR'S NOTES\n{notes}\n#### TRANSCRIPT\n{texte}"
+    corps = {"contents": [{"parts": [{"text": invite}]}],
              "generationConfig": {"responseModalities": ["AUDIO"],
                                   "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voix}}}}}
     for n in range(essais):
@@ -126,13 +129,43 @@ def rythme_de(langue: str, texte: str) -> str:
     return RYTHME_FAIT if langue == "fr" and re.fullmatch(r"[a-zéè]+(?:[- ][a-zéè]+)* fois [a-zéè]+(?:[- ][a-zéè]+)*, [a-zéè -]+", texte) else ""
 
 
-def nom_fichier(langue: str, texte: str) -> str:
-    """Le nom dépend aussi de la voix et des consignes : une autre voix donne d'autres fichiers,
-    que le cache d'un an de l'appareil (vercel.json) ne peut pas confondre avec les anciens."""
+def reprises() -> dict:
+    """Phrases refaites après un défaut ; leur numéro de prise entre dans le nom du fichier."""
+    f = RACINE / "commun/voix/reprises.json"
+    return json.loads(f.read_text()) if f.exists() else {}
+
+
+def nom_fichier(langue: str, texte: str, prise: int | None = None) -> str:
+    """Le nom dépend aussi de la voix, des consignes et du numéro de prise : un clip refait porte
+    un autre nom, que le cache d'un an de l'appareil (vercel.json) ne peut pas confondre avec l'ancien."""
     import hashlib
     notes = NOTES_FR if langue == "fr" else NOTES_EN
+    if prise is None:
+        prise = reprises().get(f"{langue}|{texte}", 0)
     cle = f"{MODELE}|{VOIX[langue]}|{notes}|{langue}|{texte}" + (f"|{rythme_de(langue, texte)}" if rythme_de(langue, texte) else "")
+    cle += f"|prise{prise}" if prise else ""
     return f"{langue}/{hashlib.sha1(cle.encode()).hexdigest()[:12]}.mp3"
+
+
+# Gemini lit parfois ses consignes à voix haute (« A warm, patient primary school teacher… »),
+# surtout sur un texte court : Henri l'a entendu le 01/11/2026. Un clip bien plus long que son
+# texte ne le permet est donc refait (trois prises avec les notes, puis trois avec une consigne
+# d'une ligne). Débits médians mesurés sur 1 700 clips : 0,076 s par
+# caractère en français, 0,124 s en anglais ; les consignes lues ajoutent au moins 8 s.
+DEBIT = {"fr": 0.076, "en": 0.124}
+
+
+def duree(f: pathlib.Path) -> float:
+    o = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(f)],
+                       capture_output=True, text=True).stdout.strip()
+    return float(o or 0)
+
+
+def trop_long(langue: str, texte: str, secondes: float) -> bool:
+    """Les chiffres se disent en mots (« 36 » fait « trente-six ») : chaque nombre compte pour 9 caractères."""
+    import re
+    longueur = len(re.sub(r"\d+", "x" * 9, texte)) + 6 * texte.count("=")
+    return secondes > DEBIT[langue] * longueur * 1.4 + 4
 
 
 def tables() -> None:
@@ -152,7 +185,12 @@ def tables() -> None:
 
     def une(p, dst):
         notes = NOTES_FR if p["langue"] == "fr" else NOTES_EN
-        dire(p["texte"], VOIX[p["langue"]], notes, dst, essais=5, rythme=rythme_de(p["langue"], p["texte"]))
+        for n in range(6):
+            dire(p["texte"], VOIX[p["langue"]], notes, dst, essais=5, rythme=rythme_de(p["langue"], p["texte"]), court=n >= 3)
+            if not trop_long(p["langue"], p["texte"], duree(dst)):
+                return
+        dst.unlink()
+        raise RuntimeError("six prises trop longues : consignes lues à voix haute ?")
 
     with ThreadPoolExecutor(max_workers=6) as pool:
         futurs = {pool.submit(une, p, dst): p for p, dst in a_faire}
@@ -168,6 +206,29 @@ def tables() -> None:
     print(f"index : {len(index)} phrases ; erreurs : {len(erreurs)}")
     for t, e in erreurs[:10]:
         print(" -", t, e)
+
+
+def controler() -> None:
+    """Repère les clips trop longs pour leur texte, les retire et note une nouvelle prise ;
+    `voix.py tables` les refait ensuite sous un nouveau nom."""
+    from concurrent.futures import ThreadPoolExecutor
+    dossier = RACINE / "commun/voix"
+    index = json.loads((dossier / "index.json").read_text())
+    items = list(index.items())
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        durees = list(pool.map(lambda kv: duree(dossier / kv[1]), items))
+    rep = reprises()
+    fautifs = []
+    for (cle, f), d in zip(items, durees):
+        langue, texte = cle.split("|", 1)
+        if trop_long(langue, texte, d):
+            fautifs.append((round(d, 1), cle))
+            rep[cle] = rep.get(cle, 0) + 1
+            (dossier / f).unlink(missing_ok=True)
+    (dossier / "reprises.json").write_text(json.dumps(rep, ensure_ascii=False, indent=0, sort_keys=True))
+    print(f"{len(fautifs)} clips trop longs retirés sur {len(items)} ; relancer `voix.py tables`")
+    for d, cle in sorted(fautifs, reverse=True)[:15]:
+        print(f" - {d} s  {cle}")
 
 
 def rythmer() -> None:
@@ -192,4 +253,4 @@ def rythmer() -> None:
 
 
 if __name__ == "__main__":
-    {"echantillons": echantillons, "tables": tables, "rythmer": rythmer}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
+    {"echantillons": echantillons, "tables": tables, "controler": controler, "rythmer": rythmer}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
