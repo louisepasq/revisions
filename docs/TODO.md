@@ -25,6 +25,8 @@ Mis à jour le 01/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 
 ## Prochains modules
 
+- **Le jeu du nombre cible, façon Mathador** (Henri, 01/11/2026, fait en classe) : un nombre cible, cinq petits nombres, et les quatre opérations pour l'atteindre. Barème d'Henri : addition et multiplication 1 point, soustraction 2 points, division 3 points ; 13 points quand on utilise tous les nombres et les quatre opérations. Eduscol cite Mathador comme entraînement au calcul réfléchi (fiche d'intervention de début de CM2). Règles fixées avec Henri le 01/11 (D-18) : cinq nombres, cible jusqu'à 99, chrono en option choisie par l'enfant, indice de Moussi qui coûte des points. Moteur en cours (`modules/cible/`), écran après le zoom de géographie.
+
 - **Dictée** : décidée (D-14), pas encore construite. D'abord demander aux maîtresses leur façon de faire : la forme de la dictée, les codes de correction, la liste de mots de la semaine.
 - **Retour de Claude sur une photo** : après la dictée, par une fonction Vercel qui garde la clé.
 - **Tables** : le défi d'une minute, « Découvrir une famille », « Practise it » depuis la grille.

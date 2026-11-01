@@ -45,6 +45,16 @@ Format : numéro, date, qui, la décision, la raison, la source.
 
 - **D-15, 01/11/2026, Louis : les parents ne sont ni enseignants ni designers.** Dès qu'un choix paraît douteux ou qu'une idée surprend, faire relire par `relecteur-pedagogique` et `designer-apps-enfants` (`.claude/agents/`). Leurs relectures vont dans `docs/revues/`, et leurs propositions ne s'appliquent qu'avec l'accord des parents.
 
+## Jeu du nombre cible (façon Mathador)
+
+- **D-18, 01/11/2026, Henri et Louis : les règles du jeu du nombre cible**, tel qu'Henri le pratique en classe.
+  - Une cible jusqu'à 99, jamais plus de 100, et cinq petits nombres. L'app peut proposer d'autres tirages si elle en trouve de plus adaptés.
+  - Les quatre opérations : chaque petit nombre sert une fois, et chaque résultat peut resservir.
+  - Barème : addition et multiplication 1 point, soustraction 2 points, division 3 points ; le coup parfait (les cinq nombres et les quatre opérations) vaut 13 points.
+  - L'app ne tire que des cibles atteignables, et connaît le meilleur score possible.
+  - Pas de chrono par défaut : une option que l'enfant active lui-même au début d'une partie.
+  - Un indice de Moussi, à la demande de l'enfant, montre un calcul d'une solution et coûte des points, annoncés avant de le prendre.
+
 ## Écarté, avec la raison
 
 - **La reconnaissance vocale pour répondre à l'oral** : l'API est absente des web apps de l'écran d'accueil sur iPadOS (ticket WebKit 225298). À confirmer par un essai sur l'iPad. Source : `revues/2026-11-01_relecture-audio.md`.
