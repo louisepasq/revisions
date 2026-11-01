@@ -40,7 +40,7 @@ def cle() -> str:
     raise SystemExit("GOOGLE_GEMINI_API_KEY absente")
 
 
-def dire(texte: str, voix: str, notes: str, dst: pathlib.Path, essais: int = 3) -> None:
+def dire(texte: str, voix: str, notes: str, dst: pathlib.Path, essais: int = 3, rythme: str = "") -> None:
     corps = {"contents": [{"parts": [{"text": f"### DIRECTOR'S NOTES\n{notes}\n#### TRANSCRIPT\n{texte}"}]}],
              "generationConfig": {"responseModalities": ["AUDIO"],
                                   "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voix}}}}}
@@ -62,7 +62,7 @@ def dire(texte: str, voix: str, notes: str, dst: pathlib.Path, essais: int = 3) 
         coupe = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03"
         dst.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["ffmpeg", "-v", "error", "-y", *entree, "-ac", "1",
-                        "-af", f"{coupe},areverse,{coupe},areverse,loudnorm=I=-16:TP=-1.5",
+                        "-af", f"{coupe},areverse,{coupe},areverse,{rythme + ',' if rythme else ''}loudnorm=I=-16:TP=-1.5",
                         "-c:a", "libmp3lame", "-b:a", "48k", str(dst)], check=True)
 
 
@@ -115,12 +115,23 @@ def echantillons() -> None:
 VOIX = {"fr": "Sulafat", "en": "Sulafat"}  # choix de Louis du 01/11/2026, après écoute des échantillons
 
 
+# Le fait complet (« sept fois huit, cinquante-six ») sortait deux fois plus lent que la question
+# (2,9 s contre 1,35 s en moyenne) ; Louis l'a trouvé « très ralenti » le 01/11/2026 : pause interne
+# ramenée à 0,15 s et débit accéléré de 25 %, sans changer la hauteur de la voix.
+RYTHME_FAIT = "silenceremove=stop_periods=-1:stop_duration=0.15:stop_threshold=-45dB,atempo=1.25"
+
+
+def rythme_de(langue: str, texte: str) -> str:
+    import re
+    return RYTHME_FAIT if langue == "fr" and re.fullmatch(r"[a-zéè]+(?:[- ][a-zéè]+)* fois [a-zéè]+(?:[- ][a-zéè]+)*, [a-zéè -]+", texte) else ""
+
+
 def nom_fichier(langue: str, texte: str) -> str:
     """Le nom dépend aussi de la voix et des consignes : une autre voix donne d'autres fichiers,
     que le cache d'un an de l'appareil (vercel.json) ne peut pas confondre avec les anciens."""
     import hashlib
     notes = NOTES_FR if langue == "fr" else NOTES_EN
-    cle = f"{MODELE}|{VOIX[langue]}|{notes}|{langue}|{texte}"
+    cle = f"{MODELE}|{VOIX[langue]}|{notes}|{langue}|{texte}" + (f"|{rythme_de(langue, texte)}" if rythme_de(langue, texte) else "")
     return f"{langue}/{hashlib.sha1(cle.encode()).hexdigest()[:12]}.mp3"
 
 
@@ -141,7 +152,7 @@ def tables() -> None:
 
     def une(p, dst):
         notes = NOTES_FR if p["langue"] == "fr" else NOTES_EN
-        dire(p["texte"], VOIX[p["langue"]], notes, dst, essais=5)
+        dire(p["texte"], VOIX[p["langue"]], notes, dst, essais=5, rythme=rythme_de(p["langue"], p["texte"]))
 
     with ThreadPoolExecutor(max_workers=6) as pool:
         futurs = {pool.submit(une, p, dst): p for p, dst in a_faire}
@@ -159,5 +170,26 @@ def tables() -> None:
         print(" -", t, e)
 
 
+def rythmer() -> None:
+    """Applique le rythme aux fichiers déjà fabriqués sous leur ancien nom, sans rappeler Gemini."""
+    import hashlib
+    dossier = RACINE / "commun/voix"
+    index = json.loads((dossier / "index.json").read_text())
+    n = 0
+    for cle, ancien in list(index.items()):
+        langue, texte = cle.split("|", 1)
+        r = rythme_de(langue, texte)
+        neuf = nom_fichier(langue, texte)
+        if not r or neuf == ancien or not (dossier / ancien).exists():
+            continue
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(dossier / ancien), "-ac", "1", "-af",
+                        f"{r},loudnorm=I=-16:TP=-1.5", "-c:a", "libmp3lame", "-b:a", "48k", str(dossier / neuf)], check=True)
+        (dossier / ancien).unlink()
+        index[cle] = neuf
+        n += 1
+    (dossier / "index.json").write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")))
+    print(f"{n} fichiers mis au rythme")
+
+
 if __name__ == "__main__":
-    {"echantillons": echantillons, "tables": tables}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
+    {"echantillons": echantillons, "tables": tables, "rythmer": rythmer}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
