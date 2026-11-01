@@ -1,0 +1,50 @@
+// Tests du déroulé d'une séance : node modules/tables/seance.test.js
+const assert = require('assert');
+require('./moteur.js');
+require('./seance.js');
+const T = globalThis.Tables;
+const S = globalThis.Seance;
+
+const jour = new Date(2026, 10, 2, 17, 0);
+const etat = T.etatNeuf();
+assert.ok(S.creer(T.etatNeuf(), jour).questions.length > 0, 'même sans diagnostic, une séance existe');
+const diag = T.questionsDiagnostic().map(x => ({ a: x.a, b: x.b, juste: T.familleDuFait(x.a, x.b) <= 1, ms: 2500 }));
+T.appliquerDiagnostic(etat, diag, new Date(2026, 10, 1, 17, 0));
+const s = S.creer(etat, jour);
+const total = s.questions.length;
+assert.ok(total >= 10, 'après le diagnostic, la séance est pleine : ' + total);
+
+const q1 = S.courante(s);
+const rang = { gris: 0, bronze: 1, argent: 2, or: 3 };
+const avant = T.couleur(etat, q1.a, q1.b);
+const r1 = S.repondre(s, etat, q1.reponse, 1500, jour);
+assert.strictEqual(r1.juste, true);
+assert.strictEqual(r1.rapide, true);
+assert.strictEqual(s.montees.length, rang[T.couleur(etat, q1.a, q1.b)] > rang[avant] ? 1 : 0, 'une case qui change de couleur vers le haut est comptée');
+S.suivante(s);
+
+const q2 = S.courante(s);
+const r2 = S.repondre(s, etat, q2.reponse + 1, 4000, jour);
+assert.strictEqual(r2.juste, false);
+assert.strictEqual(r2.bonne, q2.a * q2.b);
+assert.ok(r2.astuce.length > 0);
+assert.strictEqual(s.questions.length, total + 1, 'la question ratée revient');
+assert.strictEqual(s.questions[s.index + 4].retour, true, 'elle revient trois questions plus loin');
+assert.strictEqual(S.suivante(s), q2, 'tant qu elle n est pas retapée, on reste dessus');
+assert.strictEqual(S.retaper(s, q2.reponse + 1), false);
+assert.strictEqual(S.retaper(s, q2.reponse), true);
+assert.notStrictEqual(S.suivante(s), q2);
+
+while (!S.finie(s)) {
+  const q = S.courante(s);
+  S.repondre(s, etat, q.reponse, 2000, jour);
+  S.suivante(s);
+}
+const b = S.bilan(s, etat, jour);
+assert.strictEqual(b.reponses, total + 1);
+assert.strictEqual(b.justes, total);
+assert.ok(b.montees.length >= 1);
+assert.ok(b.semaine.find(x => x.aujourdhui).fait);
+assert.strictEqual(b.demain !== null, true, 'des faits reviennent demain');
+
+console.log('séance : tous les tests passent');

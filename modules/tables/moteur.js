@@ -177,7 +177,7 @@
     const type = typeQuestion(etat.faits[cle(a, b)], index);
     const p = a * b;
     if (type === 'manquant') return { type, a, b, texte: `${a} × ? = ${p}`, reponse: b };
-    if (type === 'decomposition') return { type, a, b, texte: `? × ? = ${p}`, produit: p, reponse: p };
+    if (type === 'decomposition') return { type, a, b, texte: `? × ? = ${p}`, produit: p, reponse: [a, b] };
     if (type === 'multiple') {
       const vrai = index % 2 === 0;
       const n = vrai ? p : p + (b > 1 ? 1 : 2);
@@ -188,7 +188,8 @@
 
   function verifier(q, saisie) {
     if (q.type === 'decomposition') {
-      const [x, y] = saisie || [];
+      if (!Array.isArray(saisie)) return false;
+      const [x, y] = saisie;
       return Number.isInteger(x) && Number.isInteger(y) && x > 0 && y > 0 && x * y === q.produit;
     }
     if (q.type === 'multiple') return saisie === q.reponse;

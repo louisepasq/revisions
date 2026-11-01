@@ -1,0 +1,74 @@
+/* Déroulé d'une séance d'entraînement, indépendant de l'affichage.
+   Dépend de moteur.js (window.Tables). */
+(function (racine) {
+  'use strict';
+  const T = racine.Tables;
+  const RANG_COULEUR = { gris: 0, bronze: 1, argent: 2, or: 3 };
+  const RETOUR_APRES = 3;
+
+  function creer(etat, maintenant, taille) {
+    const questions = T.seance(etat, maintenant, taille);
+    return { questions, index: 0, aRetaper: null, justes: 0, reponses: 0, montees: [], revues: new Set() };
+  }
+
+  function courante(s) {
+    return s.questions[s.index] || null;
+  }
+
+  function repondre(s, etat, saisie, ms, maintenant) {
+    const q = courante(s);
+    const juste = T.verifier(q, saisie);
+    const avant = T.couleur(etat, q.a, q.b);
+    const premiereFois = !s.revues.has(T.cle(q.a, q.b) + q.type);
+    s.revues.add(T.cle(q.a, q.b) + q.type);
+    s.reponses++;
+    if (premiereFois) T.enregistrer(etat, q.a, q.b, juste, ms, maintenant);
+    if (juste) {
+      s.justes++;
+      const apres = T.couleur(etat, q.a, q.b);
+      if (RANG_COULEUR[apres] > RANG_COULEUR[avant]) s.montees.push({ a: q.a, b: q.b, couleur: apres });
+      return { juste: true, rapide: ms != null && ms <= T.RAPIDE_MS };
+    }
+    s.aRetaper = q;
+    const retour = Object.assign({}, q, { retour: true });
+    s.questions.splice(Math.min(s.index + 1 + RETOUR_APRES, s.questions.length), 0, retour);
+    return { juste: false, bonne: q.a * q.b, operation: `${q.a} × ${q.b}`, astuce: T.astuce(q.a, q.b) };
+  }
+
+  function retaper(s, saisie) {
+    const q = s.aRetaper;
+    if (!q) return true;
+    const ok = Number(saisie) === q.a * q.b;
+    if (ok) s.aRetaper = null;
+    return ok;
+  }
+
+  function suivante(s) {
+    if (s.aRetaper) return courante(s);
+    s.index++;
+    return courante(s);
+  }
+
+  function finie(s) {
+    return s.index >= s.questions.length;
+  }
+
+  function bilan(s, etat, maintenant) {
+    etat.familles = T.majFamilles(etat);
+    const demainIso = T.jour(new Date(new Date(maintenant).getTime() + 86400000));
+    const dusDemain = Object.keys(etat.faits)
+      .filter(k => etat.faits[k].prochain === demainIso)
+      .sort((x, y) => etat.faits[x].boite - etat.faits[y].boite);
+    const demain = dusDemain.length ? dusDemain[0].replace('x', ' × ') : null;
+    return {
+      justes: s.justes,
+      reponses: s.reponses,
+      montees: s.montees,
+      demain,
+      semaine: T.joursDeLaSemaine(etat, maintenant),
+      or: T.compteOr(etat),
+    };
+  }
+
+  racine.Seance = { creer, courante, repondre, retaper, suivante, finie, bilan };
+})(typeof window !== 'undefined' ? window : globalThis);
