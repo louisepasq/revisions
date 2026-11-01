@@ -146,6 +146,7 @@
         voile.querySelector('[data-zone="raz"]').classList.remove('cache');
         voile.querySelector('[data-zone="confirmer"]').classList.add('cache');
       } else if (a === 'raz-oui') {
+        if (window.Sync) window.Sync.effacer(enfant, 'tables');
         KR.effacerTout();
         rendre();
         ouvrirCoinParent();

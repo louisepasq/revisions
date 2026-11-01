@@ -186,6 +186,12 @@
     return pousser(enfant, module, fusion);
   }
 
+  /* Remise à zéro voulue par un parent : efface aussi l'état en ligne, sinon la fusion le remettrait. */
+  async function effacer(enfant, module) {
+    enAttente.delete(enfant + '|' + module);
+    try { await appeler('DELETE', enfant, module); return true; } catch (e) { noterErreur(e); return false; }
+  }
+
   function etat() {
     return {
       configure: true,
@@ -200,5 +206,5 @@
     racine.addEventListener('online', () => { retenter(); });
   }
 
-  racine.Sync = { configurer, tirer, pousser, synchroniser, etat, fusionner };
+  racine.Sync = { configurer, tirer, pousser, synchroniser, effacer, etat, fusionner };
 })(typeof window !== 'undefined' ? window : globalThis);

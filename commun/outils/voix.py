@@ -116,8 +116,12 @@ VOIX = {"fr": "Sulafat", "en": "Sulafat"}  # choix de Louis du 01/11/2026, aprè
 
 
 def nom_fichier(langue: str, texte: str) -> str:
+    """Le nom dépend aussi de la voix et des consignes : une autre voix donne d'autres fichiers,
+    que le cache d'un an de l'appareil (vercel.json) ne peut pas confondre avec les anciens."""
     import hashlib
-    return f"{langue}/{hashlib.sha1(f'{langue}|{texte}'.encode()).hexdigest()[:12]}.mp3"
+    notes = NOTES_FR if langue == "fr" else NOTES_EN
+    cle = f"{MODELE}|{VOIX[langue]}|{notes}|{langue}|{texte}"
+    return f"{langue}/{hashlib.sha1(cle.encode()).hexdigest()[:12]}.mp3"
 
 
 def tables() -> None:

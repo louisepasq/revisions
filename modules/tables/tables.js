@@ -210,7 +210,8 @@
   function demarrerSeance() {
     etat = T.charger(enfant);
     const s = S.creer(etat, new Date(), undefined, { multiple: MULTIPLE });
-    if (voixActive()) KR.prechargerVoix(s.questions.flatMap(x => [{ texte: aLire(x), langue: 'fr' }, { texte: T.faitDit(x.a, x.b), langue: 'fr' }]));
+    const precharger = l => { if (voixActive()) KR.prechargerVoix(l.filter(Boolean).flatMap(x => [{ texte: aLire(x), langue: 'fr' }, { texte: T.faitDit(x.a, x.b), langue: 'fr' }])); };
+    precharger(s.questions.slice(0, 3)); // puis une question d'avance à chaque question (voir question())
     const resultats = [];
     let q = null;
     let saisie = '';
@@ -292,6 +293,7 @@
 
     function question() {
       q = S.courante(s);
+      precharger([s.questions[s.index + 3]]);
       numeroQ++;
       phase = 'question';
       saisie = '';

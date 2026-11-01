@@ -10,6 +10,7 @@ class RedisMemoire {
   async set(k, v) { this.d.set(k, v); return 'OK'; }
   async incr(k) { const n = (this.d.get(k) || 0) + 1; this.d.set(k, n); return n; }
   async expire() { return 1; }
+  async del(k) { this.d.delete(k); return 1; }
 }
 
 function appel(handler, { method = 'GET', url = '/api/progression?enfant=henri&module=tables', headers = {}, body } = {}) {
@@ -58,7 +59,7 @@ test('code faux : 401, même sans base', async () => {
 });
 
 test('méthode interdite : 405', async () => {
-  const r = await appel(creerHandler({ fabriqueRedis: () => null }), { method: 'DELETE' });
+  const r = await appel(creerHandler({ fabriqueRedis: () => null }), { method: 'PATCH' });
   assert.equal(r.statut, 405);
 });
 
@@ -100,9 +101,18 @@ test('état trop lourd : 413 ; corps non objet : 400', async () => {
   assert.equal((await appel(h, { method: 'PUT', headers: BON, body: 'pas du json' })).statut, 400);
 });
 
-test('limite de requêtes : 429 au-delà de 60 par minute', async () => {
+test('limite de requêtes : 429 au-delà de 240 par minute', async () => {
   const h = handlerAvecCodeDeTest(new RedisMemoire());
   let dernier;
-  for (let i = 0; i < 61; i++) dernier = await appel(h, { headers: BON });
+  for (let i = 0; i < 241; i++) dernier = await appel(h, { headers: BON });
   assert.equal(dernier.statut, 429);
+});
+
+test('remise à zéro : DELETE efface l\'état en ligne (site derrière le code familial)', async () => {
+  const redis = new RedisMemoire();
+  const h = creerHandler({ fabriqueRedis: () => redis, memeSite: true });
+  await appel(h, { method: 'PUT', body: JSON.stringify({ familles: 3, faits: { '7x8': { boite: 4, vu: true } }, jours: ['2026-11-01'] }) });
+  assert.equal((await appel(h)).json.familles, 3);
+  assert.equal((await appel(h, { method: 'DELETE' })).statut, 200);
+  assert.deepEqual((await appel(h)).json, {});
 });

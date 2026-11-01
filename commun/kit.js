@@ -130,8 +130,10 @@
     .then(i => { indexVoix = i; return i; });
   function tampon(fichier) {
     if (!tampons.has(fichier)) {
-      tampons.set(fichier, fetch(BASE_VOIX + fichier).then(r => r.arrayBuffer())
-        .then(b => new Promise((ok, ko) => audio().decodeAudioData(b, ok, ko))));
+      const p = fetch(BASE_VOIX + fichier).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then(b => new Promise((ok, ko) => audio().decodeAudioData(b, ok, ko)));
+      p.catch(() => tampons.delete(fichier)); // un échec se retente à la lecture suivante
+      tampons.set(fichier, p);
     }
     return tampons.get(fichier);
   }
@@ -145,8 +147,9 @@
     if (!c) return Promise.resolve(false);
     return Promise.all(fichiers.map(tampon)).then(bufs => new Promise(fin => {
       let i = 0;
+      finEnCours = fin;
       const suivant = () => {
-        if (i >= bufs.length) return fin(true);
+        if (i >= bufs.length) { finEnCours = null; return fin(true); }
         const s = c.createBufferSource();
         s.buffer = bufs[i++];
         s.connect(c.destination);
@@ -155,9 +158,11 @@
         s.start();
       };
       suivant();
-    })).catch(() => false);
+    })).catch(() => 'echec');
   }
+  let finEnCours = null;
   function arreterClips() {
+    if (finEnCours) { const f = finEnCours; finEnCours = null; f(false); } // une lecture coupée se termine
     if (sourceEnCours) { const s = sourceEnCours; sourceEnCours = null; try { s.stop(); } catch (e) { /* déjà fini */ } }
   }
   KR.prechargerVoix = textes => chargementIndex.then(() => {
@@ -173,14 +178,14 @@
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     audio();
     const fichiers = fichiersDe(l);
-    let p;
-    if (fichiers) p = jouer(fichiers);
-    else if (!('speechSynthesis' in window)) p = Promise.resolve(false);
-    else {
+    const voixAppareil = () => {
+      if (!('speechSynthesis' in window)) return Promise.resolve(false);
       const liste = window.speechSynthesis.getVoices();
-      p = liste.length ? parler(l, liste) // dans le geste, pour Safari
+      return liste.length ? parler(l, liste) // dans le geste, pour Safari
         : voixDisponibles().then(v => parler(l, v));
-    }
+    };
+    // Un clip introuvable ou indécodable (hors ligne, pas encore en cache) laisse la place à la voix de l'appareil.
+    const p = fichiers ? jouer(fichiers).then(r => (r === 'echec' ? voixAppareil() : r)) : voixAppareil();
     return secours ? Promise.race([p, new Promise(r => setTimeout(() => r(false), secours))]) : p;
   };
   KR.lire = (texte, langue, secours) => KR.lireSuite([{ texte, langue }], secours);
