@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Choisir les voix</title>
+<style>
+@font-face{font-family:"Baloo 2";src:url("../../commun/polices/baloo2-latin.woff2") format("woff2");font-weight:700}
+:root{--fond:#FFF8EF;--carte:#fff;--encre:#1E2147;--douce:#545878;--trait:#EADFCB;--acc:#1668D6}
+@media (prefers-color-scheme:dark){:root{--fond:#14172B;--carte:#1E2240;--encre:#F2F2F8;--douce:#B9BCD6;--trait:#33385E;--acc:#7DB2FF}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--encre);font:17px/1.5 system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left)) 48px}
+main{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:"Baloo 2",system-ui;font-size:32px;margin:0;line-height:1.1}
+h2{font-family:"Baloo 2",system-ui;font-size:22px;margin:8px 0 0}
+p{margin:0;color:var(--douce)}
+.voix{display:flex;flex-direction:column;gap:10px}
+.v{background:var(--carte);border:2px solid var(--trait);border-radius:18px;padding:14px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.v b{min-width:96px;font-size:19px}
+.v span{color:var(--douce);flex:1 1 220px}
+audio{width:100%}
+</style>
+</head>
+<body>
+<main>
+  <h1>Choisir les voix de l'app</h1>
+  <p>Ces voix sont fabriquées d'avance, en fichiers audio, avec la voix de synthèse des films Avest : leur qualité ne dépend plus des voix installées sur l'iPad. Faites écouter aux enfants, et dites-moi le nom de la voix gagnante dans chaque partie.</p>
+
+  <h2>En français : la voix qui lit les tables</h2>
+  <p>Elle lit la question, puis le fait complet après une bonne réponse.</p>
+  <div class="voix" id="fr"></div>
+
+  <h2>En anglais : la voix des mascottes</h2>
+  <p>Moussi et Pooh Bear peuvent avoir chacun la sienne : une voix par mascotte, ou la même pour les deux.</p>
+  <div class="voix" id="en"></div>
+</main>
+<script>
+const voix = {
+  fr: [['Aoede', 'féminine, claire'], ['Leda', 'féminine, douce'], ['Sulafat', 'féminine, chaleureuse'], ['Achird', 'masculine, posée'], ['Algieba', 'masculine, celle des films Avest']],
+  en: [['Puck', 'espiègle, pleine d’entrain'], ['Leda', 'douce'], ['Sulafat', 'chaleureuse'], ['Achird', 'posée']],
+};
+for (const langue of ['fr', 'en']) {
+  const boite = document.getElementById(langue);
+  for (const [nom, style] of voix[langue]) {
+    const div = document.createElement('div');
+    div.className = 'v';
+    const b = document.createElement('b'); b.textContent = nom;
+    const s = document.createElement('span'); s.textContent = style;
+    const a = document.createElement('audio'); a.controls = true; a.preload = 'none'; a.src = `${langue}-${nom}.mp3`;
+    div.append(b, s, a);
+    boite.append(div);
+  }
+}
+</script>
+</body>
+</html>
