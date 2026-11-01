@@ -8,7 +8,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 
 ## 1. Ce que l'école attend : les tables sont dues en fin de CE2, le CM les automatise et les chronomètre
 
-- **[source]** Programme de cycle 3 en vigueur : arrêté du 10 avril 2025, BO n° 16 du 17 avril 2025, une annexe par niveau, applicable depuis la rentrée 2025.
+- **[source]** Programme de cycle 3 en vigueur : arrêté du 10 avril 2025, BO n° 16 du 17 avril 2025, une annexe par niveau, applicable en CM1 depuis la rentrée 2025 et en CM2 depuis la rentrée 2026 (article 3 de l'arrêté).
 - **[source]** La maîtrise des tables jusqu'à 9 est attendue en fin de cycle 2 ; au cours moyen, on consolide et on automatise. Le livret d'accompagnement CM1 d'Eduscol : les automatismes y portent « principalement [sur] les faits numériques et les procédures de calcul ».
 - **[source]** L'évaluation nationale de début de CM2 donne **1 minute** pour compléter le plus de produits possible sans les poser : le résultat doit sortir de mémoire, pas se reconstruire.
 - **[source]** Le CM2 ajoute des procédures appuyées sur les tables : multiplier par 10, 100, 1 000 ; 4 x 30, 90 x 20 ; distributivité simple ; diviser par 4 ou 8 ; multiplier par 5 et par 25.
