@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<title>Icône</title>
+<script>document.documentElement.dataset.enfant = new URLSearchParams(location.search).get('enfant') === 'clara' ? 'clara' : 'henri';</script>
+<link rel="stylesheet" href="../kit.css">
+<style>
+  /* L'icône est carrée et opaque : iOS arrondit lui-même les coins. */
+  /* Couleurs du jour, fixées ici pour ne pas dépendre du mode soir de la machine */
+  [data-enfant="henri"]{--fond:#518BCD;--disque:#A2C0E2}
+  [data-enfant="clara"]{--fond:#965AC3;--disque:#C5A7DD}
+  html,body{margin:0;width:100vw;height:100vh;overflow:hidden;background:var(--fond)}
+  .fond{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,var(--disque) 0 34vmin,var(--fond) 34.2vmin)}
+  .fond svg{width:84vmin;height:84vmin;margin-top:8vmin}
+</style>
+</head>
+<body>
+<div class="fond" id="fond"></div>
+<script src="../textes.js"></script>
+<script src="../kit.js"></script>
+<script>
+  KR.demarrer();
+  document.getElementById('fond').innerHTML = KR.mascotte('attend');
+</script>
+</body>
+</html>

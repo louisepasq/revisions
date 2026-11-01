@@ -2,7 +2,7 @@
 
 Le module des tables du site « Nos révisions » : une petite appli web, ludique et sonore, pour que deux enfants (un en CM1, une en CM2) apprennent leurs tables sur iPad. Publiée sur GitHub Pages depuis ce dépôt, comme les autres modules.
 
-**Statut au 01/11/2026** : recherche faite, décisions arrêtées (section 4), maquette des écrans faite (`archive/mockup_ecrans_2026-11-01.html`), rien n'est encore codé. Prochaine étape : aligner la maquette sur le système de design commun, puis coder.
+**Statut au 01/11/2026** : recherche faite, décisions arrêtées (section 4), maquette des écrans faite, design v2 retenu (panel du 01/11/2026), **module codé** (`modules/tables/`, pages `henri/tables.html` et `clara/tables.html`) : diagnostic, entraînement, erreur à retaper, fin de séance, grille, coin parent. Pas encore essayé sur un vrai iPad. À venir : défi d'une minute, découverte d'une famille, « Practise it » depuis la grille.
 
 Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; **[recherche]** étude citée, non relue en entier ; **[brief GPT]** repris d'un brief rédigé avec ChatGPT le 01/11/2026 ; **[appréciation]** avis de conception.
 
