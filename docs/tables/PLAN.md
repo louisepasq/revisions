@@ -69,7 +69,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 ### Son
 
 - Bruitages produits par le navigateur (Web Audio : tintement pour une bonne réponse, son doux pour une erreur, fanfare pour un record), sans fichier ni droit d'auteur.
-- Voix française du navigateur pour lire les questions, **coupée par défaut** dans les tables (décision du 01/11/2026). Bouton muet.
+- **Voix française active par défaut** (décision de Louis du 01/11/2026, après le premier essai, qui remplace la voix coupée) : chaque question est lue dès qu'elle s'affiche (« neuf fois cinq »), et une réponse juste fait dire le fait complet (« neuf fois cinq, quarante-cinq ») avant la question suivante. C'est l'association de la question entendue et de la réponse dite qui fait entrer le fait par l'oreille. Sur une erreur, la voix dit aussi le fait juste. Le coin parent peut la couper.
 
 ### Technique
 
