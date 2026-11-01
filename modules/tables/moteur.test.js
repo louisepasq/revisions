@@ -53,12 +53,27 @@ assert.strictEqual(m.type, 'multiple');
 assert.strictEqual(m.reponse, m.nombre % 6 === 0);
 
 e = T.etatNeuf();
+T.enregistrer(e, 6, 7, true, 4500, lundi);
+T.enregistrer(e, 6, 7, true, 4500, plus(lundi, 1));
+T.enregistrer(e, 6, 7, true, 4500, plus(lundi, 3));
+assert.strictEqual(e.faits['6x7'].boite, 3, 'juste mais lent : on monte jusqu à Presque');
+T.enregistrer(e, 6, 7, true, 4500, plus(lundi, 7));
+assert.strictEqual(e.faits['6x7'].boite, 3, 'l or demande la rapidité');
+
+const premiers = T.questionsDiagnostic().slice(0, 6).map(x => T.familleDuFait(x.a, x.b));
+assert.deepStrictEqual(premiers, [0, 1, 2, 3, 4, 5], 'le diagnostic visite toutes les familles dès le premier tour');
+
+e = T.etatNeuf();
 const diag = T.questionsDiagnostic();
 assert.ok(diag.length >= 20);
 const rep = diag.map(x => ({ a: x.a, b: x.b, juste: T.familleDuFait(x.a, x.b) <= 2, ms: 2500 }));
 const r = T.appliquerDiagnostic(e, rep, lundi);
 assert.strictEqual(r.familles, 4, 'faciles, doubles et 4-8 réussis : la famille 3-6 s ouvre');
 assert.strictEqual(T.couleur(e, diag[0].a, diag[0].b), 'argent');
+T.enregistrer(e, diag[0].a, diag[0].b, true, 1000, lundi);
+assert.strictEqual(T.couleur(e, diag[0].a, diag[0].b), 'argent', 'pas de passage en or le jour même du diagnostic');
+assert.strictEqual(T.couleur(e, 1, 7), 'argent', 'les tables de 1 et de 10 sont posées comme acquises');
+assert.ok(T.seance(e, lundi).every(q => q.a !== 1 && q.b !== 1), 'pas de 1 × n présenté comme nouveau après le diagnostic');
 
 const sem = T.joursDeLaSemaine({ jours: ['2026-11-02', '2026-11-04'] }, plus(lundi, 4));
 assert.deepStrictEqual(sem.map(x => x.fait), [true, false, true, false, false, false, false]);

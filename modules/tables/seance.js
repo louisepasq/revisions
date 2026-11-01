@@ -32,7 +32,25 @@
     s.aRetaper = q;
     const retour = Object.assign({}, q, { retour: true });
     s.questions.splice(Math.min(s.index + 1 + RETOUR_APRES, s.questions.length), 0, retour);
-    return { juste: false, bonne: q.a * q.b, operation: `${q.a} × ${q.b}`, astuce: T.astuce(q.a, q.b) };
+    return { juste: false, bonne: q.a * q.b, operation: `${q.a} × ${q.b}`, astuce: T.astuce(q.a, q.b), correction: correction(q) };
+  }
+
+  function correction(q) {
+    const p = q.a * q.b;
+    if (q.type === 'multiple') {
+      return q.reponse
+        ? { reponse: 'Oui', phrase: `Oui : ${q.a} × ${q.b} = ${p}.` }
+        : { reponse: 'Non', phrase: `Non : ${q.nombre} n'est pas dans la table de ${q.a}. ${q.a} × ${q.b} = ${p}.` };
+    }
+    if (q.type === 'manquant') return { reponse: String(q.b), phrase: `${q.a} × ${q.b} = ${p} : le nombre caché, c'est ${q.b}.` };
+    if (q.type === 'decomposition') return { reponse: `${q.a} × ${q.b}`, phrase: `Par exemple : ${q.a} × ${q.b} = ${p}.` };
+    return { reponse: String(p), phrase: `${q.a} × ${q.b} = ${p}.` };
+  }
+
+  function avancement(s) {
+    const total = s.questions.filter(x => !x.retour).length;
+    const faites = s.questions.slice(0, s.index + 1).filter(x => !x.retour).length;
+    return { n: Math.max(1, Math.min(faites, total)), total };
   }
 
   function retaper(s, saisie) {
@@ -70,5 +88,5 @@
     };
   }
 
-  racine.Seance = { creer, courante, repondre, retaper, suivante, finie, bilan };
+  racine.Seance = { creer, courante, repondre, retaper, suivante, finie, bilan, avancement, correction };
 })(typeof window !== 'undefined' ? window : globalThis);

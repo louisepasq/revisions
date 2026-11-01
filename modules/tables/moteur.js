@@ -118,7 +118,7 @@
     if (rapide && !dejaMonteAujourdhui) {
       f.justesJours.push(j);
       if (f.boite < BOITE_MAX) { f.boite++; monte = true; }
-    } else if (f.boite < 2 && !dejaMonteAujourdhui) {
+    } else if (f.boite < 3 && !dejaMonteAujourdhui) {
       f.boite++;
       monte = true;
       f.justesJours.push(j);
@@ -150,14 +150,18 @@
     const dus = ouverts
       .filter(([a, b]) => { const f = etat.faits[cle(a, b)]; return f && f.vu && f.prochain && f.prochain <= j; })
       .sort((x, y) => etat.faits[cle(...x)].prochain.localeCompare(etat.faits[cle(...y)].prochain) || etat.faits[cle(...x)].boite - etat.faits[cle(...y)].boite);
-    const nouveaux = ouverts.filter(([a, b]) => !(etat.faits[cle(a, b)] || {}).vu).slice(0, NOUVEAUX_PAR_SEANCE);
+    const nouveaux = melanger(ouverts.filter(([a, b]) => !(etat.faits[cle(a, b)] || {}).vu), 'n' + j)
+      .sort((x, y) => familleDuFait(...x) - familleDuFait(...y))
+      .slice(0, NOUVEAUX_PAR_SEANCE);
     const acquis = ouverts.filter(([a, b]) => { const f = etat.faits[cle(a, b)]; return f && f.boite >= 4 && f.prochain > j; });
     const choix = [];
     const prendre = (liste, n) => { for (const x of liste) { if (choix.length >= n) break; if (!choix.some(c => c[0] === x[0] && c[1] === x[1])) choix.push(x); } };
     prendre(nouveaux, Math.min(taille, NOUVEAUX_PAR_SEANCE));
     prendre(dus, taille - 2);
     prendre(acquis.filter((_, i) => i % 3 === 0), taille);
-    prendre(ouverts.filter(([a, b]) => (etat.faits[cle(a, b)] || {}).boite < 4), taille);
+    prendre(ouverts
+      .filter(([a, b]) => a !== 1 && b !== 1 && (etat.faits[cle(a, b)] || {}).boite < 4)
+      .sort((x, y) => etat.faits[cle(...x)].boite - etat.faits[cle(...y)].boite), taille);
     return melanger(choix, j).map(([a, b], i) => question(etat, a, b, i));
   }
 
@@ -197,11 +201,9 @@
   }
 
   function questionsDiagnostic() {
+    const parFamille = FAMILLES.map((_, i) => melanger(faitsDeFamille(i).filter(([a, b]) => a <= b && a > 1), 'diag' + i).slice(0, 5));
     const ordre = [];
-    FAMILLES.forEach((_, i) => {
-      const faits = faitsDeFamille(i).filter(([a, b]) => a <= b && a > 1);
-      melanger(faits, 'diag' + i).slice(0, 5).forEach(f => ordre.push(f));
-    });
+    for (let tour = 0; tour < 5; tour++) parFamille.forEach(l => { if (l[tour]) ordre.push(l[tour]); });
     return ordre.map(([a, b], i) => (i % 2 ? { type: 'produit', a: b, b: a, texte: `${b} × ${a}`, reponse: a * b } : { type: 'produit', a, b, texte: `${a} × ${b}`, reponse: a * b }));
   }
 
@@ -217,6 +219,7 @@
         f.vu = true;
         f.boite = r.juste ? (r.ms <= RAPIDE_MS ? 3 : 2) : 1;
         f.prochain = ajouterJours(j, r.juste ? 1 : 0);
+        if (r.juste && !f.justesJours.includes(j)) f.justesJours.push(j);
       });
     });
     let familles = 1;
@@ -225,6 +228,16 @@
       if (s.total && s.justes / s.total >= SEUIL_DEBLOCAGE) familles = i + 2; else break;
     }
     etat.familles = Math.max(etat.familles, familles);
+    if (etat.familles > 1) {
+      faitsDeFamille(0).filter(([a, b]) => a === 1 || b === 1 || a === 10 || b === 10).forEach(([a, b]) => {
+        const f = fait(etat, a, b);
+        if (f.vu) return;
+        f.vu = true;
+        f.boite = 3;
+        f.prochain = ajouterJours(j, 7);
+        f.justesJours.push(j);
+      });
+    }
     etat.diagnostic = true;
     return { familles: etat.familles, parFamille };
   }

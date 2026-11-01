@@ -124,6 +124,7 @@
     let i = 0;
     let saisie = '';
     let debutQ = 0;
+    let premiereTouche = 0;
     let pave = null;
     let fini = false;
 
@@ -141,7 +142,7 @@
     }
     function suivante(juste) {
       const q = questions[i];
-      reponses.push({ a: q.a, b: q.b, juste, ms: juste === null ? null : Math.round(performance.now() - debutQ) });
+      reponses.push({ a: q.a, b: q.b, juste, ms: juste === null ? null : Math.round((premiereTouche || performance.now()) - debutQ) });
       if (juste === null) reponses[reponses.length - 1].juste = false;
       i++;
       if (i >= questions.length || performance.now() - debut >= DUREE_DIAGNOSTIC) return terminer();
@@ -158,6 +159,7 @@
         <div class="sous-carte"><button type="button" class="btn btn-secondaire" data-a="passer">${t('je_passe')}${KR.icone('suite')}</button></div>`;
       pave.etat('vide');
       debutQ = performance.now();
+      premiereTouche = 0;
       if (KR.reglages().voix) KR.lire(aLire(q), 'fr');
     }
 
@@ -166,7 +168,7 @@
       <div class="corps"><section class="zone"></section><section class="action"></section></div>
     </div>`);
     pave = KR.pave({
-      chiffre(d) { if (saisie.length < MAX_CHIFFRES) { saisie = (saisie + d).replace(/^0+(?=\d)/, ''); majCase(); } },
+      chiffre(d) { if (!premiereTouche) premiereTouche = performance.now(); if (saisie.length < MAX_CHIFFRES) { saisie = (saisie + d).replace(/^0+(?=\d)/, ''); majCase(); } },
       effacer() { saisie = saisie.slice(0, -1); majCase(); },
       valider() { const q = questions[i]; suivante(T.verifier(q, Number(saisie))); },
     });
@@ -187,6 +189,7 @@
     let champ = 0;
     let phase = 'question';
     let debutQ = 0;
+    let premiereTouche = 0;
     let pave = null;
 
     changerEcran(`<div class="ecran ecran-fixe exo">
@@ -200,6 +203,7 @@
 
     pave = KR.pave({
       chiffre(d) {
+        if (phase === 'question' && !premiereTouche) premiereTouche = performance.now();
         if (phase === 'question' && q.type === 'decomposition') {
           if (duo[champ].length < MAX_CHIFFRES) duo[champ] = (duo[champ] + d).replace(/^0+(?=\d)/, '');
         } else if (saisie.length < MAX_CHIFFRES) saisie = (saisie + d).replace(/^0+(?=\d)/, '');
@@ -226,16 +230,16 @@
     });
 
     function majAvance() {
-      const total = s.questions.length;
       let h = '';
-      for (let k = 0; k < total; k++) {
+      for (let k = 0; k < s.questions.length; k++) {
+        if (s.questions[k].retour) continue;
         if (resultats[k]) h += `<i class="pt ${resultats[k] === 'j' ? 'juste' : 'revu'}"></i>`;
         else if (k === s.index && phase !== 'juste') h += '<i class="pt ici"></i>';
         else h += '<i class="pt"></i>';
       }
       const av = app.querySelector('.avance');
       av.querySelector('.points-av').innerHTML = h;
-      const n = Math.min(s.index + 1, total);
+      const { n, total } = S.avancement(s);
       av.querySelector('.compte').textContent = t('avancement', { n, total });
       av.setAttribute('aria-valuenow', n);
       av.setAttribute('aria-valuemax', total);
@@ -272,6 +276,7 @@
         pave.etat('vide');
       }
       debutQ = performance.now();
+      premiereTouche = 0;
       if (KR.reglages().voix) KR.lire(aLire(q), 'fr');
     }
 
@@ -289,7 +294,7 @@
     }
 
     function repondre(valeur) {
-      const ms = Math.round(performance.now() - debutQ);
+      const ms = Math.round((premiereTouche || performance.now()) - debutQ);
       const r = S.repondre(s, etat, valeur, ms, new Date());
       sauver();
       if (r.juste) {
@@ -327,7 +332,9 @@
       majAvance();
       KR.son('doux');
       zone.innerHTML = `
-        <div class="carte-q carte-rev" lang="fr"><div class="fait">${q.a}${x}${q.b}${eg}<span class="surligne">${r.bonne}</span></div></div>
+        <div class="carte-q carte-rev" lang="fr">${q.type === 'produit'
+          ? `<div class="fait">${q.a}${x}${q.b}${eg}<span class="surligne">${r.bonne}</span></div>`
+          : `<div class="fait"><span class="surligne">${KR.echapper(r.correction.reponse)}</span></div><p class="ligne-texte">${KR.echapper(r.correction.phrase)}</p>`}</div>
         <div class="retour-masc">${KR.medaillon('aide')}${KR.mascotte('aide')}
           <div class="bulles"><div class="bulle parle">${t('on_regarde')}</div>
           <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(r.astuce)}</div></div></div>
