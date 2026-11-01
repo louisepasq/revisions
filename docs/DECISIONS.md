@@ -62,6 +62,18 @@ Format : numéro, date, qui, la décision, la raison, la source.
 
   Les familles s'ouvrent toujours selon ce que l'enfant sait (boîtes réelles), jamais selon les tampons. La grille de Pythagore reste accessible depuis l'album. Sources : `design-system/archive/2026-11-01_progression/README.md` et `revues/2026-11-01_relecture-progression.md`.
 
+- **D-22, 01/11/2026, Louis : les dix recommandations du relecteur pédagogique sur le « Today » et le nombre cible.** Source : `revues/2026-11-01_relecture-today.md`.
+  1. Ce qui est déjà fait dans la journée compte dans le plafond de trois activités et quinze minutes, pour que « All done » arrive ; un jeu libre comme le nombre cible ne prend pas de place.
+  2. Un module qui sait publier un résumé mais ne l'a pas encore fait est proposé d'office en découverte, 5 minutes, marqué « New! » ; le planisphère reste hors du « Today ».
+  3. Au plus une découverte par jour dans le « Today ».
+  4. Nombre cible : après un coup parfait obtenu avec un indice, la bulle de fin devient « Perfect move! Can you do it again without a hint? ».
+  5. Nombre cible, pour Henri : seulement des cibles dont la solution la plus courte demande au moins deux calculs.
+  6. Le nombre cible reste hors du « Today », sauf le jour de sa découverte ; point au bout de deux semaines, et s'il n'est jamais ouvert, proposé au plus deux fois par semaine.
+  7. La voix lit d'elle-même les deux bulles du cadre (coût de l'indice, défi de fin), et le « −3 » de l'indice s'affiche en gros.
+  8. Le badge « Perfect move! » reste affiché quand un indice a été pris.
+  9. Tables entièrement en or et rien de dû : l'accueil propose la prochaine révision prévue, pas une séance chaque jour.
+  10. Un module ne quitte le « Today » qu'une fois sa séance finie.
+
 ## Géographie : le grand zoom
 
 - **D-17, 01/11/2026, Louis : un module « De l'univers à Éguilles », du zoom jusqu'au village ; l'école et la maison exclues.**
