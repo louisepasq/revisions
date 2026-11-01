@@ -24,6 +24,7 @@ Les apps de révision d'Henri (CM1, mascotte Moussi) et de Clara (CM2, mascotte 
   - le parcours Playwright du module touché, en regardant ses captures ;
   - pour l'accès et la sauvegarde, les essais de `outils/essais/`.
 - **Le site sert de vrais enfants** : jamais de rouge ni de croix pour une erreur, jamais de comparaison entre les deux, des cibles de 56 px au moins, et le cadre en anglais britannique, le contenu scolaire en français.
+- **Aucune version ne fait perdre une progression.** Un déploiement ne touche ni l'iPad ni la base en ligne ; mais un module qui change la forme de son état garde les clés de stockage et ajoute une fonction `migrer` testée sur un état de l'ancienne version (exemple : `migrer` de `modules/tables/moteur.js` et son test dans `album.test.js`). Jamais de remise à zéro, même pour simplifier.
 - **Le planisphère (`henri/planisphere.html`) est le module de Louise** : on lui propose, on ne le refait pas sans son accord.
 
 ## Déployer
