@@ -79,6 +79,17 @@
       `<button type="button" data-reglage="${cle}" data-valeur="${v}" aria-pressed="${String(v) === String(valeur)}">${libelle}</button>`).join('') + '</div>';
   }
 
+  function etatSauvegarde() {
+    if (!window.Sync) return 'Sauvegarde en ligne indisponible sur cette page.';
+    const s = window.Sync.etat();
+    if (s.derniereSauvegarde) {
+      const h = new Date(s.derniereSauvegarde).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      return `Sauvegardé en ligne à ${h}. La progression suit l'enfant sur tous les appareils.`;
+    }
+    if (s.erreur) return `Pas encore sauvegardé en ligne (${KR.echapper(s.erreur)}). La progression reste sur cet appareil et repartira dès que possible.`;
+    return 'Sauvegarde en ligne en cours…';
+  }
+
   function ouvrirCoinParent() {
     fermerCoinParent();
     const r = KR.reglages();
@@ -94,6 +105,7 @@
         <div class="ligne-reglage" style="margin-top:12px"><span>${tp('parent_sons')}</span>${segment('sons', [[true, tp('active')], [false, tp('coupee')]], r.sons)}</div>
       </section>
       <section class="reglage"><h3>${tp('parent_sauvegarde')}</h3>
+        <p class="note">${etatSauvegarde()}</p>
         <div class="boutons">
           <button type="button" class="btn btn-secondaire" data-a="exporter">${KR.icone('sortir')}${tp('parent_export')}</button>
           <label class="btn btn-secondaire">${KR.icone('entrer')}${tp('parent_import')}<input type="file" class="lecteur" accept="application/json,.json" data-a="importer"></label>

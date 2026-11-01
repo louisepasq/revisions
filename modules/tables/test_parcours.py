@@ -77,6 +77,9 @@ def contexte(navigateur, fmt, schema="light"):
     # Les fichiers de voix sont vérifiés à part (commun/outils/voix.py) ; ici on force la voix de
     # l'appareil pour que l'espion entende chaque phrase.
     ctx.route("**/voix/index.json", lambda r: r.fulfill(status=200, content_type="application/json", body="{}"))
+    # La sauvegarde en ligne est testée à part (test/*.test.js) : ici un service qui rend l'état reçu.
+    ctx.route("**/api/progression**", lambda r: r.fulfill(status=200, content_type="application/json",
+                                                         body=r.request.post_data or "{}"))
     page = ctx.new_page()
     erreurs: list[str] = []
     page.on("pageerror", lambda e: erreurs.append("JS : " + str(e)))

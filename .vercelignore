@@ -1,0 +1,7 @@
+.claude
+modules/tables/captures
+henri/outils/captures
+docs/design-system/archive/**/*.png
+test
+**/*.test.js
+**/test_*.py
