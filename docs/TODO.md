@@ -9,7 +9,7 @@ Mis à jour le 01/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 ## Ce qui attend Louise
 
 - **Passer le dépôt `louisepasq/revisions` en privé**, et couper GitHub Pages, qui montre encore l'ancienne version publique avec les prénoms. Sur GitHub : Settings, puis General, Danger Zone, « Change visibility » ; puis Settings, Pages, « Unpublish site ».
-- **Brancher Vercel au dépôt**, pour que chaque push sur `main` déploie tout seul. À faire avec Louis : dans le projet Vercel `revisions`, Settings, puis Git, connecter `louisepasq/revisions`. GitHub demande alors à Louise d'autoriser l'app Vercel sur son compte.
+- **Pas de branchement automatique de Vercel au dépôt** (constaté le 01/11/2026, sur les forums de Vercel) : en plan gratuit, Vercel refuse de déployer un dépôt privé quand l'auteur du commit n'est pas le propriétaire du compte. Les pushs de Louise ne déploieraient donc pas. On déploie par `outils/deployer.sh`, depuis le Mac de Louis, qui envoie une copie sans historique git. À reconsidérer seulement si le besoin grandit : une action GitHub avec un jeton Vercel, ou le plan payant.
 - **Le planisphère** : passer à 56 px et au mode anglais, et migrer les clés de stockage : c'est fait (01/11). À elle de dire si elle veut qu'il devienne l'étage « Terre » du zoom de géographie.
 
 ## À décider (parents)

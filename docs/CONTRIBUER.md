@@ -52,8 +52,7 @@ Ne fabrique que les phrases manquantes, puis réécrit `commun/voix/index.json`.
 
 ## 5. Déployer
 
-- **Aujourd'hui, depuis le Mac de Louis** : `vercel deploy --prod`, à la racine du clone. Une session Claude de Louise pousse sur GitHub, puis demande à Louis de déployer, tant que Vercel n'est pas branché au dépôt.
-- **Dès que Vercel est branché au dépôt** (geste de Louise, voir `TODO.md`) : un push sur `main` déploie tout seul.
+- **Depuis le Mac de Louis** : `bash outils/deployer.sh` (une copie sans historique git, voir `ARCHITECTURE.md`, section 7). Une session Claude de Louise pousse sur GitHub, puis demande à Louis de déployer : un push ne déploie pas.
 - **Après un déploiement**, vérifier `https://nos-revisions.vercel.app` : la page de code s'affiche, et un enfant connecté retrouve sa progression.
 - **Ne jamais écrire un code, une clé ou un jeton dans le dépôt, un commit ou une conversation.** Les variables se posent dans Vercel par leur propriétaire.
 

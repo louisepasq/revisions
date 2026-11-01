@@ -83,8 +83,8 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 
 ## 7. Déploiement
 
-- **Aujourd'hui** : `vercel deploy --prod` depuis ce clone (compte de Louis). Le domaine `nos-revisions.vercel.app` suit chaque déploiement de production.
-- **À terme** : Vercel branché au dépôt GitHub `louisepasq/revisions`, pour qu'un push sur `main` déploie tout seul. Il faut pour cela que Louise autorise l'app GitHub de Vercel sur son dépôt (section « Ce qui attend Louise » de `TODO.md`).
+- **Déployer** : `bash outils/deployer.sh`, depuis le clone de Louis (compte Vercel de Louis). Le script envoie une copie sans historique git : en plan gratuit, Vercel bloque un dépôt privé dont le dernier commit n'est pas de l'auteur du compte (cas d'un commit de Louise). Le domaine `nos-revisions.vercel.app` suit chaque déploiement de production.
+- **Pas de déploiement automatique au push** : le plan gratuit de Vercel ne l'accepte pas pour les commits de Louise sur un dépôt privé (voir `TODO.md`).
 - `.vercelignore` écarte les tests, les captures et les outils lourds du déploiement.
 - **Variables Vercel** : `CODE_PARENT` (Louis) ; `KV_REST_API_URL`, `KV_REST_API_TOKEN` et les autres `KV_*` (posées par l'intégration Upstash, marquées sensibles, donc illisibles en local : les essais locaux utilisent une base factice).
 - **GitHub Pages** (`louisepasq.github.io/revisions/`) sert encore l'ancienne version publique : à couper quand le dépôt passera en privé.

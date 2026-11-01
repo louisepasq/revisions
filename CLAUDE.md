@@ -28,4 +28,4 @@ Les apps de révision d'Henri (CM1, mascotte Moussi) et de Clara (CM2, mascotte 
 
 ## Déployer
 
-`vercel deploy --prod` depuis le clone de Louis. Une session de Louise pousse sur GitHub puis demande le déploiement, tant que Vercel n'est pas branché au dépôt (voir `docs/TODO.md`). L'ancienne adresse GitHub Pages est à couper quand le dépôt passera en privé.
+`bash outils/deployer.sh` depuis le clone de Louis (une copie sans historique git : le plan gratuit de Vercel bloque un dépôt privé dont le dernier commit n'est pas du propriétaire). Une session de Louise pousse sur GitHub puis demande le déploiement à Louis : un push ne déploie pas.
