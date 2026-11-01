@@ -49,6 +49,22 @@
     },
     diag_fin: { fr: 'Super, je sais par où on commence !', en: 'Great, I know where to start!' },
     attente_bulle: { fr: 'On va où aujourd\'hui ?', en: 'Where shall we go today?' },
+    // Ajouts de la synthèse de design du 01/11/2026 (docs/design-system/archive/2026-11-01_panel/5-synthese.html)
+    repos_bulle: { fr: "C'est fait pour aujourd'hui !", en: 'All done for today!' },
+    module_planisphere: { fr: 'Mon planisphère', en: 'My world map' },
+    module_planisphere_sous: { fr: 'Géographie', en: 'Geography' },
+    planisphere_theme: { fr: 'Continents et océans', en: 'Continents and oceans' },
+    module_tables: { fr: 'Mes tables', en: 'My times tables' },
+    module_tables_sous: { fr: 'Multiplications', en: 'Multiplication' },
+    tables_par_coeur: { fr: '{n} sur {total} par cœur', en: '{n} of {total} by heart' },
+    module_dictee: { fr: 'Dictée', en: 'Dictée' },
+    module_dictee_sous: { fr: 'Orthographe', en: 'French spelling' },
+    jours_courts: { fr: 'lun.,mar.,mer.,jeu.,ven.,sam.,dim.', en: 'Mon,Tue,Wed,Thu,Fri,Sat,Sun' },
+    etat_or_court: { fr: 'Par cœur', en: 'By heart' },
+    etat_auj: { fr: "Montée aujourd'hui", en: 'Up today' },
+    je_mentraine: { fr: "Je m'entraîne", en: 'Practise it' },
+    bravo_prenom: { fr: 'Bien joué, {prenom} !', en: 'Well done, {prenom}!' },
+    questions_n: { fr: '{n} questions', en: '{n} questions' },
   };
 
   let langue = 'fr';
