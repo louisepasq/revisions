@@ -4,13 +4,7 @@ Mis à jour le 01/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 
 ## Ce qui attend Louis
 
-- **Poser le code parent dans Vercel** (variable `CODE_PARENT`, production). Tant qu'elle manque, le site répond « en cours de configuration ». Commande, à lancer dans le Terminal du Mac ; elle demande le code et le garde secret :
-
-  ```bash
-  cd ~/Projects/Louis-Kids-Revisions && vercel env add CODE_PARENT production
-  ```
-
-  Ensuite, `vercel deploy --prod` (ou le demander à Claude).
+- **Faire choisir leur code à Henri et à Clara, puis installer leurs apps sur l'iPad.** Le code parent est posé depuis le 01/11/2026. Sur la page `https://nos-revisions.vercel.app/parents/`, chaque enfant tape son code deux fois. Ensuite, dans Safari, ouvrir son app, puis Partager et « Sur l'écran d'accueil ». Ouvrir l'icône et taper son code une dernière fois.
 
 ## Ce qui attend Louise
 
