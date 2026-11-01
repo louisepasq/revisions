@@ -112,5 +112,48 @@ def echantillons() -> None:
     print("échantillons écrits dans", dossier)
 
 
+VOIX = {"fr": "Sulafat", "en": "Sulafat"}  # choix de Louis du 01/11/2026, après écoute des échantillons
+
+
+def nom_fichier(langue: str, texte: str) -> str:
+    import hashlib
+    return f"{langue}/{hashlib.sha1(f'{langue}|{texte}'.encode()).hexdigest()[:12]}.mp3"
+
+
+def tables() -> None:
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    phrases = json.loads(subprocess.run(["node", str(RACINE / "commun/outils/phrases.js")],
+                                        capture_output=True, text=True, check=True).stdout)
+    dossier = RACINE / "commun/voix"
+    index = {}
+    a_faire = []
+    for p in phrases:
+        f = nom_fichier(p["langue"], p["texte"])
+        index[f"{p['langue']}|{p['texte']}"] = f
+        if not (dossier / f).exists():
+            a_faire.append((p, dossier / f))
+    print(f"{len(phrases)} phrases, {len(a_faire)} à fabriquer", flush=True)
+    erreurs = []
+
+    def une(p, dst):
+        notes = NOTES_FR if p["langue"] == "fr" else NOTES_EN
+        dire(p["texte"], VOIX[p["langue"]], notes, dst, essais=5)
+
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        futurs = {pool.submit(une, p, dst): p for p, dst in a_faire}
+        for i, fu in enumerate(as_completed(futurs), 1):
+            try:
+                fu.result()
+            except Exception as e:
+                erreurs.append((futurs[fu]["texte"], str(e)[:120]))
+            if i % 50 == 0:
+                print(f"{i}/{len(a_faire)}", flush=True)
+    index = {k: v for k, v in index.items() if (dossier / v).exists()}
+    (dossier / "index.json").write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")))
+    print(f"index : {len(index)} phrases ; erreurs : {len(erreurs)}")
+    for t, e in erreurs[:10]:
+        print(" -", t, e)
+
+
 if __name__ == "__main__":
-    {"echantillons": echantillons}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
+    {"echantillons": echantillons, "tables": tables}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()

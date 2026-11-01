@@ -120,18 +120,71 @@
       enCours.forEach(u => window.speechSynthesis.speak(u));
     });
   }
+  /* Voix fabriquées d'avance (commun/voix/, Gemini TTS, voix Sulafat) : jouées par Web Audio,
+     déverrouillé au premier toucher ; la voix de l'iPad ne sert qu'en secours. */
+  const BASE_VOIX = new URL('voix/', document.currentScript ? document.currentScript.src : location.href).href;
+  let indexVoix = null;
+  const tampons = new Map();
+  let sourceEnCours = null;
+  const chargementIndex = fetch(BASE_VOIX + 'index.json').then(r => (r.ok ? r.json() : {})).catch(() => ({}))
+    .then(i => { indexVoix = i; return i; });
+  function tampon(fichier) {
+    if (!tampons.has(fichier)) {
+      tampons.set(fichier, fetch(BASE_VOIX + fichier).then(r => r.arrayBuffer())
+        .then(b => new Promise((ok, ko) => audio().decodeAudioData(b, ok, ko))));
+    }
+    return tampons.get(fichier);
+  }
+  function fichiersDe(morceaux) {
+    if (!indexVoix) return null;
+    const f = morceaux.map(m => indexVoix[(m.langue === 'en' ? 'en' : 'fr') + '|' + m.texte]);
+    return f.every(Boolean) ? f : null;
+  }
+  function jouer(fichiers) {
+    const c = audio();
+    if (!c) return Promise.resolve(false);
+    return Promise.all(fichiers.map(tampon)).then(bufs => new Promise(fin => {
+      let i = 0;
+      const suivant = () => {
+        if (i >= bufs.length) return fin(true);
+        const s = c.createBufferSource();
+        s.buffer = bufs[i++];
+        s.connect(c.destination);
+        s.onended = () => { if (sourceEnCours === s) suivant(); };
+        sourceEnCours = s;
+        s.start();
+      };
+      suivant();
+    })).catch(() => false);
+  }
+  function arreterClips() {
+    if (sourceEnCours) { const s = sourceEnCours; sourceEnCours = null; try { s.stop(); } catch (e) { /* déjà fini */ } }
+  }
+  KR.prechargerVoix = textes => chargementIndex.then(() => {
+    (textes || []).forEach(m => { const f = fichiersDe([m]); if (f) tampon(f[0]).catch(() => {}); });
+  });
+
   /* Lit une suite de morceaux, chacun dans sa langue : [{ texte, langue: 'en' | 'fr' }].
      Rend une promesse tenue à la fin de la lecture, ou au bout de `secours` ms au plus. */
   KR.lireSuite = function (morceaux, secours) {
     const l = (morceaux || []).filter(m => m && m.texte);
-    if (!('speechSynthesis' in window) || !l.length) return Promise.resolve(false);
-    const liste = window.speechSynthesis.getVoices();
-    const p = liste.length ? parler(l, liste) // dans le geste, pour Safari
-      : voixDisponibles().then(v => parler(l, v));
+    if (!l.length) return Promise.resolve(false);
+    arreterClips();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    audio();
+    const fichiers = fichiersDe(l);
+    let p;
+    if (fichiers) p = jouer(fichiers);
+    else if (!('speechSynthesis' in window)) p = Promise.resolve(false);
+    else {
+      const liste = window.speechSynthesis.getVoices();
+      p = liste.length ? parler(l, liste) // dans le geste, pour Safari
+        : voixDisponibles().then(v => parler(l, v));
+    }
     return secours ? Promise.race([p, new Promise(r => setTimeout(() => r(false), secours))]) : p;
   };
   KR.lire = (texte, langue, secours) => KR.lireSuite([{ texte, langue }], secours);
-  KR.taire = () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); };
+  KR.taire = () => { arreterClips(); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); };
 
   /* ---------- Sprite SVG : mascottes (quatre attitudes) et icônes ---------- */
   const SPRITE = `<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>

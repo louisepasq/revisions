@@ -74,6 +74,9 @@ def contexte(navigateur, fmt, schema="light"):
     ctx = navigateur.new_context(viewport={"width": l, "height": h}, device_scale_factor=1,
                                  color_scheme=schema, has_touch=(fmt == "iphone"))
     ctx.add_init_script(ESPION_VOIX)
+    # Les fichiers de voix sont vérifiés à part (commun/outils/voix.py) ; ici on force la voix de
+    # l'appareil pour que l'espion entende chaque phrase.
+    ctx.route("**/voix/index.json", lambda r: r.fulfill(status=200, content_type="application/json", body="{}"))
     page = ctx.new_page()
     erreurs: list[str] = []
     page.on("pageerror", lambda e: erreurs.append("JS : " + str(e)))

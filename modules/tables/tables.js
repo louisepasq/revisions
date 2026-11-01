@@ -210,6 +210,7 @@
   function demarrerSeance() {
     etat = T.charger(enfant);
     const s = S.creer(etat, new Date(), undefined, { multiple: MULTIPLE });
+    if (voixActive()) KR.prechargerVoix(s.questions.flatMap(x => [{ texte: aLire(x), langue: 'fr' }, { texte: T.faitDit(x.a, x.b), langue: 'fr' }]));
     const resultats = [];
     let q = null;
     let saisie = '';
