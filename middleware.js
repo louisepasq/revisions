@@ -28,18 +28,29 @@ export default async function middleware(request) {
 }
 
 const PRENOMS = { henri: 'Henri', clara: 'Clara' };
+/* La page d'un enfant est en anglais britannique, comme tout le cadre de son app (D-21) ; celle du
+   code parent reste en français, comme le coin parent. */
 const MESSAGES = {
-  faux: "Ce n'est pas le bon code. Réessaie, ou demande à un parent.",
-  trop: "Trop d'essais. Attends un quart d'heure, ou demande à un parent.",
-  ailleurs: 'Cette page demande un autre code.',
+  fr: {
+    faux: "Ce n'est pas le bon code. Réessaie, ou demande à un parent.",
+    trop: "Trop d'essais. Attends un quart d'heure, ou demande à un parent.",
+    ailleurs: 'Cette page demande un autre code.',
+  },
+  en: {
+    faux: "That's not the right code. Try again, or ask a grown-up.",
+    trop: 'Too many tries. Wait a quarter of an hour, or ask a grown-up.',
+    ailleurs: 'This page needs another code.',
+  },
 };
 
 function page(suite, enfant, erreur) {
   const prenom = PRENOMS[enfant];
-  const titre = prenom ? `L'app ${/^[AEIOUYH]/.test(prenom) ? "d'" : 'de '}${prenom}` : 'Nos révisions';
-  const consigne = prenom ? `Ton code secret, ${prenom}.` : 'Le code parent.';
+  const langue = prenom ? 'en' : 'fr';
+  const titre = prenom ? `${prenom}'s app` : 'Nos révisions';
+  const consigne = prenom ? `Your secret code, ${prenom}. Only once on this device.` : 'Le code parent. Une seule fois sur cet appareil.';
+  const message = MESSAGES[langue][erreur];
   const html = `<!doctype html>
-<html lang="fr" data-enfant="${prenom ? enfant : ''}">
+<html lang="${langue}" data-enfant="${prenom ? enfant : ''}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -68,10 +79,10 @@ function page(suite, enfant, erreur) {
 <body>
   <form method="POST" action="/api/entrer?suite=${encodeURIComponent(suite)}">
     <h1>${titre}</h1>
-    <p>${consigne} Une seule fois sur cet appareil.</p>
-    <input name="code" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" aria-label="Code secret" required autofocus>
-    <button type="submit">Entrer</button>
-    ${MESSAGES[erreur] ? `<p class="erreur">${MESSAGES[erreur]}</p>` : ''}
+    <p>${consigne}</p>
+    <input name="code" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" aria-label="${prenom ? 'Secret code' : 'Code parent'}" required autofocus>
+    <button type="submit">${prenom ? 'Go' : 'Entrer'}</button>
+    ${message ? `<p class="erreur">${message}</p>` : ''}
   </form>
 </body>
 </html>`;

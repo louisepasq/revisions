@@ -1,10 +1,11 @@
-/* Les textes du cadre des apps, en deux langues (relecture sur l'anglais du 01/11/2026,
-   décisions des parents du 01/11/2026) :
-   - le cadre (portail, boutons, bulles de la mascotte, fins de séance) suit le réglage de langue
-     de l'enfant, anglais par défaut, voix en-GB ; phrases courtes, lues par le bouton Listen ;
-   - le contenu scolaire (questions, consignes, Oui et Non, astuces et leur étiquette, dictée)
-     reste en français et n'est pas ici : il vit dans le module ;
-   - le coin parent est toujours en français : ses clés s'appellent avec t(cle, valeurs, 'fr'). */
+/* Les textes du cadre des apps, en deux langues. Règle de langue : D-21 (docs/DECISIONS.md, 01/11/2026).
+   - Anglais britannique par défaut partout : cadre, consignes d'exercice, explications, mascotte,
+     voix (en-GB). Le réglage de langue de l'enfant (coin parent) peut passer le cadre en français.
+     Phrases courtes et mots simples : Henri commence à lire l'anglais.
+   - Exceptions, dans les modules : les énoncés des tables (questions, Oui et Non, correction, faits
+     dits) et leurs astuces restent en français ; le contenu de la géographie (modules/zoom/contenu.js)
+     suit le choix que l'enfant fait dans le module, le cadre du module restant celui d'ici.
+   - Le coin parent est toujours en français : ses clés s'appellent avec t(cle, valeurs, 'fr'). */
 (function (racine) {
   'use strict';
 
@@ -76,7 +77,7 @@
     parent_titre: { fr: 'Coin parent', en: 'Grown-ups' },
     parent_aide: { fr: 'Appui long pour ouvrir', en: 'Press and hold to open' },
     parent_langue: { fr: "Langue de l'app", en: 'App language' },
-    parent_langue_note: { fr: 'Les questions et les astuces restent en français.', en: 'Questions and tips stay in French.' },
+    parent_langue_note: { fr: "Anglais par défaut. Les multiplications et les astuces des tables restent en français ; la langue du voyage se choisit dans le module.", en: 'English by default. Times tables questions and tips stay in French; the journey language is chosen in the module.' },
     parent_voix: { fr: 'Lire les questions et les réponses à voix haute', en: 'Read questions and answers aloud' },
     parent_sons: { fr: 'Sons', en: 'Sounds' },
     active: { fr: 'Oui', en: 'On' },
@@ -151,6 +152,12 @@
     'fam_trois-six': { fr: 'Le double plus un', en: 'Double plus one' },
     fam_neuf: { fr: 'Dix moins un', en: 'Ten minus one' },
     fam_sept: { fr: 'Le boss final', en: 'Final boss' },
+    // Consignes autour des énoncés des tables (D-21) : les énoncés et les astuces restent en français.
+    tables_trouve_deux: { fr: 'Trouve deux nombres', en: 'Find two numbers' },
+    tables_retaper: { fr: 'À toi de le retaper', en: 'Type it again' },
+    tables_relance_sans1: { fr: 'Essaie sans le 1 !', en: 'Try without the 1!' },
+    tables_relance_jusqua10: { fr: "Essaie avec des nombres jusqu'à 10 !", en: 'Try with numbers up to 10!' },
+    astuce_de: { fr: "L'astuce de {mascotte}", en: "{mascotte}'s tip" },
     /* accueil (D-19, 01/11/2026) : le portail en cahiers par matière, la carte « Today », « My week ».
        Les bulles et le bonjour sont lus à voix haute (toucher la bulle) ; Henri commence l'anglais,
        chaque bulle tient en cinq mots. */
@@ -197,7 +204,8 @@
     res_nouveaux_lieux: { fr: 'Nouveaux lieux', en: 'New places' },
     res_grand_voyage: { fr: 'Le grand voyage', en: 'The big journey' },
     /* fin accueil */
-    // Module « De l'univers à Éguilles » (01/11/2026) : le cadre seulement, les noms de lieux restent en français
+    // Module « De l'univers à Éguilles » (01/11/2026) : le cadre seulement ; noms de lieux, consignes et
+    // repères suivent la langue choisie dans le module (D-21), dans modules/zoom/contenu.js
     module_zoom: { fr: 'Mon voyage', en: 'My journey' },
     module_zoom_sous: { fr: "De l'espace à Éguilles", en: 'From space to Éguilles' },
     zoom_lieux: { fr: '{n} lieux découverts sur {total}', en: '{n} of {total} places found' },
@@ -217,6 +225,8 @@
     zoom_lieu_monte: { fr: '1 lieu monte', en: '1 place went up' },
     zoom_etape_ouverte: { fr: 'Nouvelle étape :', en: 'New stop:' },
     zoom_demain: { fr: 'Demain, {lieu} revient te voir.', en: 'Tomorrow, {lieu} comes back to see you.' },
+    zoom_langue_titre: { fr: 'Quelle langue pour ton voyage ?', en: 'Which language for your journey?' },
+    zoom_langue: { fr: 'Langue', en: 'Language' },
     parent_zoom: { fr: 'Le voyage', en: 'The journey' },
     parent_zoom_pas: { fr: "Le voyage n'a pas encore commencé.", en: "The journey hasn't started yet." },
     parent_zoom_resume: { fr: '{n} lieux découverts sur {total}, dont {or} sus par cœur. Étape en cours : {etape}.', en: '{n} of {total} places found, {or} known by heart. Current stop: {etape}.' },

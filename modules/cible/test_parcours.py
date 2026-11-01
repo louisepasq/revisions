@@ -7,7 +7,7 @@
 Usage : uv run modules/cible/test_parcours.py
 Sert le dépôt en local, puis, pour Henri et pour Clara, aux trois formats (iPad paysage 1080 x 810,
 iPad portrait 810 x 1080, iPhone 402 x 874) : l'accueil du jeu et son résumé publié, une partie sans
-chrono (cible lue à voix haute, coup refusé et expliqué en français, calcul juste, Annuler, indice
+chrono (cible lue à voix haute en anglais, coup refusé et expliqué en anglais (D-21), calcul juste, Annuler, indice
 annoncé puis pris, cible atteinte, fin de partie avec le défi de la mascotte, « Montre-moi »), la
 même cible rejouée au meilleur score, puis une partie avec le chrono de 3 minutes (temps fini sans
 punition, on continue) et l'arrêt en cours de partie. Une partie d'Henri en mode soir.
@@ -176,8 +176,10 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     page.wait_for_selector(".c-jeu .c-tuile")
     verifier(page.locator(".c-chrono").count() == 0, f"{suffixe} : un chrono sans l'avoir choisi")
     cible = page.evaluate("window.CibleJeu.partie().cible")
-    dit = f"La cible est {cible}. Atteins-la avec les cinq nombres."
+    dit = f"The target is {cible}. Reach it with the five numbers."
     verifier(dit in paroles(page), f"{suffixe} : la cible n'est pas lue ({paroles(page)[-2:]})")
+    verifier(page.evaluate("window.__paroles.at(-1).langue") == "en-GB", f"{suffixe} : la cible n'est pas lue en anglais")
+    verifier("Touch a number" in page.inner_text(".c-calcul"), f"{suffixe} : consigne absente ou pas en anglais")
     verifier(page.locator(".c-tuile").count() == 5, f"{suffixe} : pas cinq nombres")
     capture(page, f"jeu_{suffixe}", err)
 
@@ -190,8 +192,8 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     tuile(page, b)
     page.wait_for_selector(".c-retour .bulle.astuce")
     texte = page.inner_text(".c-retour .bulle.astuce")
-    verifier("enlever" in texte or "zéro" in texte, f"{suffixe} : refus mal expliqué ({texte})")
-    verifier(any("enlever" in p or "zéro" in p for p in paroles(page)[avant:]), f"{suffixe} : le refus n'est pas dit")
+    verifier("take" in texte or "zero" in texte, f"{suffixe} : refus mal expliqué ({texte})")
+    verifier(any("take away" in p or "zero" in p for p in paroles(page)[avant:]), f"{suffixe} : le refus n'est pas dit")
     verifier(page.locator(".c-tuile").count() == 5 and page.locator(".c-etapes li").count() == 0, f"{suffixe} : un refus a joué")
     capture(page, f"jeu_refus_{suffixe}", err)
     tuile(page, a)  # désélectionne
@@ -216,6 +218,7 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     capture(page, f"indice_question_{suffixe}", err)
     page.click("[data-f='oui']")
     page.wait_for_selector(".c-retour .etiq")
+    verifier(f"{MASCOTTES[enfant]}'s idea" in page.inner_text(".c-retour .etiq"), f"{suffixe} : l'idée de la mascotte n'est pas en anglais")
     verifier(page.evaluate("window.CibleJeu.partie().indices") == 1, f"{suffixe} : l'indice n'est pas compté")
     verifier(page.locator(".c-tuile.c-montree").count() == 2, f"{suffixe} : l'indice ne montre pas deux nombres")
     capture(page, f"indice_{suffixe}", err)

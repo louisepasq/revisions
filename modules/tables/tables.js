@@ -1,6 +1,8 @@
 /* Interface du module des tables : accueil, diagnostic, séance, fin, grille.
    Dépend de commun/textes.js, commun/kit.js, moteur.js (Tables) et seance.js (Seance).
-   Le contenu scolaire (questions, astuces, consignes) reste en français. */
+   Langues (D-21) : les énoncés des multiplications (les quatre types de questions, Oui et Non, la
+   correction) et les astuces restent en français, à l'écrit comme à voix haute ; tout ce qui les
+   entoure (consignes, relances, étiquette de l'astuce, cadre) suit la langue du cadre, l'anglais par défaut. */
 (function () {
   'use strict';
   const KR = window.KR;
@@ -19,7 +21,7 @@
   /* « 48 est-il un multiple de 6 ? » en CM2, le vocabulaire d'Eduscol ; « dans la table de »
      en CM1, tant que la maîtresse d'Henri n'emploie pas « multiple » (à lui demander). */
   const MULTIPLE = KR.infos().classe === 'CM2' ? 'un multiple de' : 'dans la table de';
-  const RELANCE = { sans1: 'Essaie sans le 1 !', jusqua10: "Essaie avec des nombres jusqu'à 10 !" };
+  const RELANCE = { sans1: 'tables_relance_sans1', jusqua10: 'tables_relance_jusqua10' }; // clés de commun/textes.js
   // Fin de séance : trois cartes dorées en grand, sept petites cartes tamponnées par rangée.
   const DOREES_MAX = 3;
   const PETITES_MAX = 7;
@@ -27,7 +29,8 @@
   KR.demarrer();
   let etat = T.charger(enfant);
   let minuteurs = [];
-  const fr = s => `<span lang="fr">${s}</span>`;
+  const cadre = () => window.Textes.langue; // la langue du cadre, pour la voix et lang=""
+  const etiqAstuce = () => `<div class="etiq" lang="${cadre()}">${KR.icone('ampoule')}${KR.echapper(t('astuce_de', { mascotte: KR.nomMascotte() }))}</div>`;
   const x = '<span class="x">×</span>';
   const eg = '<span class="eg">=</span>';
   const sauver = () => T.sauver(enfant, etat);
@@ -348,7 +351,7 @@
       } else if (q.type === 'manquant') {
         corps = `<div class="fait ligne-op" data-case>${q.a}${x}${caseRep('', true)}</div><div class="fait ligne-rep">${eg}${p}</div>`;
       } else if (q.type === 'decomposition') {
-        corps = `<p class="consigne">Trouve deux nombres</p><div class="fait ligne-op" data-case>${caseRep('', true, 0)}${x}${caseRep('', false, 1)}</div><div class="fait ligne-rep">${eg}${p}</div>`;
+        corps = `<p class="consigne" lang="${cadre()}">${t('tables_trouve_deux')}</p><div class="fait ligne-op" data-case>${caseRep('', true, 0)}${x}${caseRep('', false, 1)}</div><div class="fait ligne-rep">${eg}${p}</div>`;
       } else {
         corps = `<div class="fait ligne-op">${q.nombre}</div><p class="ligne-texte">est-il ${MULTIPLE} ${q.a}&nbsp;?</p>`;
       }
@@ -384,9 +387,9 @@
       duo = ['', ''];
       champ = 0;
       const consigne = zone.querySelector('.consigne');
-      if (consigne) { consigne.textContent = RELANCE[cle]; consigne.classList.add('relance'); }
+      if (consigne) { consigne.textContent = t(RELANCE[cle]); consigne.classList.add('relance'); }
       majSaisie();
-      if (voixActive()) KR.lire(RELANCE[cle], 'fr');
+      if (voixActive()) KR.lire(t(RELANCE[cle]), cadre());
     }
 
     function repondre(valeur) {
@@ -451,8 +454,8 @@
           : `<div class="fait"><span class="surligne">${KR.echapper(r.correction.reponse)}</span></div><p class="ligne-texte">${KR.echapper(r.correction.phrase)}</p>`}</div>
         <div class="retour-masc">${KR.medaillon('aide')}${KR.mascotte('aide')}
           <div class="bulles"><div class="bulle parle">${bulleRevoir()}</div>
-          <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(r.astuce)}</div></div></div>
-        <div class="carte-q carte-retape" lang="fr"><p class="consigne">À toi de le retaper</p>
+          <div class="bulle astuce" lang="fr">${etiqAstuce()}${KR.echapper(r.astuce)}</div></div></div>
+        <div class="carte-q carte-retape" lang="fr"><p class="consigne" lang="${cadre()}">${t('tables_retaper')}</p>
           <div class="fait" data-case>${q.a}${x}${q.b}${eg}${caseRep('', true)}</div></div>`;
       montrerPave();
       pave.etat('vide');
@@ -668,7 +671,7 @@
         app.querySelector('.detail').innerHTML = `
           <div class="fait" lang="fr">${a}${x}${c}${eg}${a * c}</div>
           <span class="pastille m-${e}">${marque(e)}${t(NOM_CASE[e])}</span>${revoir ? `<span class="pastille revient-pastille">${KR.icone('cal')}${t('revient_demain')}</span>` : ''}
-          <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(T.astuce(a, c, etat))}</div>`;
+          <div class="bulle astuce" lang="fr">${etiqAstuce()}${KR.echapper(T.astuce(a, c, etat))}</div>`;
       },
     });
   }

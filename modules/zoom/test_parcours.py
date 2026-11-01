@@ -6,11 +6,12 @@
 
 Usage : uv run modules/zoom/test_parcours.py
 Sert le dépôt en local, puis vérifie aux trois formats (iPad paysage 1080 x 810, iPad portrait
-810 x 1080, iPhone 402 x 874) : la carte du portail, le premier lancement de Clara (invitation, grand
-voyage, Skip, adresse dans l'univers), une séance complète avec une erreur volontaire (le bon lieu
-surligné, l'épingle, le repère, la voix qui dit le nom, la retouche), la fin, l'accueil et ses
-étapes, l'exploration (un lieu touché, le zoom vers l'étape suivante), puis une séance avancée
-d'Henri sur plusieurs étapes avec des questions « nommer ». Échoue sur toute erreur JavaScript,
+810 x 1080, iPhone 402 x 874) : la carte du portail, le premier lancement de Clara (choix de la langue,
+anglais ; invitation, grand voyage, Skip, adresse dans l'univers), une séance complète en anglais avec
+une erreur volontaire (le bon lieu surligné, l'épingle, le repère, la voix qui dit le nom, la retouche),
+la fin, l'accueil et ses étapes, l'exploration (un lieu touché, le zoom vers l'étape suivante), le
+passage au français depuis l'accueil (progression gardée), puis une séance avancée d'Henri en français
+sur plusieurs étapes avec des questions « nommer » (D-21). Échoue sur toute erreur JavaScript,
 tout débordement horizontal, toute cible de moins de 44 px. Captures dans modules/zoom/captures/.
 La voix est espionnée (speechSynthesis.speak remplacé) : chaque question doit être lue.
 """
@@ -145,8 +146,9 @@ def attendre_suite(page):
     page.wait_for_selector(".z-suite:not([disabled]), .z-fin, .z-seance .zone[data-type]:not([data-type=''])", timeout=10000)
 
 
-def faire_seance(page, fmt, prefixe, erreurs, erreur_volontaire=True):
+def faire_seance(page, fmt, prefixe, erreurs, erreur_volontaire=True, langue="en"):
     """Répond à toute la séance ; la première question « toucher » reçoit une erreur volontaire."""
+    voix = "en-GB" if langue == "en" else "fr-FR"
     page.wait_for_selector(".z-seance .zone[data-lieu]")
     deja_faux = not erreur_volontaire
     captures_faites = set()
@@ -180,9 +182,12 @@ def faire_seance(page, fmt, prefixe, erreurs, erreur_volontaire=True):
                 page.wait_for_selector(".hl-aide")
                 page.wait_for_timeout(200)
                 dit = paroles(page)[avant:]
-                nom_dit = page.evaluate("l => window.ZoomContenu.PHRASES.voici(window.ZoomContenu.lieu(l))", lieu)
+                nom_dit = page.evaluate("([l, lg]) => window.ZoomContenu.PHRASES.voici(window.ZoomContenu.lieu(l), lg)", [lieu, langue])
                 if nom_dit not in dit:
                     PROBLEMES.append(f"{prefixe} {fmt} : après l'erreur, la voix n'a pas dit « {nom_dit} » ({dit})")
+                langues = set(page.evaluate("n => window.__paroles.slice(n).map(p => p.langue)", avant))
+                if langues != {voix}:
+                    PROBLEMES.append(f"{prefixe} {fmt} : après l'erreur, la voix n'est pas en {voix} ({langues})")
                 if page.locator(".epingle").count() == 0 or page.locator(".bulle.astuce").count() == 0:
                     PROBLEMES.append(f"{prefixe} {fmt} : pas d'épingle ni de repère après l'erreur")
                 if page.locator(".z-seance [class*='rouge'], .z-seance [class*='croix']").count():
@@ -225,27 +230,35 @@ def portails(navigateur, base):
 def premier_lancement(navigateur, base, fmt):
     ctx, page, err = contexte(navigateur, fmt)
     page.goto(f"{base}/clara/zoom.html")
+    # D-21 : au premier lancement, l'enfant choisit la langue du voyage ; Clara choisit l'anglais.
+    page.wait_for_selector(".z-langue .z-langue-carte[data-langue='fr']")
+    if page.locator(".z-langue-carte").count() != 2:
+        PROBLEMES.append(f"langue {fmt} : pas deux cartes de langue")
+    capture(page, f"clara_langue_{fmt}", err)
+    page.click(".z-langue-carte[data-langue='en']")
     page.wait_for_selector(".z-parole")
+    if page.evaluate("JSON.parse(localStorage.getItem('clara.zoom')).langue") != "en":
+        PROBLEMES.append(f"langue {fmt} : le choix n'est pas retenu dans l'état")
     capture(page, f"clara_intro_{fmt}", err)
     page.click("[data-a='go']")
     page.wait_for_selector(".z-voyage .carte-zoom")
     page.wait_for_timeout(300)
     capture(page, f"clara_voyage_univers_{fmt}", err)
     if fmt == "ipad-paysage":
-        page.wait_for_function("document.querySelector('.z-voyage-titre').textContent === 'La Terre'", timeout=20000)
+        page.wait_for_function("document.querySelector('.z-voyage-titre').textContent === 'The Earth'", timeout=20000)
         page.wait_for_timeout(1300)
         capture(page, f"clara_voyage_terre_{fmt}", err)
     page.click("[data-a='passer']")
     page.wait_for_selector(".z-voyage-fin")
     page.wait_for_timeout(300)
     capture(page, f"clara_voyage_fin_{fmt}", err)
-    adresse = page.evaluate("window.ZoomContenu.ADRESSE")
+    adresse = page.evaluate("window.ZoomContenu.ADRESSES.en")
     if adresse not in paroles(page):
         PROBLEMES.append(f"voyage {fmt} : l'adresse dans l'univers n'est pas lue")
     page.click(".z-voyage-fin [data-a='suite']")
     page.wait_for_selector(".z-seance")
     premiere = paroles(page)[-1] if paroles(page) else ""
-    if not premiere.startswith("Voici") and not premiere.startswith("Touche"):
+    if not premiere.startswith("This is") and not premiere.startswith("Touch"):
         PROBLEMES.append(f"séance {fmt} : la première question n'est pas lue ({premiere})")
     faire_seance(page, fmt, "clara", err)
     capture(page, f"clara_fin_{fmt}", err)
@@ -261,13 +274,28 @@ def premier_lancement(navigateur, base, fmt):
     avant = len(paroles(page))
     page.click(".z-puce[data-lieu='aix']")
     page.wait_for_timeout(200)
-    if "C'est Aix-en-Provence." not in paroles(page)[avant:]:
+    if "It's Aix-en-Provence." not in paroles(page)[avant:]:
         PROBLEMES.append(f"exploration {fmt} : toucher Aix ne dit pas son nom")
     capture(page, f"clara_explorer_paca_{fmt}", err)
     page.click("[data-a='rapprocher']")
-    page.wait_for_selector(".z-explorer h1:has-text('Les Bouches-du-Rhône')")
+    page.wait_for_selector(".z-explorer h1:has-text('Bouches-du-Rhône')")
     page.click(".z-puce[data-lieu='eguilles']")
     capture(page, f"clara_explorer_bdr_{fmt}", err)
+    # Passer au français depuis l'accueil du module : le contenu change, la progression reste.
+    page.click("[data-a='retour']")
+    page.wait_for_selector(".z-accueil")
+    compte = page.inner_text(".z-accueil .indice")
+    cartes = page.evaluate("JSON.stringify(JSON.parse(localStorage.getItem('clara.zoom')).cartes)")
+    page.click("[data-a='langue']")
+    page.wait_for_selector(".z-langue .z-langue-carte[data-langue='en'][aria-pressed='true']")
+    capture(page, f"clara_langue_changer_{fmt}", err)
+    page.click(".z-langue-carte[data-langue='fr']")
+    page.wait_for_selector(".z-accueil .z-etape[data-etage='terre'] b:has-text('La Terre')")
+    if page.inner_text(".z-accueil .indice") != compte or page.evaluate("JSON.stringify(JSON.parse(localStorage.getItem('clara.zoom')).cartes)") != cartes:
+        PROBLEMES.append(f"langue {fmt} : changer de langue change la progression")
+    if "Back" not in page.inner_text(".z-accueil .barre"):
+        PROBLEMES.append(f"langue {fmt} : le cadre du module ne reste pas en anglais")
+    capture(page, f"clara_accueil_fr_{fmt}", err)
     # Le résumé du portail (D-19) est publié ; « Done for today » ramène au portail, où il s'affiche.
     resume = page.evaluate("JSON.parse(localStorage.getItem('clara.zoom')).resume")
     if not resume or not resume.get("ecritLe") or not resume.get("progres") or not resume.get("parent"):
@@ -291,6 +319,7 @@ def seance_avancee(navigateur, base, fmt, schema="light"):
     page.goto(f"{base}/henri/zoom.html")
     page.evaluate("""() => {
       const prog = window.ZoomContenu.programme('henri');
+      // Un état enregistré avant D-21 : pas de champ langue, comme sur l'iPad d'Henri.
       const etat = { version: 1, cartes: {}, etages: 6, jours: ['2026-10-30'], intro: true };
       prog.etages.slice(0, 6).forEach((e, i) => e.lieux.forEach((l, k) => {
         etat.cartes[l + '|toucher'] = { boite: (k % 3) + 1, vu: true, prochain: (k % 2 ? '2026-10-31' : '2099-01-01'), justesJours: ['2026-10-30'], erreurs: k % 4 === 0 ? 1 : 0 };
@@ -299,11 +328,18 @@ def seance_avancee(navigateur, base, fmt, schema="light"):
       localStorage.setItem('henri.zoom', JSON.stringify(etat));
     }""")
     page.reload()
+    # Le choix de la langue s'affiche au lancement suivant ; Henri choisit le français, rien ne se perd.
+    avant = page.evaluate("JSON.stringify(JSON.parse(localStorage.getItem('henri.zoom')).cartes)")
+    page.wait_for_selector(".z-langue .z-langue-carte[data-langue='fr']")
+    page.click(".z-langue-carte[data-langue='fr']")
     page.wait_for_selector(".z-accueil")
+    etat = page.evaluate("JSON.parse(localStorage.getItem('henri.zoom'))")
+    if etat.get("langue") != "fr" or json.dumps(etat.get("cartes"), separators=(",", ":")) != avant or etat.get("etages") != 6:
+        PROBLEMES.append(f"henri {fmt} : choisir la langue sur un état existant change la progression")
     suffixe = f"{fmt}" + ("_soir" if schema == "dark" else "")
     capture(page, f"henri_accueil_{suffixe}", err)
     page.click("[data-a='seance']")
-    faire_seance(page, suffixe, "henri", err, erreur_volontaire=(schema == "light"))
+    faire_seance(page, suffixe, "henri", err, erreur_volontaire=(schema == "light"), langue="fr")
     capture(page, f"henri_fin_{suffixe}", err)
     ctx.close()
 

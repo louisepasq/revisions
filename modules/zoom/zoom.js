@@ -1,7 +1,10 @@
 /* Interface du module « De l'univers à Éguilles » : accueil et étapes, grand voyage du premier
    lancement, exploration (toucher un lieu pour entendre son nom), séance, fin.
    Dépend de commun/textes.js, commun/kit.js, contenu.js, cartes.js, geometrie.js et moteur.js.
-   Le contenu (noms, consignes, repères) reste en français ; le cadre suit la langue de l'enfant. */
+   Langues (D-21) : au premier lancement, l'enfant choisit la langue du voyage, anglais ou français ;
+   le choix est rangé dans l'état (etat.langue) et se change depuis l'accueil du module. Le contenu
+   (noms, consignes, repères, phrases dites) suit ce choix ; le cadre (Back, Listen, Skip, la mascotte)
+   suit la langue du cadre de l'enfant, l'anglais par défaut. La progression est commune aux deux langues. */
 (function () {
   'use strict';
   const KR = window.KR;
@@ -19,6 +22,7 @@
   const NS = 'http://www.w3.org/2000/svg';
   // Le lieu de chaque étape dans lequel on zoome pour passer à la suivante.
   const FOYER = { univers: 'systeme-solaire', solaire: 'terre-planete', terre: 'europe', europe: 'france', france: 'paca', paca: 'bouches-du-rhone', bdr: 'eguilles' };
+  // Les crédits restent tels quels, en français, quelle que soit la langue du voyage.
   const CREDITS = 'Cartes : Natural Earth (domaine public) ; IGN, ADMIN EXPRESS COG, édition 2018, Licence Ouverte Etalab (tracés de france-geojson) ; geo.api.gouv.fr. Voie lactée et système solaire dessinés à la main.';
 
   KR.demarrer();
@@ -29,9 +33,15 @@
   // Le résumé du portail (D-19), à l'ouverture et en fin de séance ; gardé dans l'état en mémoire
   // pour que le prochain sauver ne l'efface pas.
   const publier = () => { etat.resume = KR.publierResume('zoom', window.ZoomResume.resume(etat, enfant, new Date())); };
-  const fr = s => `<span lang="fr">${KR.echapper(s)}</span>`;
   const voixActive = () => KR.reglages().voix;
-  const dire = (textes, secours) => (voixActive() ? KR.lireSuite(textes.filter(Boolean).map(texte => ({ texte, langue: 'fr' })), secours || SECOURS_VOIX) : Promise.resolve(false));
+  // La langue du contenu, choisie par l'enfant (anglais tant qu'il n'a pas choisi).
+  const lg = () => (etat.langue === 'fr' ? 'fr' : 'en');
+  const CO = () => C.CONSIGNES[lg()];
+  const nomLieu = id => C.champ(C.lieu(id), 'nom', lg());
+  const afficheLieu = L => C.affiche(L, lg());
+  const repereLieu = L => C.champ(L, 'indice', lg());
+  const infoLieu = L => C.champ(L, 'info', lg()) || repereLieu(L);
+  const dire = (textes, secours) => (voixActive() ? KR.lireSuite(textes.filter(Boolean).map(texte => ({ texte, langue: lg() })), secours || SECOURS_VOIX) : Promise.resolve(false));
   const mouvement = () => !KR.mouvementReduit();
 
   function plusTard(fn, ms) { minuteurs.push(setTimeout(fn, ms)); }
@@ -64,7 +74,9 @@
     return e;
   }
   const lieuxDe = etageId => C.ETAGES.find(e => e.id === etageId).lieux;
-  const etageNom = etageId => C.ETAGES.find(e => e.id === etageId).nom;
+  const etageNom = etageId => C.champ(C.etage(etageId), 'nom', lg());
+  const etageDit = e => C.champ(e, 'dit', lg());
+  const etageAstuce = e => C.champ(e, 'astuce', lg());
   const rangEtage = etageId => C.ETAGES.findIndex(e => e.id === etageId);
 
   /* Motifs communs à toutes les cartes de la page (hachures des massifs, lueurs de l'espace). */
@@ -90,7 +102,7 @@
     hote.className = 'carte-zoom e-' + etageId + (opts.classe ? ' ' + opts.classe : '');
     const vbInitial = [0, 0, etage.l, etage.h];
     let vb = vbInitial.slice();
-    const svg = svgEl('svg', { viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', class: 'carte-svg', role: 'img', 'aria-label': etageNom(etageId), lang: 'fr' });
+    const svg = svgEl('svg', { viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', class: 'carte-svg', role: 'img', 'aria-label': etageNom(etageId), lang: lg() });
     hote.appendChild(svg);
     const gFond = svgEl('g', { class: 'c-fond' }, svg);
     let gSous = null;
@@ -259,6 +271,7 @@
   function accueil() {
     etat = Z.charger(enfant);
     publier();
+    if (!etat.langue) return choisirLangue(accueil);
     if (!etat.intro) return introVoyage();
     Z.majEtages(etat, PROG);
     const maintenant = new Date();
@@ -273,11 +286,12 @@
         : `<span class="pastille bientot">${t('zoom_plus_tard')}</span>`;
       return `<button type="button" class="z-etape${ouvert ? '' : ' fermee'}" data-a="explorer" data-etage="${e.id}">
         <span class="z-vignette" data-vignette="${e.id}"></span>
-        <span class="z-etape-texte"><b lang="fr">${KR.echapper(e.nom)}</b>${bas}</span></button>`;
+        <span class="z-etape-texte"><b lang="${lg()}">${KR.echapper(etageNom(e.id))}</b>${bas}</span></button>`;
     }).join('');
     changerEcran(`<div class="ecran z-accueil">
       <header class="barre">${nav('', 'retour', 'retour', './')}
         <div class="titre"><h1 class="titre-ecran">${t('module_zoom')}</h1><p class="indice">${t('zoom_lieux', { n: cpt.decouverts, total: cpt.total })}</p></div>
+        ${boutonLangue()}
       </header>
       <div class="z-accueil-grille">
         <div class="z-colonne">
@@ -298,6 +312,42 @@
       seance: demarrerSeance,
       explorer: b => explorer(b.dataset.etage),
       voyage: () => voyage(accueil),
+      langue: () => choisirLangue(accueil),
+    });
+  }
+
+  /* =================== Choix de la langue du voyage (D-21) ===================
+     Deux grosses cartes, un drapeau et un mot ; au premier lancement, puis depuis l'accueil. */
+  const DRAPEAUX = {
+    en: '<svg class="z-drapeau" viewBox="0 0 60 40" aria-hidden="true"><clipPath id="z-uk"><path d="M0 0h60v40H0z"/></clipPath><g clip-path="url(#z-uk)"><path d="M0 0h60v40H0z" fill="#012169"/><path d="M0 0l60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l60 40M60 0L0 40" stroke="#C8102E" stroke-width="3"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7"/></g></svg>',
+    fr: '<svg class="z-drapeau" viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h20v40H0z" fill="#002395"/><path d="M20 0h20v40H20z" fill="#fff"/><path d="M40 0h20v40H40z" fill="#ED2939"/></svg>',
+  };
+  const NOMS_LANGUE = { en: 'English', fr: 'Français' };
+  function boutonLangue() {
+    return `<div class="nav z-nav-langue"><button type="button" class="rond z-langue-btn" data-a="langue" aria-label="${t('zoom_langue')} : ${NOMS_LANGUE[lg()]}">${DRAPEAUX[lg()]}</button><span class="nom" aria-hidden="true" lang="${lg()}">${NOMS_LANGUE[lg()]}</span></div>`;
+  }
+  function choisirLangue(suite) {
+    const deja = etat.langue;
+    const carteLangue = l => `<button type="button" class="z-langue-carte" data-a="choix-langue" data-langue="${l}" lang="${l}" aria-pressed="${deja === l}">
+        ${DRAPEAUX[l]}<span>${NOMS_LANGUE[l]}</span></button>`;
+    changerEcran(`<div class="ecran z-langue">
+      <header class="barre">${deja ? nav('retour', 'retour', 'retour') : nav('', 'retour', 'retour', './')}
+        <div class="titre"><h1 class="titre-ecran">${t('zoom_langue_titre')}</h1></div>
+        ${nav('ecouter', 'son', 'ecouter')}</header>
+      <div class="z-langue-corps">
+        <div class="z-langue-masc">${KR.mascotte('attend')}</div>
+        <div class="z-langue-cartes">${carteLangue('en')}${carteLangue('fr')}</div>
+      </div>
+    </div>`);
+    brancher({
+      retour: suite,
+      ecouter: () => KR.lire(t('zoom_langue_titre'), window.Textes.langue),
+      'choix-langue': b => {
+        KR.son('touche');
+        etat.langue = b.dataset.langue;
+        sauver();
+        suite();
+      },
     });
   }
 
@@ -320,7 +370,7 @@
   function voyage(suite, premier) {
     changerEcran(`<div class="ecran ecran-fixe z-voyage">
       <header class="barre">${nav('retour', 'retour', 'retour')}
-        <div class="titre"><p class="titre-ecran z-voyage-titre" lang="fr"></p></div>
+        <div class="titre"><p class="titre-ecran z-voyage-titre" lang="${lg()}"></p></div>
         ${nav('passer', 'suite', 'je_passe')}</header>
       <div class="corps"><section class="zone z-voyage-zone"></section></div>
     </div>`);
@@ -354,13 +404,13 @@
       const fin = document.createElement('div');
       fin.className = 'z-voyage-fin';
       fin.innerHTML = `${'<div class="retour-masc">' + KR.medaillon('fete') + KR.mascotte('fete', 'rebondit')}<div class="bulles">
-        <div class="bulle parle">${KR.echapper(t('zoom_voyage_fin'))}</div><div class="bulle astuce z-adresse" lang="fr">${KR.echapper(C.ADRESSE)}</div></div></div>
+        <div class="bulle parle">${KR.echapper(t('zoom_voyage_fin'))}</div><div class="bulle astuce z-adresse" lang="${lg()}">${KR.echapper(C.ADRESSES[lg()])}</div></div></div>
         <button type="button" class="btn btn-primaire" data-a="suite">${t(premier ? 'commencer' : 'zoom_mon_voyage')}${KR.icone('suite')}</button>`;
       zone.appendChild(fin);
       const passer = app.querySelector('[data-a="passer"]');
       if (passer) passer.closest('.nav').classList.add('cache');
       KR.son('fete');
-      dire([C.ADRESSE], 15000);
+      dire([C.ADRESSES[lg()]], 15000);
     }
     async function derouler() {
       const d = deroule;
@@ -369,12 +419,12 @@
         const e = C.ETAGES[i];
         const c = montrer(e.id);
         if (i > 0 && mouvement()) c.el.classList.add('z-arrive');
-        await dire([e.dit], 6000);
+        await dire([etageDit(e)], 6000);
         if (!vivant(d)) return;
         if (i === C.ETAGES.length - 1) return montrerFin();
         const foyer = FOYER[e.id];
         c.surbrillance(foyer, 'question');
-        c.etiquette(foyer, C.lieu(foyer).nom);
+        c.etiquette(foyer, nomLieu(foyer));
         await attendre(900);
         if (!vivant(d)) return;
         await c.zoomVers(K[e.id].foyer, 1100);
@@ -394,7 +444,7 @@
     const e = C.ETAGES[rang];
     changerEcran(`<div class="ecran ecran-fixe z-explorer">
       <header class="barre">${nav('retour', 'retour', 'retour')}
-        <div class="titre"><h1 class="titre-ecran" lang="fr">${KR.echapper(e.nom)}</h1><p class="indice">${t('zoom_touche_lieu')}</p></div>
+        <div class="titre"><h1 class="titre-ecran" lang="${lg()}">${KR.echapper(etageNom(e.id))}</h1><p class="indice">${t('zoom_touche_lieu')}</p></div>
         ${nav('ecouter', 'son', 'ecouter')}</header>
       <div class="corps">
         <section class="zone"></section>
@@ -404,7 +454,7 @@
             <button type="button" class="btn btn-secondaire" data-a="rapprocher"${rang === C.ETAGES.length - 1 ? ' disabled' : ''}>${KR.icone('plus')}${t('zoom_rapprocher')}</button>
           </div>
           <div class="z-choisi" aria-live="polite"><p class="z-vide">${t('zoom_touche_lieu')}</p></div>
-          <div class="z-puces" lang="fr"></div>
+          <div class="z-puces" lang="${lg()}"></div>
           <p class="z-credits" lang="fr">${KR.echapper(CREDITS)}</p>
         </section>
       </div>
@@ -417,7 +467,7 @@
     const puces = lieux.map(l => {
       const plus = l.niveaux[enfant] !== 'o';
       const c = Z.couleur(etat, l.id);
-      return `<button type="button" class="z-puce m-${c}${plus ? ' en-plus' : ''}" data-a="lieu" data-lieu="${l.id}">${KR.echapper(C.affiche(l))}${plus ? `<span class="z-tag" lang="${KR.reglages().langue}">${t('zoom_en_plus')}</span>` : ''}</button>`;
+      return `<button type="button" class="z-puce m-${c}${plus ? ' en-plus' : ''}" data-a="lieu" data-lieu="${l.id}">${KR.echapper(afficheLieu(l))}${plus ? `<span class="z-tag" lang="${window.Textes.langue}">${t('zoom_en_plus')}</span>` : ''}</button>`;
     }).join('');
     app.querySelector('.z-puces').innerHTML = puces;
     let choisi = null;
@@ -427,10 +477,10 @@
       const L = C.lieu(id);
       carte.effacer();
       carte.surbrillance(id, 'explore');
-      carte.etiquette(id, C.affiche(L));
+      carte.etiquette(id, afficheLieu(L));
       app.querySelectorAll('.z-puce').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lieu === id)));
-      app.querySelector('.z-choisi').innerHTML = `<div class="bulle astuce" lang="fr"><b class="z-nom">${KR.echapper(C.majuscule(C.affiche(L)))}</b>${KR.echapper(L.info || L.indice)}</div>`;
-      dire([C.PHRASES.cest(L), L.info || L.indice]);
+      app.querySelector('.z-choisi').innerHTML = `<div class="bulle astuce" lang="${lg()}"><b class="z-nom">${KR.echapper(C.majuscule(afficheLieu(L)))}</b>${KR.echapper(infoLieu(L))}</div>`;
+      dire([C.PHRASES.cest(L, lg()), infoLieu(L)]);
     }
     carte.surToucher(p => choisir(G.lieuSous(carte.etage, carte.ids, p.x, p.y, p.echelle)));
     async function rapprocher() {
@@ -449,14 +499,11 @@
       lieu: b => choisir(b.dataset.lieu),
       rapprocher,
       eloigner,
-      ecouter: () => (choisi ? dire([C.PHRASES.cest(C.lieu(choisi)), C.lieu(choisi).info || C.lieu(choisi).indice]) : dire([e.dit, e.astuce])),
+      ecouter: () => (choisi ? dire([C.PHRASES.cest(C.lieu(choisi), lg()), infoLieu(C.lieu(choisi))]) : dire([etageDit(e), etageAstuce(e)])),
     });
   }
 
   /* =================== Séance =================== */
-  const CONSIGNE_DECOUVERTE = 'Touche ce lieu sur la carte.';
-  const CONSIGNE_RETOUCHE = 'À toi : touche ce lieu sur la carte.';
-  const CONSIGNE_BON_NOM = 'À toi : touche le bon nom.';
 
   function demarrerSeance() {
     etat = Z.charger(enfant);
@@ -470,8 +517,8 @@
     let numero = 0;
     let bloque = false;
     let choixCourant = [];
-    const repere = () => `Le repère de ${KR.nomMascotte()}`;
-    const precharger = l => { if (voixActive()) KR.prechargerVoix(l.filter(Boolean).flatMap(x => { const L = C.lieu(x.lieu); return [{ texte: C.PHRASES.toucher(L), langue: 'fr' }, { texte: C.PHRASES.cest(L), langue: 'fr' }]; })); };
+    const repere = () => CO().repere(KR.nomMascotte());
+    const precharger = l => { if (voixActive()) KR.prechargerVoix(l.filter(Boolean).flatMap(x => { const L = C.lieu(x.lieu); return [{ texte: C.PHRASES.toucher(L, lg()), langue: lg() }, { texte: C.PHRASES.cest(L, lg()), langue: lg() }]; })); };
     precharger(s.questions.slice(0, 3));
 
     changerEcran(`<div class="ecran ecran-fixe exo z-seance">
@@ -511,7 +558,7 @@
         if (ici !== numero) return;
       }
       carte = creerCarte(etageId);
-      carte.el.insertAdjacentHTML('beforeend', `<span class="z-tag-etape" lang="fr">${KR.echapper(etageNom(etageId))}</span>`);
+      carte.el.insertAdjacentHTML('beforeend', `<span class="z-tag-etape" lang="${lg()}">${KR.echapper(etageNom(etageId))}</span>`);
       zone.innerHTML = '';
       zone.appendChild(carte.el);
       carte.surToucher(touche);
@@ -533,20 +580,20 @@
       if (q.type === 'decouverte') {
         carte.surbrillance(q.lieu, 'aide');
         carte.epingle(q.lieu);
-        carte.etiquette(q.lieu, C.affiche(L));
-        action.innerHTML = `<div class="carte-q z-consigne" lang="fr"><span class="pastille z-nouveau" lang="${KR.reglages().langue}">${KR.icone('etoile')}${t('zoom_nouveau')}</span>
-          <p class="z-petit">Voici</p><p class="z-grand">${KR.echapper(C.affiche(L))}</p><p class="consigne">${CONSIGNE_DECOUVERTE}</p></div>`;
-        dire([C.PHRASES.voici(L), C.PHRASES.toucher(L)]);
+        carte.etiquette(q.lieu, afficheLieu(L));
+        action.innerHTML = `<div class="carte-q z-consigne" lang="${lg()}"><span class="pastille z-nouveau" lang="${window.Textes.langue}">${KR.icone('etoile')}${t('zoom_nouveau')}</span>
+          <p class="z-petit">${CO().voici}</p><p class="z-grand">${KR.echapper(afficheLieu(L))}</p><p class="consigne">${CO().decouverte}</p></div>`;
+        dire([C.PHRASES.voici(L, lg()), C.PHRASES.toucher(L, lg())]);
       } else if (q.type === 'toucher') {
-        action.innerHTML = `<div class="carte-q z-consigne" lang="fr"><p class="z-petit">Touche</p><p class="z-grand">${KR.echapper(C.affiche(L))}</p></div>
+        action.innerHTML = `<div class="carte-q z-consigne" lang="${lg()}"><p class="z-petit">${CO().touche}</p><p class="z-grand">${KR.echapper(afficheLieu(L))}</p></div>
           <button type="button" class="btn btn-calme z-montre" data-a="montre">${t('zoom_montre')}</button>`;
-        dire([C.PHRASES.toucher(L)]);
+        dire([C.PHRASES.toucher(L, lg())]);
       } else {
         carte.surbrillance(q.lieu, 'question');
         choixCourant = Z.choix(PROG, q.lieu, NB_CHOIX, Z.jour(new Date()) + q.lieu + s.index);
-        action.innerHTML = `<div class="carte-q z-consigne" lang="fr"><p class="z-moyen">${KR.echapper(C.QUESTION_NOMMER)}</p></div>
-          <div class="z-choix" lang="fr">${choixCourant.map(id => `<button type="button" class="btn btn-secondaire" data-a="nom" data-lieu="${id}">${KR.echapper(C.affiche(C.lieu(id)))}</button>`).join('')}</div>`;
-        dire([C.QUESTION_NOMMER]);
+        action.innerHTML = `<div class="carte-q z-consigne" lang="${lg()}"><p class="z-moyen">${KR.echapper(C.QUESTIONS_NOMMER[lg()])}</p></div>
+          <div class="z-choix" lang="${lg()}">${choixCourant.map(id => `<button type="button" class="btn btn-secondaire" data-a="nom" data-lieu="${id}">${KR.echapper(afficheLieu(C.lieu(id)))}</button>`).join('')}</div>`;
+        dire([C.QUESTIONS_NOMMER[lg()]]);
       }
       debutQ = performance.now();
     }
@@ -590,7 +637,7 @@
       const L = C.lieu(q.lieu);
       carte.effacer();
       carte.surbrillance(q.lieu, 'juste');
-      carte.etiquette(q.lieu, C.affiche(L));
+      carte.etiquette(q.lieu, afficheLieu(L));
       const choix = action.querySelector('.z-choix');
       if (choix) choix.querySelectorAll('button').forEach(b => { b.disabled = true; if (b.dataset.lieu === q.lieu) b.classList.add('z-bon'); });
       const garde = choix ? choix.outerHTML : '';
@@ -607,7 +654,7 @@
         plusTard(() => { if (ici === numero && phase === 'juste') suivante(); }, DUREE_SUITE);
       };
       if (rapide || sansVoix || !voixActive()) return lancer();
-      dire([C.PHRASES.cest(L)]).then(lancer);
+      dire([C.PHRASES.cest(L, lg())]).then(lancer);
     }
 
     /* Erreur : ni rouge ni croix ; le bon lieu surligné, une épingle et le repère, la voix dit le
@@ -620,22 +667,22 @@
       carte.effacer();
       carte.surbrillance(q.lieu, 'aide');
       carte.epingle(q.lieu);
-      carte.etiquette(q.lieu, C.affiche(L));
+      carte.etiquette(q.lieu, afficheLieu(L));
       const bulles = `<div class="bulle parle">${t('presque')} ${t('on_regarde')}</div>
-        <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}${KR.echapper(repere())}</div>${KR.echapper(L.indice)}</div>`;
+        <div class="bulle astuce" lang="${lg()}"><div class="etiq">${KR.icone('ampoule')}${KR.echapper(repere())}</div>${KR.echapper(repereLieu(L))}</div>`;
       if (q.type === 'nommer') {
         const choix = action.querySelector('.z-choix');
         choix.querySelectorAll('button').forEach(b => {
           if (b.dataset.lieu === q.lieu) b.classList.add('z-a-toucher');
           else if (b.dataset.lieu === mauvais) b.classList.add('z-ecarte');
         });
-        action.innerHTML = `${retourMascotte('aide', bulles)}<p class="consigne" lang="fr">${CONSIGNE_BON_NOM}</p>${choix.outerHTML}`;
+        action.innerHTML = `${retourMascotte('aide', bulles)}<p class="consigne" lang="${lg()}">${CO().bonNom}</p>${choix.outerHTML}`;
       } else {
-        action.innerHTML = `${retourMascotte('aide', bulles)}<p class="consigne" lang="fr">${CONSIGNE_RETOUCHE}</p>`;
+        action.innerHTML = `${retourMascotte('aide', bulles)}<p class="consigne" lang="${lg()}">${CO().retouche}</p>`;
       }
       bloque = voixActive();
       const ici = numero;
-      dire([C.PHRASES.voici(L), L.indice]).then(() => { if (ici === numero) bloque = false; });
+      dire([C.PHRASES.voici(L, lg()), repereLieu(L)]).then(() => { if (ici === numero) bloque = false; });
     }
 
     function suivante() {
@@ -686,11 +733,11 @@
       suite: () => { if (phase === 'juste') suivante(); },
       ecouter: () => {
         const L = C.lieu(q.lieu);
-        if (phase === 'aide') dire([C.PHRASES.voici(L), L.indice]);
-        else if (phase === 'juste') dire([C.PHRASES.cest(L)]);
-        else if (phase === 'decouverte') dire([C.PHRASES.voici(L), C.PHRASES.toucher(L)]);
-        else if (q.type === 'nommer') dire([C.QUESTION_NOMMER]);
-        else dire([C.PHRASES.toucher(L)]);
+        if (phase === 'aide') dire([C.PHRASES.voici(L, lg()), repereLieu(L)]);
+        else if (phase === 'juste') dire([C.PHRASES.cest(L, lg())]);
+        else if (phase === 'decouverte') dire([C.PHRASES.voici(L, lg()), C.PHRASES.toucher(L, lg())]);
+        else if (q.type === 'nommer') dire([C.QUESTIONS_NOMMER[lg()]]);
+        else dire([C.PHRASES.toucher(L, lg())]);
       },
     });
     question();
@@ -706,11 +753,11 @@
     const montees = b.montees.filter(m => { if (vus.has(m.lieu)) return false; vus.add(m.lieu); return true; });
     const montrees = montees.length > 4 ? montees.slice(0, 3) : montees;
     const NOM = { bronze: 'etat_bronze', argent: 'etat_argent', or: 'etat_or_court' };
-    const jetons = montrees.map(m => `<div class="jeton z-jeton m-${m.couleur}"><b lang="fr">${KR.echapper(C.majuscule(C.lieu(m.lieu).nom))}</b><span>${t(NOM[m.couleur])}</span></div>`).join('')
+    const jetons = montrees.map(m => `<div class="jeton z-jeton m-${m.couleur}"><b lang="${lg()}">${KR.echapper(C.majuscule(nomLieu(m.lieu)))}</b><span>${t(NOM[m.couleur])}</span></div>`).join('')
       + (montees.length > montrees.length ? `<div class="jeton z-jeton jeton-plus"><b>+${montees.length - montrees.length}</b></div>` : '');
     const titre = montees.length === 1 ? t('zoom_lieu_monte') : t('zoom_lieux_montent', { n: montees.length });
-    const demain = b.demain ? t('zoom_demain', { lieu: `<b lang="fr">${KR.echapper(C.lieu(b.demain).nom)}</b>` }) : t('demain_simple');
-    const etape = b.nouvelEtage ? `<p class="z-nouvelle-etape">${KR.icone('etoile')}<span>${t('zoom_etape_ouverte')} <b lang="fr">${KR.echapper(etageNom(b.nouvelEtage))}</b></span></p>` : '';
+    const demain = b.demain ? t('zoom_demain', { lieu: `<b lang="${lg()}">${KR.echapper(nomLieu(b.demain))}</b>` }) : t('demain_simple');
+    const etape = b.nouvelEtage ? `<p class="z-nouvelle-etape">${KR.icone('etoile')}<span>${t('zoom_etape_ouverte')} <b lang="${lg()}">${KR.echapper(etageNom(b.nouvelEtage))}</b></span></p>` : '';
     changerEcran(`<div class="ecran fin-seance z-fin">
       <div class="fin-masc">${KR.mascotte('fete', 'rebondit')}<p class="fin-nb">${t('questions_n', { n: b.reponses })}</p></div>
       <div class="fin-contenu">

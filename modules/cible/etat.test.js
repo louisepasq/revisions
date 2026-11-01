@@ -62,11 +62,19 @@ assert.strictEqual(e.dernieres.length, 30);
 assert.deepStrictEqual(E.normaliser(null), E.etatNeuf());
 assert.deepStrictEqual(E.normaliser({ jours: 'x' }).jours, []);
 
-// Contenu : chaque refus a sa phrase dite et son affichage, sans accolade ni tiret cadratin.
+// Contenu (D-21) : chaque refus a sa phrase dite et son affichage, en anglais et en français, sans
+// accolade ni tiret cadratin ; l'anglais est la langue par défaut.
+assert.strictEqual(CC.de('xx'), CC.LANGUES.en);
+assert.strictEqual(CC.DIT, CC.LANGUES.en.DIT);
 for (const [a, op, b] of [[3, '−', 8], [5, '−', 5], [17, '÷', 5], [3, '÷', 8], [9, '÷', 1]]) {
   assert.strictEqual(C.calculer(a, op, b), null, `${a} ${op} ${b} est refusé par le moteur`);
   const raison = CC.refus(a, op, b);
-  assert.ok(CC.DIT[raison] && CC.AFFICHE[raison](a, b), raison);
+  for (const l of ['en', 'fr']) assert.ok(CC.de(l).DIT[raison] && CC.de(l).AFFICHE[raison](a, b), l + ' ' + raison);
+}
+for (const l of ['en', 'fr']) {
+  assert.deepStrictEqual(Object.keys(CC.LANGUES[l].DIT).sort(), Object.keys(CC.LANGUES.en.DIT).sort(), l + ' : mêmes phrases');
+  const toutes = JSON.stringify(Object.values(CC.LANGUES[l].DIT).map(d => (typeof d === 'function' ? d(47) : d)));
+  assert.ok(!toutes.includes('{') && !toutes.includes(String.fromCharCode(0x2014)), l);
 }
 assert.strictEqual(CC.refus(3, '−', 8), 'negatif');
 assert.strictEqual(CC.refus(5, '−', 5), 'zero');

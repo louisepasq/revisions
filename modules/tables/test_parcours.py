@@ -228,6 +228,9 @@ def seance(page, err, fmt):
             fait = page.evaluate("([a, b]) => Tables.faitDit(a, b)", [a, b])
             if fait not in paroles(page):
                 PROBLEMES.append(f"{fmt} : après une erreur, la voix ne dit pas le fait juste ({fait!r})")
+            # D-21 : la consigne et l'étiquette de l'astuce en anglais, l'astuce et le fait en français.
+            if "Type it again" not in page.inner_text(".carte-retape .consigne") or "'s tip" not in page.inner_text(".retour-masc .bulle.astuce .etiq"):
+                PROBLEMES.append(f"{fmt} : après une erreur, consigne ou étiquette de l'astuce pas en anglais")
             capture(page, f"clara_{fmt}_08-a-revoir", err)
             taper(page, a * b + 10)
             valider(page)
@@ -395,6 +398,8 @@ def quatre_types(navigateur, base, fmt):
             valider(page)
             if not page.locator(".consigne.relance").count():
                 PROBLEMES.append(f"{fmt} : « 1 × {a * b} » est accepté sans relance")
+            elif page.inner_text(".consigne.relance") != "Try without the 1!" or page.evaluate("window.__paroles.at(-1).texte") != "Try without the 1!":
+                PROBLEMES.append(f"{fmt} : la relance n'est pas en anglais ({page.inner_text('.consigne.relance')!r})")
             capture(page, f"clara_{fmt}_types-decomposition-relance", err)
         if "arret" not in vus:
             vus.add("arret")

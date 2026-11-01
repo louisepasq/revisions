@@ -1,5 +1,8 @@
 /* Contenu du module « De l'univers à Éguilles » : sept étapes, leurs lieux, le niveau de chaque
-   enfant et le repère qui aide après une erreur. Tout est en français (contenu scolaire).
+   enfant et le repère qui aide après une erreur. En deux langues (D-21) : l'enfant choisit au début
+   l'anglais ou le français, et le choix se change depuis l'accueil du module ; le français est
+   l'écriture d'origine (ETAGES), l'anglais vit dans EN_ETAGES et EN_LIEUX, sous le même identifiant.
+   La progression ne dépend pas de la langue : un lieu su en français reste su en anglais.
    Périmètre : docs/revues/2026-11-01_relecture-zoom-geographie.md et docs/zoom/PLAN.md.
    Niveau par enfant : 'o' = au programme, entre dans les boîtes ; 'p' = « en plus » (an prochain
    ou bonus) : visible et touchable dans l'exploration, jamais interrogé.
@@ -183,25 +186,211 @@
     },
   ];
 
-  const ADRESSE = "J'habite à Éguilles, dans les Bouches-du-Rhône, en Provence-Alpes-Côte d'Azur, en France, en Europe, sur la Terre, dans le système solaire, dans la Voie lactée.";
-  const QUESTION_NOMMER = "Comment s'appelle ce lieu ?";
+  /* La version anglaise (D-21 : l'enfant choisit la langue du voyage au début). Anglais britannique,
+     phrases courtes pour un enfant qui commence à lire l'anglais. Noms usuels en anglais (the Milky
+     Way, the English Channel, the Alps) ; les noms propres français sans équivalent restent tels quels
+     (Bouches-du-Rhône, Éguilles, Mont Sainte-Victoire), les départements avec leur numéro.
+     Étapes : [nom, dit, adresse, astuce] ; lieux : [nom, repère, information, forme dite]. */
+  const EN_ETAGES = {
+    univers: ['The Milky Way', 'The Milky Way, our galaxy.', 'in the Milky Way'],
+    solaire: ['The Solar System', 'The Solar System, around the Sun.', 'in the Solar System', 'For the order of the planets: My Very Easy Method Just Speeds Up Naming.'],
+    terre: ['The Earth', 'The Earth, our planet.', 'on Earth'],
+    europe: ['Europe', 'Europe, our continent.', 'in Europe'],
+    france: ['France', 'France, our country.', 'in France'],
+    paca: ["Provence-Alpes-Côte d'Azur", "Provence-Alpes-Côte d'Azur, our region.", "in Provence-Alpes-Côte d'Azur"],
+    bdr: ['Bouches-du-Rhône', 'Bouches-du-Rhône, our department, and Éguilles, our village.', 'in Bouches-du-Rhône'],
+  };
+  const EN_LIEUX = {
+    // La Voie lactée
+    'voie-lactee': ['the Milky Way', "It's the big spiral: our galaxy.", 'It is about one hundred thousand light years from one end to the other.'],
+    'systeme-solaire': ['the Solar System', "It's the little bright dot in one arm of the spiral: our home.", 'It is twenty-six thousand light years from the centre of the galaxy.'],
+    'autre-galaxie': ['another galaxy', 'Far from the Milky Way, there is another spiral: another galaxy.', 'This one is the Andromeda Galaxy, the closest big galaxy to us.'],
+    // Le système solaire
+    soleil: ['the Sun', 'The Sun is a star, in the centre of the Solar System.'],
+    'terre-planete': ['the Earth', 'The Earth is the third planet from the Sun: it is our home.'],
+    lune: ['the Moon', 'The Moon goes round the Earth.'],
+    mercure: ['Mercury', 'Mercury is the planet closest to the Sun.'],
+    venus: ['Venus', 'Venus is the second planet, between Mercury and the Earth.'],
+    mars: ['Mars', 'Mars, the red planet, comes just after the Earth.'],
+    jupiter: ['Jupiter', 'Jupiter is the biggest planet. It is the fifth one.'],
+    saturne: ['Saturn', 'Saturn has big rings. It is the sixth planet.'],
+    uranus: ['Uranus', 'Uranus is the seventh planet, just after Saturn.'],
+    neptune: ['Neptune', 'Neptune is the eighth planet, the furthest from the Sun.'],
+    pluton: ['Pluto', 'Pluto is right at the end, and very small.', 'Pluto was a planet when Daddy was little. In 2006, astronomers decided it is a dwarf planet.'],
+    // La Terre
+    europe: ['Europe', 'Europe is our continent: France is in Europe.'],
+    afrique: ['Africa', 'Africa is south of Europe, across the Mediterranean.'],
+    asie: ['Asia', 'Asia is the biggest continent, east of Europe.'],
+    'amerique-nord': ['North America', 'North America is at the top on the left, across the Atlantic Ocean.'],
+    'amerique-sud': ['South America', 'South America is below North America, to the left of the Atlantic Ocean.'],
+    oceanie: ['Oceania', 'Oceania is at the bottom on the right, with Australia.'],
+    antarctique: ['Antarctica', 'Antarctica is right at the bottom, around the South Pole.'],
+    atlantique: ['the Atlantic Ocean', 'The Atlantic Ocean is between America on one side, and Europe and Africa on the other.'],
+    pacifique: ['the Pacific Ocean', 'The Pacific Ocean is the biggest. It is between America and Asia.'],
+    indien: ['the Indian Ocean', 'The Indian Ocean is south of Asia, between Africa and Australia.'],
+    arctique: ['the Arctic Ocean', 'The Arctic Ocean is right at the top, around the North Pole.'],
+    austral: ['the Southern Ocean', 'The Southern Ocean goes all round Antarctica, right at the bottom.'],
+    equateur: ['the Equator', 'The Equator is the line in the middle. It cuts the Earth into two halves.'],
+    'pole-nord': ['the North Pole', 'The North Pole is right at the top of the map.'],
+    'pole-sud': ['the South Pole', 'The South Pole is right at the bottom, on Antarctica.'],
+    'hemisphere-nord': ['the Northern Hemisphere', 'The Northern Hemisphere is the whole half above the Equator. France is in it.'],
+    'hemisphere-sud': ['the Southern Hemisphere', 'The Southern Hemisphere is the whole half below the Equator.'],
+    'tropique-cancer': ['the Tropic of Cancer', 'The Tropic of Cancer is the line just above the Equator. It crosses the Sahara.'],
+    'tropique-capricorne': ['the Tropic of Capricorn', 'The Tropic of Capricorn is the line just below the Equator. It crosses Australia.'],
+    greenwich: ['the Greenwich Meridian', 'The Greenwich Meridian goes from the North Pole to the South Pole. It passes through London and through France.'],
+    'cercle-arctique': ['the Arctic Circle', 'The Arctic Circle is the line right at the top, near the North Pole.'],
+    'cercle-antarctique': ['the Antarctic Circle', 'The Antarctic Circle is the line right at the bottom, around Antarctica.'],
+    'afrique-subsaharienne': ['Sub-Saharan Africa', 'Sub-Saharan Africa is the part of Africa south of the Sahara.'],
+    maghreb: ['the Maghreb', 'The Maghreb is in the north-west of Africa: Morocco, Algeria and Tunisia.'],
+    'asie-est': ['East Asia', 'East Asia is China, Japan and Korea.'],
+    'asie-sud-est': ['South-East Asia', 'South-East Asia is south of China, with lots of islands.'],
+    guadeloupe: ['Guadeloupe', 'Guadeloupe is a French island in the Caribbean, near America.'],
+    martinique: ['Martinique', 'Martinique is a French island in the Caribbean, just south of Guadeloupe.'],
+    guyane: ['French Guiana', 'French Guiana is in South America, by the Atlantic Ocean.'],
+    'la-reunion': ['Réunion', 'Réunion is a French island in the Indian Ocean, east of Madagascar.'],
+    mayotte: ['Mayotte', 'Mayotte is a French island in the Indian Ocean, between Africa and Madagascar.'],
+    nil: ['the Nile', 'The Nile crosses Africa from south to north.', 'It is one of the three longest rivers in the world, with the Amazon and the Yangtze.'],
+    amazone: ['the Amazon', 'The Amazon crosses South America.', 'It is one of the three longest rivers in the world, with the Nile and the Yangtze.'],
+    yangzi: ['the Yangtze', 'The Yangtze crosses China.', 'It is one of the three longest rivers in the world, with the Nile and the Amazon.'],
+    // L'Europe
+    france: ['France', 'France is in the west of Europe, between the English Channel and the Mediterranean.'],
+    espagne: ['Spain', 'Spain is south-west of France, behind the Pyrenees.'],
+    italie: ['Italy', 'Italy is shaped like a boot. It is east of us.'],
+    suisse: ['Switzerland', 'Switzerland is east of France, in the mountains.', 'Switzerland is in Europe, but it is not in the European Union.'],
+    allemagne: ['Germany', 'Germany is north-east of France.'],
+    belgique: ['Belgium', 'Belgium is just north of France.'],
+    luxembourg: ['Luxembourg', 'Luxembourg is a tiny country, between Belgium, Germany and France.'],
+    monaco: ['Monaco', 'Monaco is a tiny country by the Mediterranean, right next to Nice.'],
+    'royaume-uni': ['the United Kingdom', 'The United Kingdom is across the English Channel.', 'The United Kingdom is in Europe, but it is not in the European Union.'],
+    andorre: ['Andorra', 'Andorra is a tiny country in the Pyrenees, between France and Spain.'],
+    'pays-bas': ['the Netherlands', 'The Netherlands is north of Belgium, by the North Sea.'],
+    portugal: ['Portugal', 'Portugal is west of Spain, by the Atlantic Ocean.'],
+    grece: ['Greece', 'Greece is right in the south-east of Europe.'],
+    pologne: ['Poland', 'Poland is east of Germany.'],
+    manche: ['the English Channel', 'The English Channel is the sea between France and the United Kingdom.'],
+    'mer-du-nord': ['the North Sea', 'The North Sea is above the English Channel, between the United Kingdom and the Netherlands.'],
+    'atlantique-europe': ['the Atlantic Ocean', 'The Atlantic Ocean is west of France, on the left of the map.'],
+    'mediterranee-europe': ['the Mediterranean Sea', 'The Mediterranean Sea is south of France, below Europe.'],
+    'golfe-gascogne': ['the Bay of Biscay', 'The Bay of Biscay is the big curve of the Atlantic Ocean, between France and Spain.'],
+    // La France
+    paca: ["the Provence-Alpes-Côte d'Azur region", "It's our region, in the south-east of France, by the Mediterranean.", 'On road signs, it is also called "Région Sud". That is a nickname, not its official name.'],
+    paris: ['Paris', 'Paris, the capital, is in the north of France.'],
+    marseille: ['Marseille', 'Marseille is by the Mediterranean. It is the capital of our region.'],
+    lyon: ['Lyon', 'Lyon is on the Rhône, north of our region.'],
+    toulouse: ['Toulouse', 'Toulouse is in the south-west, not far from the Pyrenees.'],
+    ajaccio: ['Ajaccio', 'Ajaccio is in Corsica, the island in the Mediterranean.'],
+    alpes: ['the Alps', 'The Alps are the highest mountains in France. They are in the east, near Italy and Switzerland.'],
+    lille: ['Lille', 'Lille is right in the north, near Belgium.'],
+    seine: ['the Seine', 'The Seine goes through Paris and flows into the English Channel.'],
+    loire: ['the Loire', 'The Loire is the longest river in France. It flows into the Atlantic Ocean.'],
+    garonne: ['the Garonne', 'The Garonne goes through Toulouse and Bordeaux, in the south-west.'],
+    rhin: ['the Rhine', 'The Rhine is the border between France and Germany, in the east.'],
+    pyrenees: ['the Pyrenees', 'The Pyrenees are in the south-west, between France and Spain.'],
+    'massif-central': ['the Massif Central', 'The Massif Central is in the middle of France, a little to the south.'],
+    jura: ['the Jura', 'The Jura is in the east, along Switzerland, north of the Alps.'],
+    vosges: ['the Vosges', 'The Vosges are in the north-east, near Germany.'],
+    corse: ['Corsica', 'Corsica is an island of mountains, in the Mediterranean.'],
+    leman: ['Lake Geneva', 'Lake Geneva is a big natural lake, between France and Switzerland.'],
+    occitanie: ['Occitanie', 'Occitanie is west of our region, across the Rhône.'],
+    'auvergne-rhone-alpes': ['Auvergne-Rhône-Alpes', 'Auvergne-Rhône-Alpes is just north of our region, with Lyon.'],
+    'nouvelle-aquitaine': ['Nouvelle-Aquitaine', 'Nouvelle-Aquitaine is the biggest region, in the south-west, by the Atlantic Ocean.'],
+    bretagne: ['Brittany', 'Brittany is the point in the west, between the English Channel and the Atlantic Ocean.'],
+    normandie: ['Normandy', 'Normandy is in the north-west, by the English Channel.'],
+    'hauts-de-france': ['Hauts-de-France', 'Hauts-de-France is right in the north, with Lille.'],
+    'grand-est': ['Grand Est', 'Grand Est is in the north-east, along Germany.'],
+    'ile-de-france': ['Île-de-France', 'Île-de-France is the small region around Paris.'],
+    'bourgogne-franche-comte': ['Bourgogne-Franche-Comté', 'Bourgogne-Franche-Comté is in the east, along Switzerland.'],
+    'centre-val-de-loire': ['Centre-Val de Loire', 'Centre-Val de Loire is in the middle of France, south of Paris.'],
+    'pays-de-la-loire': ['Pays de la Loire', 'Pays de la Loire is in the west, where the Loire reaches the Atlantic Ocean.'],
+    dijon: ['Dijon', 'Dijon is the capital of Bourgogne-Franche-Comté.'],
+    rennes: ['Rennes', 'Rennes is the capital of Brittany.'],
+    orleans: ['Orléans', 'Orléans is the capital of Centre-Val de Loire.'],
+    strasbourg: ['Strasbourg', 'Strasbourg is the capital of Grand Est.'],
+    rouen: ['Rouen', 'Rouen is the capital of Normandy.'],
+    bordeaux: ['Bordeaux', 'Bordeaux is the capital of Nouvelle-Aquitaine.'],
+    nantes: ['Nantes', 'Nantes is the capital of Pays de la Loire.'],
+    // Provence-Alpes-Côte d'Azur
+    'bouches-du-rhone': ['Bouches-du-Rhône', 'Number 13 is Bouches-du-Rhône: our department, in the west, by the sea.', null, 'Bouches-du-Rhône, number thirteen'],
+    var: ['Var', 'Number 83 is Var: by the sea, between Bouches-du-Rhône and Alpes-Maritimes.', null, 'Var, number eighty-three'],
+    vaucluse: ['Vaucluse', 'Number 84 is Vaucluse: north of Bouches-du-Rhône, with Mont Ventoux.', null, 'Vaucluse, number eighty-four'],
+    'alpes-maritimes': ['Alpes-Maritimes', 'Number 06 is Alpes-Maritimes: right in the east, next to Italy.', null, 'Alpes-Maritimes, number zero six'],
+    'alpes-de-haute-provence': ['Alpes-de-Haute-Provence', 'Number 04 is Alpes-de-Haute-Provence: in the middle of the region, in the mountains.', null, 'Alpes-de-Haute-Provence, number zero four'],
+    'hautes-alpes': ['Hautes-Alpes', 'Number 05 is Hautes-Alpes: right in the north of the region, in the high mountains.', null, 'Hautes-Alpes, number zero five'],
+    'marseille-prefecture': ['Marseille', 'Marseille is the prefecture of Bouches-du-Rhône, by the sea. It is the biggest city in the region.'],
+    aix: ['Aix-en-Provence', 'Aix-en-Provence is a sub-prefecture of Bouches-du-Rhône, north of Marseille. It is our town.'],
+    toulon: ['Toulon', 'Toulon is the prefecture of Var, by the sea.'],
+    avignon: ['Avignon', 'Avignon is the prefecture of Vaucluse, on the Rhône.'],
+    nice: ['Nice', 'Nice is the prefecture of Alpes-Maritimes, by the sea, near Italy.'],
+    digne: ['Digne-les-Bains', 'Digne-les-Bains is the prefecture of Alpes-de-Haute-Provence.'],
+    gap: ['Gap', 'Gap is the prefecture of Hautes-Alpes, in the north of the region.'],
+    cannes: ['Cannes', 'Cannes is a big town by the sea, west of Nice. It is not a prefecture.'],
+    rhone: ['the Rhône', 'The Rhône is a big river. It is the western edge of the region, and it flows into the Mediterranean.'],
+    durance: ['the Durance', 'The Durance is a river. It comes down from the Alps and flows into the Rhône, near Avignon.'],
+    camargue: ['the Camargue', 'The Camargue is the delta of the Rhône, between its two arms, by the sea.'],
+    ventoux: ['Mont Ventoux', 'Mont Ventoux is a big mountain on its own, in Vaucluse.'],
+    'serre-poncon': ['Lake Serre-Ponçon', 'Lake Serre-Ponçon is a big lake behind a dam on the Durance, in the mountains in the north of the region.'],
+    'mediterranee-paca': ['the Mediterranean Sea', 'The Mediterranean Sea is south of the region.'],
+    'italie-voisine': ['Italy', 'Italy is the country next door, to the east, behind Alpes-Maritimes.'],
+    'monaco-voisin': ['Monaco', 'Monaco is a tiny country, right next to Nice, by the sea.'],
+    'occitanie-voisine': ['Occitanie', 'Occitanie is the region next door, to the west, across the Rhône.'],
+    'auvergne-rhone-alpes-voisine': ['Auvergne-Rhône-Alpes', 'Auvergne-Rhône-Alpes is the region next door, to the north.'],
+    'fleuve-var': ['the River Var', 'The River Var comes down from the Alps and flows into the sea, very near Nice.'],
+    verdon: ['the Verdon', 'The Verdon is a river that flows into the Durance.'],
+    briancon: ['Briançon', 'Briançon is a sub-prefecture of Hautes-Alpes, right in the north, in the mountains.'],
+    grasse: ['Grasse', 'Grasse is the sub-prefecture of Alpes-Maritimes, above Cannes.'],
+    // Les Bouches-du-Rhône
+    eguilles: ['Éguilles', 'Éguilles is our village, just west of Aix-en-Provence.'],
+    'sainte-victoire': ['Mont Sainte-Victoire', 'Mont Sainte-Victoire is east of Aix-en-Provence. You can see it from Éguilles.'],
+    arles: ['Arles', 'Arles is a sub-prefecture of Bouches-du-Rhône, on the Rhône, north of the Camargue.'],
+    istres: ['Istres', 'Istres is a sub-prefecture of Bouches-du-Rhône, by the Étang de Berre.'],
+    'etang-de-berre': ['the Étang de Berre', 'The Étang de Berre is a big lagoon, north-west of Marseille.'],
+  };
+
+  const ADRESSES = {
+    fr: "J'habite à Éguilles, dans les Bouches-du-Rhône, en Provence-Alpes-Côte d'Azur, en France, en Europe, sur la Terre, dans le système solaire, dans la Voie lactée.",
+    en: "I live in Éguilles, in Bouches-du-Rhône, in Provence-Alpes-Côte d'Azur, in France, in Europe, on Earth, in the Solar System, in the Milky Way.",
+  };
+  const QUESTIONS_NOMMER = { fr: "Comment s'appelle ce lieu ?", en: 'What is this place called?' };
+  // Les noms d'origine, gardés pour la compatibilité : la version française.
+  const ADRESSE = ADRESSES.fr;
+  const QUESTION_NOMMER = QUESTIONS_NOMMER.fr;
+
+  /* Les consignes et étiquettes du contenu, qui suivent la langue choisie (le cadre, lui, reste dans
+     commun/textes.js). Les crédits des cartes restent tels quels, en français. */
+  const CONSIGNES = {
+    fr: { decouverte: 'Touche ce lieu sur la carte.', retouche: 'À toi : touche ce lieu sur la carte.', bonNom: 'À toi : touche le bon nom.', voici: 'Voici', touche: 'Touche', repere: nom => `Le repère de ${nom}` },
+    en: { decouverte: 'Touch this place on the map.', retouche: 'Your turn: touch this place on the map.', bonNom: 'Your turn: touch the right name.', voici: 'This is', touche: 'Touch', repere: nom => `${nom}'s clue` },
+  };
 
   const LIEUX = {};
   ETAGES.forEach((e, rang) => {
+    const [nomEn, ditEn, adresseEn, astuceEn] = EN_ETAGES[e.id];
+    e.en = { nom: nomEn, dit: ditEn, adresse: adresseEn, astuce: astuceEn || null };
     e.lieux = e.lieux.map(([id, nom, groupe, henri, clara, indice, info, dit, numero]) => {
-      const l = { id, nom, groupe, etage: e.id, rang, niveaux: { henri, clara }, indice, info: info || null, dit: dit || nom, numero: numero || null };
+      const en = EN_LIEUX[id] || [];
+      const l = {
+        id, nom, groupe, etage: e.id, rang, niveaux: { henri, clara }, indice, info: info || null, dit: dit || nom, numero: numero || null,
+        en: { nom: en[0], indice: en[1], info: en[2] || null, dit: en[3] || en[0] },
+      };
       LIEUX[id] = l;
       return l;
     });
   });
 
-  const affiche = l => (l.numero ? `${l.nom} (${l.numero})` : l.nom);
+  /* Un texte d'un lieu ou d'une étape dans une langue ('fr' par défaut : le coin parent et l'écriture
+     d'origine) : nom, indice (le repère), info, dit ; pour une étape : nom, dit, adresse, astuce. */
+  const champ = (x, c, langue) => (langue === 'en' ? x.en[c] : x[c]);
+  const affiche = (l, langue) => {
+    const nom = champ(l, 'nom', langue);
+    return l.numero ? `${nom} (${l.numero})` : nom;
+  };
+  const etage = id => ETAGES.find(e => e.id === id);
   const majuscule = s => s.charAt(0).toUpperCase() + s.slice(1);
   // Phrases dites par la voix, toujours construites ici : commun/outils/phrases.js les énumère.
   const PHRASES = {
-    toucher: l => `Touche ${l.dit}.`,
-    voici: l => `Voici ${l.dit}.`,
-    cest: l => `C'est ${l.dit}.`,
+    toucher: (l, langue) => (langue === 'en' ? `Touch ${l.en.dit}.` : `Touche ${l.dit}.`),
+    voici: (l, langue) => (langue === 'en' ? `This is ${l.en.dit}.` : `Voici ${l.dit}.`),
+    cest: (l, langue) => (langue === 'en' ? `It's ${l.en.dit}.` : `C'est ${l.dit}.`),
   };
 
   /* Le programme d'un enfant pour le moteur : les étapes dans l'ordre du zoom, et pour chacune
@@ -213,5 +402,8 @@
     };
   }
 
-  racine.ZoomContenu = { ETAGES, LIEUX, ADRESSE, QUESTION_NOMMER, PHRASES, programme, affiche, majuscule, lieu: id => LIEUX[id] };
+  racine.ZoomContenu = {
+    LANGUES: ['en', 'fr'], ETAGES, LIEUX, ADRESSE, ADRESSES, QUESTION_NOMMER, QUESTIONS_NOMMER, CONSIGNES, PHRASES,
+    programme, champ, affiche, majuscule, etage, lieu: id => LIEUX[id],
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

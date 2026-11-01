@@ -42,7 +42,7 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
    - Vérifier au rendu : `uv run commun/test_portail.py`, en regardant les captures de `commun/captures/`.
 5. **Stockage** : clé `localStorage` `<enfant>.<module>`, sous try/catch. La sauvegarde en ligne suit le catalogue (`commun/synchro-page.js` n'a rien à apprendre) ; un état rangé ailleurs se déclare `synchro: false`. Si l'état n'a pas la forme de celui des tables, ajouter sa fusion dans `lib/fusion.js` **et** dans `commun/sync.js`, avec un test ; le résumé, lui, se fusionne déjà pour tous les modules (le plus récent gagne).
 6. **Accès** : un nouveau dossier commun est ouvert aux enfants ; un dossier propre à un enfant suit la règle de `lib/acces.js`. Vérifier avec `test/acces.test.mjs`.
-7. **Textes** : le cadre (boutons, mascotte) va dans `commun/textes.js`, en français et en anglais ; le contenu scolaire reste dans sa langue, dans le module.
+7. **Textes** : le cadre (boutons, mascotte) va dans `commun/textes.js`, en français et en anglais. Un module part en anglais britannique, consignes comprises (D-21) ; le français n'y entre que pour une matière qui l'exige. Règle complète : `ARCHITECTURE.md`, section 9.
 8. **Voix** : toute phrase que l'app dit doit apparaître dans `commun/outils/phrases.js`, avec exactement le texte que le code passe à `KR.lire`. Puis relancer la fabrication (section 4). Sans ça, la voix de l'appareil prend le relais, en moins bien.
 9. **Vérifier au rendu** aux trois formats, en clair et en mode sombre, avant de pousser.
 

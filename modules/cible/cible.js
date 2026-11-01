@@ -1,12 +1,15 @@
 /* Interface du jeu du nombre cible (façon Mathador, règles d'Henri : D-18).
    Trois écrans : l'accueil du jeu (barème, choix du chrono), la partie, la fin de partie.
    Dépend de commun/textes.js, commun/kit.js, moteur.js, contenu.js et etat.js.
-   Le cadre suit la langue de l'enfant ; consignes, calculs et explications restent en français. */
+   Tout suit la langue du cadre de l'enfant, anglais britannique par défaut (D-21) : consignes,
+   explications des coups refusés, idée de la mascotte et voix ; contenu.js garde le français. */
 (function () {
   'use strict';
   const KR = window.KR;
   const C = window.Cible;
-  const CC = window.CibleContenu;
+  const langue = () => (KR.reglages().langue === 'fr' ? 'fr' : 'en');
+  const CC = window.CibleContenu.de(langue());
+  const refus = window.CibleContenu.refus;
   const E = window.CibleEtat;
   const t = KR.t;
   const enfant = KR.enfant();
@@ -28,11 +31,10 @@
 
   const sauver = () => window.CibleEtat.sauver(enfant, etat); // relu à chaque appel : la synchro l'enveloppe
   const voixActive = () => KR.reglages().voix;
-  const dire = textes => (voixActive() ? KR.lireSuite(textes.filter(Boolean).map(texte => ({ texte, langue: 'fr' })), SECOURS_VOIX) : Promise.resolve(false));
-  const lireCadre = cle => KR.lire(t(cle, { mascotte: KR.nomMascotte(), n: C.COUT_INDICE }), KR.reglages().langue);
+  const dire = textes => (voixActive() ? KR.lireSuite(textes.filter(Boolean).map(texte => ({ texte, langue: langue() })), SECOURS_VOIX) : Promise.resolve(false));
+  const lireCadre = cle => KR.lire(t(cle, { mascotte: KR.nomMascotte(), n: C.COUT_INDICE }), langue());
   const pts = n => (n === 1 ? t('cible_pt_un') : t('cible_pts', { n }));
   const points = n => (n === 1 ? t('cible_score_un') : t('cible_score', { n }));
-  const fr = s => `<span lang="fr">${KR.echapper(s)}</span>`;
 
   /* Le résumé du portail (D-19) : le kit le range dans l'état local ; on le garde aussi en mémoire,
      sinon le prochain sauver l'effacerait. À appeler après sauver. */
@@ -88,7 +90,7 @@
     });
     voile.querySelector('[data-f]').focus();
   }
-  const etapeHtml = (e, avecPoints) => `<li><span class="c-calc" lang="fr">${e.a} ${e.op} ${e.b} = <b>${e.r}</b></span>${avecPoints ? `<span class="c-pt">+${C.POINTS[e.op]}</span>` : ''}</li>`;
+  const etapeHtml = (e, avecPoints) => `<li><span class="c-calc">${e.a} ${e.op} ${e.b} = <b>${e.r}</b></span>${avecPoints ? `<span class="c-pt">+${C.POINTS[e.op]}</span>` : ''}</li>`;
 
   /* =================== Accueil du jeu : barème et chrono =================== */
   function accueil() {
@@ -96,13 +98,12 @@
     const maintenant = new Date();
     const semaine = E.joursDeLaSemaine(etat, maintenant);
     const r = E.resume(etat, maintenant);
-    const langue = KR.reglages().langue === 'fr' ? 'fr' : 'en';
-    const bareme = OPS.map(op => `<li><span class="c-op-sym" aria-label="${CC.MOTS_OP[op]}" lang="fr">${op}</span><span class="c-op-pts">${pts(C.POINTS[op])}</span></li>`).join('');
+    const bareme = OPS.map(op => `<li><span class="c-op-sym" aria-label="${CC.MOTS_OP[op]}">${op}</span><span class="c-op-pts">${pts(C.POINTS[op])}</span></li>`).join('');
     const chronos = CHRONOS.map(m => `<button type="button" class="c-chrono-choix" data-a="chrono" data-min="${m}" aria-pressed="${m === 0}">
       ${m ? KR.icone('chrono') : ''}<span>${m ? t('cible_minutes', { n: m }) : t('cible_sans_chrono')}</span></button>`).join('');
     changerEcran(`<div class="ecran c-accueil">
       <header class="barre">${nav('', 'retour', 'retour', './')}
-        <div class="titre"><h1 class="titre-ecran">${t('module_cible')}</h1><p class="indice">${KR.echapper(r.progres.phrase[langue])}</p></div>
+        <div class="titre"><h1 class="titre-ecran">${t('module_cible')}</h1><p class="indice">${KR.echapper(r.progres.phrase[langue()])}</p></div>
         ${nav('ecouter', 'son', 'ecouter')}</header>
       <div class="c-accueil-corps">
         <section class="c-presente">
@@ -160,7 +161,7 @@
         <section class="zone c-zone">
           <div class="c-haut">
             <div class="c-cible" role="img" aria-label="${t('cible_mot')} ${tirage.cible}"><span class="c-cible-mot">${t('cible_mot')}</span><span class="c-cible-n">${tirage.cible}</span></div>
-            <div class="c-calcul" lang="fr" aria-live="polite"></div>
+            <div class="c-calcul" aria-live="polite"></div>
           </div>
           <div class="c-tuiles" role="group" aria-label="${t('cible_nombres')}"></div>
           <div class="c-retour" aria-live="polite"></div>
@@ -224,12 +225,12 @@
       }).join('');
       // Les opérations, avec leurs points
       el('.c-ops').innerHTML = OPS.map(op => `<button type="button" class="c-op${selA ? '' : ' inactif'}" data-a="op" data-op="${op}" aria-pressed="${op === selOp}" aria-label="${CC.MOTS_OP[op]}, ${pts(C.POINTS[op])}"${fini ? ' disabled' : ''}>
-        <span class="c-op-sym" lang="fr">${op}</span><span class="c-op-pts">${pts(C.POINTS[op])}</span></button>`).join('');
+        <span class="c-op-sym">${op}</span><span class="c-op-pts">${pts(C.POINTS[op])}</span></button>`).join('');
       // Le retour de la mascotte : refus expliqué, indice, impasse
       const retour = el('.c-retour');
       if (message) {
         const etiq = message.genre === 'indice' ? `<div class="etiq">${KR.icone('ampoule')}${KR.echapper(CC.ETIQUETTE_INDICE(KR.nomMascotte()))}</div>` : '';
-        retour.innerHTML = `<div class="retour-masc">${KR.medaillon('aide')}${KR.mascotte('aide')}<div class="bulles"><div class="bulle astuce" lang="fr">${etiq}${KR.echapper(message.texte)}</div></div></div>`;
+        retour.innerHTML = `<div class="retour-masc">${KR.medaillon('aide')}${KR.mascotte('aide')}<div class="bulles"><div class="bulle astuce">${etiq}${KR.echapper(message.texte)}</div></div></div>`;
       } else retour.innerHTML = '';
       el('.c-etapes').innerHTML = partie.etapes.map(e => etapeHtml(e, true)).join('');
       const vide = !partie.etapes.length || fini;
@@ -263,7 +264,7 @@
       const b = valeur(idB);
       const res = C.jouer(partie, idA, op, idB);
       if (!res.ok) {
-        const raison = CC.refus(a, op, b);
+        const raison = refus(a, op, b);
         message = { genre: 'refus', texte: CC.AFFICHE[raison](a, b), dit: CC.DIT[raison] };
         selOp = null; // le premier nombre reste choisi
         KR.son('doux');
@@ -315,7 +316,7 @@
       }
       const question = t('cible_indice_question', { mascotte: KR.nomMascotte() });
       const cout = t('cible_indice_cout', { n: C.COUT_INDICE });
-      if (voixActive()) KR.lireSuite([question, cout].map(texte => ({ texte, langue: KR.reglages().langue })), SECOURS_VOIX);
+      if (voixActive()) KR.lireSuite([question, cout].map(texte => ({ texte, langue: langue() })), SECOURS_VOIX);
       feuille(question, cout, [
         { id: 'non', classe: 'btn-secondaire', texte: t('cible_indice_non') },
         { id: 'oui', classe: 'btn-primaire', texte: t('cible_indice_oui') },
@@ -411,7 +412,7 @@
         <div class="retour-masc c-defi">${KR.medaillon(defi ? 'attend' : 'fete')}<div class="bulles">
           <div class="bulle parle">${KR.echapper(bulle)}</div>
           ${defi ? `<button type="button" class="btn btn-calme c-montre" data-a="montre">${t('cible_montre')}</button>
-          <div class="bulle astuce c-solution cache" lang="fr"><div class="etiq">${KR.icone('ampoule')}${KR.echapper(CC.ETIQUETTE_CHEMIN(nom))}</div><ol class="c-etapes">${chemin}</ol></div>` : ''}
+          <div class="bulle astuce c-solution cache"><div class="etiq">${KR.icone('ampoule')}${KR.echapper(CC.ETIQUETTE_CHEMIN(nom))}</div><ol class="c-etapes">${chemin}</ol></div>` : ''}
         </div></div>
         <div class="ligne-fin">${KR.semaine(semaine)}<p class="jours-n">${KR.joursFaits(semaine)}</p></div>
         <div class="actions-fin">
@@ -424,7 +425,7 @@
     // Droitier : le bouton principal finit la ligne, à droite.
     const actions = app.querySelector('.actions-fin');
     actions.appendChild(actions.querySelector('.btn-primaire'));
-    if (voixActive()) plusTard(() => KR.lire(bulle, KR.reglages().langue, SECOURS_VOIX), 900);
+    if (voixActive()) plusTard(() => KR.lire(bulle, langue(), SECOURS_VOIX), 900);
     brancher({
       meme: () => jeu(tirage, minutes),
       nouvelle: accueil,

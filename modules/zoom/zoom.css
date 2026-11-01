@@ -149,6 +149,19 @@ a.rond{text-decoration:none}
 .parole-texte .bulle{font-size:26px;padding:16px 22px 18px}
 .parole-texte .bulle.parle::before{top:30px}
 
+/* ---------- Choix de la langue du voyage (D-21) : deux grosses cartes, un drapeau et un mot ---------- */
+.z-langue-corps{flex:1;display:flex;align-items:center;justify-content:center;gap:40px;padding:20px 0 40px}
+.z-langue-masc .masc{width:220px;height:238px}
+.z-langue-cartes{display:flex;gap:24px}
+.z-langue-carte{width:240px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);
+  font-family:var(--f-jeu);font-weight:700;font-size:32px;line-height:1.1;color:var(--e-900);transition:transform .08s,box-shadow .08s}
+.z-langue-carte:active{transform:translateY(var(--relief));box-shadow:none}
+.z-langue-carte[aria-pressed="true"]{border-color:var(--e-700);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.z-langue-carte .z-drapeau{width:120px;height:80px;border-radius:10px;box-shadow:0 0 0 2px var(--trait)}
+.z-langue-btn .z-drapeau{width:36px;height:24px;border-radius:4px;box-shadow:0 0 0 1.5px var(--trait)}
+.z-nav-langue .nom{white-space:nowrap}
+
 /* ---------- Voyage et exploration ---------- */
 .z-voyage .barre .titre{display:flex;align-items:center;min-height:70px}
 .z-voyage-titre{font-size:40px}
@@ -247,6 +260,7 @@ a.rond{text-decoration:none}
   .parole-corps{flex-direction:column;gap:24px}
   .parole-texte{align-items:center}
   .parole-texte .bulle.parle::before{left:50%;top:-13px;margin-left:-10px;border-width:3px 0 0 3px}
+  .z-langue-corps{flex-direction:column;gap:28px}
 }
 @media (orientation: portrait) and (min-width: 601px){
   .fin-seance{justify-content:center;gap:24px}
@@ -293,6 +307,11 @@ a.rond{text-decoration:none}
   .retour-masc .bulle.parle{font-size:17px}
   .parole-masc .masc{width:170px;height:184px}
   .parole-texte .bulle{font-size:21px}
+  .z-langue-corps{gap:20px;padding:8px 0 20px}
+  .z-langue-masc .masc{width:130px;height:140px}
+  .z-langue-cartes{flex-direction:column;gap:16px;width:100%;align-items:center}
+  .z-langue-carte{width:100%;max-width:320px;min-height:120px;flex-direction:row;gap:20px;font-size:28px}
+  .z-langue-carte .z-drapeau{width:84px;height:56px}
   .fin-masc .masc{width:110px;height:119px}
   .fin-nb{font-size:22px}
   .fin-contenu h1{font-size:34px;margin-bottom:14px;text-align:center}

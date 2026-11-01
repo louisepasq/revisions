@@ -12,8 +12,8 @@ with sync_playwright() as p:
     nav = p.chromium.launch(channel="chrome")
     # Parent
     par = nav.new_context(); pg = par.new_page()
-    r = pg.goto(B + "/henri/"); ok(r.status == 401 and "Ton code secret, Henri" in pg.content(), "sans code : page de code d'Henri (401)")
-    pg.fill("input[name=code]", "mauvais"); pg.click("button[type=submit]"); ok("pas le bon code" in pg.content(), "mauvais code refusé")
+    r = pg.goto(B + "/henri/"); ok(r.status == 401 and "Your secret code, Henri" in pg.content(), "sans code : page de code d'Henri (401)")
+    pg.fill("input[name=code]", "mauvais"); pg.click("button[type=submit]"); ok("not the right code" in pg.content(), "mauvais code refusé")
     pg.fill("input[name=code]", "parent-essai-local"); pg.click("button[type=submit]"); pg.wait_for_load_state()
     ok(pg.url.endswith("/henri/") and "Henri" in pg.title(), "code parent : app d'Henri ouverte")
     r = pg.request.get(B + "/api/codes"); ok(r.status == 200, f"parent : GET /api/codes {r.status} {r.text()}")

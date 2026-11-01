@@ -79,6 +79,25 @@ assert.ok(G.dedans(K.europe.formes.france.g, ...[K.europe.formes.monaco.g[0] - 8
 assert.ok(G.toucheJuste(K.terre, 'atlantique', Object.keys(K.terre.formes), ...K.terre.formes.atlantique.e, 1), 'l étiquette de l Atlantique est dans l Atlantique');
 assert.ok(!G.touche(K.terre, K.terre.formes.atlantique, ...K.terre.formes.afrique.e, 1), 'l Afrique n est pas l Atlantique');
 
+// Les deux langues du voyage (D-21) : chaque étape et chaque lieu ont leur version anglaise complète,
+// sans accolade ni tiret cadratin ; un département garde son numéro dans les deux langues.
+const ZC = globalThis.ZoomContenu;
+for (const e of ZC.ETAGES) {
+  assert.ok(e.en && e.en.nom && e.en.dit && e.en.adresse, `${e.id} : étape sans anglais`);
+  assert.strictEqual(!!e.en.astuce, !!e.astuce, `${e.id} : astuce dans une seule langue`);
+  for (const l of e.lieux) {
+    assert.ok(l.en.nom && l.en.indice && l.en.dit, `${l.id} : lieu sans anglais`);
+    assert.strictEqual(!!l.en.info, !!l.info, `${l.id} : information dans une seule langue`);
+    for (const lg of ZC.LANGUES) {
+      const texte = [ZC.affiche(l, lg), ZC.champ(l, 'indice', lg), ZC.champ(l, 'info', lg) || '', ...Object.values(ZC.PHRASES).map(p => p(l, lg))].join(' ');
+      assert.ok(!texte.includes('{') && !texte.includes(String.fromCharCode(0x2014)), `${l.id} ${lg}`);
+      if (l.numero) assert.ok(ZC.affiche(l, lg).endsWith(`(${l.numero})`), `${l.id} ${lg} : numéro`);
+    }
+  }
+}
+assert.strictEqual(ZC.PHRASES.voici(ZC.lieu('manche'), 'en'), 'This is the English Channel.');
+assert.strictEqual(ZC.PHRASES.voici(ZC.lieu('manche')), 'Voici la Manche.');
+
 // Le poids des cartes embarquées (consigne : 1,5 Mo au plus).
 const taille = fs.statSync(path.join(__dirname, 'cartes.js')).size;
 assert.ok(taille < 1.5 * 1024 * 1024, `cartes.js pèse ${taille} octets`);

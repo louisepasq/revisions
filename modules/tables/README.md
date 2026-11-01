@@ -42,7 +42,7 @@ La grille en bascule montre les mêmes données que l'album (proposition 8 de la
 
 ## Langues
 
-Le cadre (boutons, bulles de la mascotte, fins de séance) suit la langue de l'enfant, anglais par défaut ; le contenu scolaire (questions, consignes, Oui et Non, astuces et leur étiquette) reste en français ; le coin parent est toujours en français (`t(cle, valeurs, 'fr')`). La règle est écrite en tête de `commun/textes.js`. « Est-il un multiple de » pour Clara (CM2, vocabulaire d'Eduscol), « est-il dans la table de » pour Henri (CM1) : `classe` dans `KR.infos()`.
+D-21 : l'anglais britannique par défaut, sauf les énoncés et les astuces. Les énoncés des multiplications (les quatre types de questions, Oui et Non, la correction, les faits dits à voix haute) et les astuces restent en français, à l'écrit comme à voix haute ; tout ce qui les entoure suit la langue du cadre, anglais par défaut : boutons, bulles de la mascotte, fins de séance, et les consignes « Find two numbers », « Type it again », les relances « Try without the 1! » et « Try with numbers up to 10! » (dites en anglais), l'étiquette « Moussi's tip ». Le coin parent est toujours en français (`t(cle, valeurs, 'fr')`). La règle est écrite en tête de `commun/textes.js` et dans `docs/ARCHITECTURE.md`, section 9. « Est-il un multiple de » pour Clara (CM2, vocabulaire d'Eduscol), « est-il dans la table de » pour Henri (CM1) : `classe` dans `KR.infos()`.
 
 ## Tester : deux tests de logique, un parcours au rendu réel
 

@@ -1,4 +1,7 @@
-// Toutes les phrases que l'app peut dire (tables, zoom, cadre), pour fabriquer leurs voix d'avance : node commun/outils/phrases.js > phrases.json
+// Toutes les phrases que l'app peut dire (tables, zoom, nombre cible, cadre), pour fabriquer leurs voix d'avance : node commun/outils/phrases.js > phrases.json
+// Langues (D-21, docs/DECISIONS.md) : l'anglais britannique par défaut ('en') ; le français ('fr') pour les
+// énoncés et les astuces des tables, pour le voyage du zoom quand l'enfant le choisit (les deux langues
+// sont collectées), et pour le nombre cible quand un parent passe le cadre en français.
 const path = require('path');
 const racine = path.resolve(__dirname, '../..');
 globalThis.window = undefined;
@@ -32,30 +35,37 @@ for (let a = 1; a <= 10; a++) {
     }
   }
 }
-ajouter('fr', 'Essaie sans le 1 !');
-ajouter('fr', "Essaie avec des nombres jusqu'à 10 !");
+// Les relances autour d'une décomposition sont des consignes : elles suivent la langue du cadre (anglais).
+ajouter('en', X.t('tables_relance_sans1', null, 'en'));
+ajouter('en', X.t('tables_relance_jusqua10', null, 'en'));
 
-// Module « De l'univers à Éguilles » : chaque lieu touché, montré, nommé, son repère et son information,
-// la question « nommer », le nom de chaque étape, l'astuce des planètes et l'adresse dans l'univers.
+// Module « De l'univers à Éguilles », dans ses deux langues (l'enfant choisit) : chaque lieu touché, montré,
+// nommé, son repère et son information, la question « nommer », le nom de chaque étape, l'astuce des
+// planètes et l'adresse dans l'univers.
 const ZC = globalThis.ZoomContenu;
-ajouter('fr', ZC.QUESTION_NOMMER);
-ajouter('fr', ZC.ADRESSE);
-for (const e of ZC.ETAGES) {
-  ajouter('fr', e.dit);
-  ajouter('fr', e.astuce);
-  for (const l of e.lieux) {
-    for (const p of Object.values(ZC.PHRASES)) ajouter('fr', p(l));
-    ajouter('fr', l.indice);
-    ajouter('fr', l.info);
+for (const lg of ZC.LANGUES) {
+  ajouter(lg, ZC.QUESTIONS_NOMMER[lg]);
+  ajouter(lg, ZC.ADRESSES[lg]);
+  for (const e of ZC.ETAGES) {
+    ajouter(lg, ZC.champ(e, 'dit', lg));
+    ajouter(lg, ZC.champ(e, 'astuce', lg));
+    for (const l of e.lieux) {
+      for (const p of Object.values(ZC.PHRASES)) ajouter(lg, p(l, lg));
+      ajouter(lg, ZC.champ(l, 'indice', lg));
+      ajouter(lg, ZC.champ(l, 'info', lg));
+    }
   }
 }
 
 // Jeu du nombre cible : la cible annoncée (10 à 99), les consignes, les refus expliqués, l'indice,
-// l'impasse ; puis les bulles du cadre qui nomment la mascotte (défi jusqu'au coup parfait, indice).
+// l'impasse, en anglais (défaut) et en français (cadre passé en français par un parent) ; puis les bulles
+// du cadre qui nomment la mascotte (défi jusqu'au coup parfait, indice).
 const CI = globalThis.Cible;
 const CCI = globalThis.CibleContenu;
-for (const d of Object.values(CCI.DIT)) {
-  if (typeof d === 'function') { for (let n = 10; n <= CI.CIBLE_MAX; n++) ajouter('fr', d(n)); } else ajouter('fr', d);
+for (const lg of ['en', 'fr']) {
+  for (const d of Object.values(CCI.de(lg).DIT)) {
+    if (typeof d === 'function') { for (let n = 10; n <= CI.CIBLE_MAX; n++) ajouter(lg, d(n)); } else ajouter(lg, d);
+  }
 }
 // Le cadre n'a de voix fabriquée qu'en anglais, comme plus bas.
 for (const mascotte of ['Moussi', 'Pooh Bear']) {
