@@ -108,7 +108,7 @@ test('limite de requêtes : 429 au-delà de 240 par minute', async () => {
   assert.equal(dernier.statut, 429);
 });
 
-test('remise à zéro : DELETE efface l\'état en ligne (site derrière le code familial)', async () => {
+test('remise à zéro : DELETE efface l\'état en ligne (site derrière les codes)', async () => {
   const redis = new RedisMemoire();
   const h = creerHandler({ fabriqueRedis: () => redis, memeSite: true });
   await appel(h, { method: 'PUT', body: JSON.stringify({ familles: 3, faits: { '7x8': { boite: 4, vu: true } }, jours: ['2026-11-01'] }) });

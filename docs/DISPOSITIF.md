@@ -79,7 +79,7 @@ L'app découpe seule le texte en phrases (sur la ponctuation), puis les phrases 
 **La technique : le site public ne peut pas porter la clé de Claude**
 
 - **[source]** Le code du site est envoyé au navigateur : une clé d'API écrite dedans serait lisible par quiconque ouvre la page, et utilisable à nos frais.
-- **[appréciation] Reco : un petit relais** (une fonction Vercel, à côté de `api/progression`, depuis que tout le site est sur Vercel, D-03) garde la clé dans une variable d'environnement, reçoit la photo, appelle Claude avec le cadre ci-dessus et renvoie le retour. Il n'accepte que les apps des enfants (un code familial) et plafonne le nombre de photos par jour.
+- **[appréciation] Reco : un petit relais** (une fonction Vercel, à côté de `api/progression`, depuis que tout le site est sur Vercel, D-03) garde la clé dans une variable d'environnement, reçoit la photo, appelle Claude avec le cadre ci-dessus et renvoie le retour. Il est protégé, comme tout le site, par le code de chaque enfant (D-04), et plafonne le nombre de photos par jour.
 - **Données** : la photo de la feuille part chez Anthropic pour être lue, et le relais n'en garde rien. Aucun nom de famille dans les échanges.
 - Écarté : la clé dans le site (lisible par tous) ; l'envoi de la photo par WhatsApp pour un retour plus tard (le retour doit arriver pendant que l'enfant est encore devant sa feuille).
 

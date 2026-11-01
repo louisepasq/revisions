@@ -9,7 +9,7 @@
 (function (racine) {
   'use strict';
 
-  const URL_API = '/api/progression'; // même site : le cookie du code familial suffit
+  const URL_API = '/api/progression'; // même site : le cookie d'accès (code parent ou code de l'enfant) suffit
   const CLE_CODE = 'revisions.code';
   const DELAI_MS = 8000;
   const RETENTE_MS = 60000;

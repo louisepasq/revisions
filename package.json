@@ -1,7 +1,7 @@
 {
   "name": "nos-revisions",
   "private": true,
-  "description": "Nos révisions : les apps de révision d'Henri et de Clara, servies par Vercel derrière le code familial",
+  "description": "Nos révisions : les apps de révision d'Henri et de Clara, servies par Vercel derrière un code parent et un code par enfant",
   "engines": {
     "node": "22.x"
   },
