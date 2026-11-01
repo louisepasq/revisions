@@ -8,6 +8,8 @@ Usage : uv run modules/tables/test_parcours.py
 Sert le dépôt en local, puis vérifie aux trois formats (iPad paysage, iPad portrait, iPhone) :
 portails d'Henri et de Clara, et module des tables de Clara de bout en bout
 (diagnostic, séance avec une erreur retapée, fin, grille). Captures dans modules/tables/captures/.
+La voix est espionnée (speechSynthesis.speak remplacé) : chaque question doit être lue en
+toutes lettres, et chaque réponse juste doit faire dire le fait complet.
 """
 import functools
 import http.server
@@ -35,6 +37,26 @@ DEBORDEMENTS_JS = """() => {
 }"""
 
 
+# Espion de la voix : enregistre chaque énoncé et le termine aussitôt (onend), sans son.
+ESPION_VOIX = """
+window.__paroles = [];
+if (window.speechSynthesis) {
+  const ss = window.speechSynthesis;
+  ss.speak = u => { window.__paroles.push({ texte: u.text, langue: u.lang }); setTimeout(() => { if (u.onend) u.onend(); }, 5); };
+  ss.cancel = () => {};
+  ss.getVoices = () => [{ lang: 'xx-XX' }];
+}
+"""
+
+
+def paroles(page):
+    return page.evaluate("window.__paroles.map(p => p.texte)")
+
+
+def derniere_parole(page):
+    return page.evaluate("(window.__paroles[window.__paroles.length - 1] || {}).texte || ''")
+
+
 class Silencieux(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
@@ -51,6 +73,7 @@ def contexte(navigateur, fmt, schema="light"):
     l, h = FORMATS[fmt]
     ctx = navigateur.new_context(viewport={"width": l, "height": h}, device_scale_factor=1,
                                  color_scheme=schema, has_touch=(fmt == "iphone"))
+    ctx.add_init_script(ESPION_VOIX)
     page = ctx.new_page()
     erreurs: list[str] = []
     page.on("pageerror", lambda e: erreurs.append("JS : " + str(e)))
@@ -91,6 +114,8 @@ def portails(navigateur, base):
                 page.wait_for_timeout(1100)
                 page.mouse.up()
                 page.wait_for_selector(".voile .feuille")
+                if page.locator("#cp-titre").inner_text() != "Coin parent":
+                    PROBLEMES.append(f"{enfant} : le coin parent n'est pas en français")
                 capture(page, f"portail_{enfant}_{fmt}_coin-parent", err)
             ctx.close()
     ctx, page, err = contexte(navigateur, "ipad-paysage", "dark")
@@ -103,6 +128,11 @@ def diagnostic(page, err, fmt):
     capture(page, f"clara_{fmt}_01-diagnostic-annonce", err)
     page.click("[data-a='go']")
     page.wait_for_selector(".diagnostic .carte-pleine")
+    carte = page.locator(".carte-pleine")
+    attendu = page.evaluate("([a, b]) => Tables.questionDite({ type: 'produit', a, b })",
+                            [int(carte.get_attribute("data-a-fait")), int(carte.get_attribute("data-b-fait"))])
+    if derniere_parole(page) != attendu:
+        PROBLEMES.append(f"{fmt} : le diagnostic ne lit pas la question ({derniere_parole(page)!r} au lieu de {attendu!r})")
     capture(page, f"clara_{fmt}_02-diagnostic-question", err)
     n = 0
     while not page.locator(".parole").count():
@@ -132,8 +162,8 @@ def repondre_juste(page, carte):
         nombre = int(carte.get_attribute("data-nombre"))
         page.click("[data-a='choix'][data-valeur='%s']" % ("oui" if nombre % a == 0 else "non"))
     elif t == "decomposition":
+        # Le premier nombre complet, le curseur passe seul à la seconde case.
         taper(page, a)
-        valider(page)
         taper(page, b)
         valider(page)
     elif t == "manquant":
@@ -151,9 +181,8 @@ def repondre_faux(page, carte):
         nombre = int(carte.get_attribute("data-nombre"))
         page.click("[data-a='choix'][data-valeur='%s']" % ("non" if nombre % a == 0 else "oui"))
     elif t == "decomposition":
-        taper(page, 7)
-        valider(page)
-        taper(page, 7)
+        taper(page, a + 1 if a < 9 else a - 1)
+        taper(page, b)
         valider(page)
     elif t == "manquant":
         taper(page, b + 1)
@@ -167,11 +196,15 @@ ATTENTE_QUESTION = "document.querySelector('.fin-seance') || (document.querySele
 
 
 def seance(page, err, fmt):
-    page.wait_for_selector(".accueil-tables")
-    capture(page, f"clara_{fmt}_05-accueil-module", err)
-    page.click("[data-a='seance']")
+    # Après le diagnostic, « Let's go » mène directement à la première séance.
     page.wait_for_selector(".carte-pleine[data-type]")
     capture(page, f"clara_{fmt}_06-question", err)
+    carte = page.locator(".carte-pleine[data-type]")
+    if carte.get_attribute("data-type") == "produit":
+        a, b = int(carte.get_attribute("data-a-fait")), int(carte.get_attribute("data-b-fait"))
+        attendu = page.evaluate("([a, b]) => Tables.questionDite({ type: 'produit', a, b })", [a, b])
+        if derniere_parole(page) != attendu:
+            PROBLEMES.append(f"{fmt} : la première question n'est pas lue ({derniere_parole(page)!r})")
     vus, n, erreur_faite, juste_capture = set(), 0, False, False
     while not page.locator(".fin-seance").count():
         carte = page.locator(".carte-pleine[data-type]")
@@ -184,6 +217,9 @@ def seance(page, err, fmt):
             erreur_faite = True
             repondre_faux(page, carte)
             page.wait_for_selector(".carte-rev")
+            fait = page.evaluate("([a, b]) => Tables.faitDit(a, b)", [a, b])
+            if fait not in paroles(page):
+                PROBLEMES.append(f"{fmt} : après une erreur, la voix ne dit pas le fait juste ({fait!r})")
             capture(page, f"clara_{fmt}_08-a-revoir", err)
             taper(page, a * b + 10)
             valider(page)
@@ -197,6 +233,10 @@ def seance(page, err, fmt):
         else:
             repondre_juste(page, carte)
             page.wait_for_selector(".carte-juste")
+            if t in ("produit", "manquant"):
+                fait = page.evaluate("([a, b]) => Tables.faitDit(a, b)", [a, b])
+                if derniere_parole(page) != fait:
+                    PROBLEMES.append(f"{fmt} : réponse juste à {a} × {b} sans le fait dit ({derniere_parole(page)!r})")
             if not juste_capture:
                 juste_capture = True
                 capture(page, f"clara_{fmt}_11-juste", err)
@@ -218,6 +258,14 @@ def seance(page, err, fmt):
     produits = page.evaluate("[...document.querySelectorAll('.cell:not(.touchee) b')].length")
     if produits:
         PROBLEMES.append(f"{fmt} : la grille affiche {produits} produits hors de la case touchée")
+    legende = page.evaluate("[...document.querySelectorAll('.legende-m .n')].reduce((s, n) => s + Number(n.textContent), 0)")
+    if legende != 36:
+        PROBLEMES.append(f"{fmt} : la légende de la grille compte {legende} cases au lieu de 36")
+    page.click("[data-a='retour']")
+    page.wait_for_selector(".accueil-tables")
+    capture(page, f"clara_{fmt}_05-accueil-module", err)
+    if "×" in "".join(paroles(page)):
+        PROBLEMES.append(f"{fmt} : une phrase lue contient le signe ×")
     sauve = page.evaluate("JSON.parse(localStorage.getItem('clara.tables')).diagnostic")
     if not sauve:
         PROBLEMES.append(f"{fmt} : la progression n'est pas sauvée")
@@ -256,7 +304,9 @@ ETAT_AVANCE = """() => {
   const e = Object.assign(Tables.etatNeuf(), {diagnostic: true, familles: 3});
   const j = Tables.jour(new Date());
   for (let i = 0; i < 3; i++) Tables.faitsDeFamille(i).forEach(([a, b]) => {
-    e.faits[Tables.cle(a, b)] = {boite: 3, vu: true, prochain: j, justesJours: [], erreurs: 0, dernierTemps: 2000};
+    // Les ×1 ne reviennent pas aujourd'hui : un facteur 1 ne se pose qu'en produit.
+    const un = a === 1 || b === 1;
+    e.faits[Tables.cle(a, b)] = {boite: 3, vu: true, prochain: un ? '2099-01-01' : j, justesJours: [], erreurs: 0, dernierTemps: 2000};
   });
   localStorage.setItem('clara.tables', JSON.stringify(e));
 }"""
@@ -279,6 +329,24 @@ def quatre_types(navigateur, base, fmt):
         if t not in vus:
             vus.add(t)
             capture(page, f"clara_{fmt}_types-{t}", err)
+        if t == "decomposition" and "relance" not in vus:
+            vus.add("relance")
+            a, b = int(carte.get_attribute("data-a-fait")), int(carte.get_attribute("data-b-fait"))
+            taper(page, 1)
+            page.click(".case-rep[data-champ='1']")
+            taper(page, a * b)
+            valider(page)
+            if not page.locator(".consigne.relance").count():
+                PROBLEMES.append(f"{fmt} : « 1 × {a * b} » est accepté sans relance")
+            capture(page, f"clara_{fmt}_types-decomposition-relance", err)
+        if "arret" not in vus:
+            vus.add("arret")
+            page.click("[data-a='retour']")
+            page.wait_for_selector(".feuille-arret")
+            capture(page, f"clara_{fmt}_types-arret", err)
+            page.click("[data-arret='non']")
+            if not page.locator(".carte-pleine[data-type]").count():
+                PROBLEMES.append(f"{fmt} : « Keep going » ne ramène pas à la question")
         repondre_juste(page, carte)
         page.wait_for_selector(".carte-juste")
         if t == "multiple" and "multiple-juste" not in vus:
@@ -291,6 +359,41 @@ def quatre_types(navigateur, base, fmt):
     ctx.close()
 
 
+ETAT_DIX = """() => {
+  const e = Object.assign(Tables.etatNeuf(), {diagnostic: true, familles: 1});
+  const j = Tables.jour(new Date());
+  const loin = '2099-01-01';
+  Tables.faitsDeFamille(0).forEach(([a, b]) => {
+    const du = a === 10 && b === 10;
+    e.faits[Tables.cle(a, b)] = {boite: du ? 1 : 3, vu: true, prochain: du ? j : loin, justesJours: [], erreurs: 0, dernierTemps: 2000};
+  });
+  localStorage.setItem('clara.tables', JSON.stringify(e));
+}"""
+
+
+def dix_fois_dix(navigateur, base, fmt):
+    """Preuve 4 bis de la synthèse : « 10 × 10 = 100 » sur l'écran juste, sans débordement."""
+    ctx, page, err = contexte(navigateur, fmt)
+    page.goto(f"{base}/clara/tables.html")
+    page.evaluate(ETAT_DIX)
+    page.reload()
+    page.click("[data-a='seance']")
+    for _ in range(25):
+        page.wait_for_function(ATTENTE_QUESTION)
+        if page.locator(".fin-seance").count():
+            PROBLEMES.append(f"{fmt} : 10 × 10 n'est pas venu dans la séance")
+            break
+        carte = page.locator(".carte-pleine[data-type]")
+        dix = carte.get_attribute("data-a-fait") == "10" and carte.get_attribute("data-b-fait") == "10"
+        repondre_juste(page, carte)
+        page.wait_for_selector(".carte-juste")
+        if dix:
+            capture(page, f"clara_{fmt}_17-juste-10x10", err)
+            break
+        page.evaluate("document.querySelector('.touche.suite') && document.querySelector('.touche.suite').click()")
+    ctx.close()
+
+
 def tables_clara(navigateur, base):
     for fmt in FORMATS:
         ctx, page, err = contexte(navigateur, fmt)
@@ -299,6 +402,7 @@ def tables_clara(navigateur, base):
         seance(page, err, fmt)
         ctx.close()
         quatre_types(navigateur, base, fmt)
+        dix_fois_dix(navigateur, base, fmt)
     ctx, page, err = contexte(navigateur, "ipad-paysage", "dark")
     page.goto(f"{base}/clara/tables.html")
     page.evaluate("localStorage.setItem('clara.tables', JSON.stringify(Object.assign(Tables.etatNeuf(), {diagnostic: true})))")

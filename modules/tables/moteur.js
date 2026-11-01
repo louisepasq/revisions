@@ -43,24 +43,72 @@
     return jour(new Date(y, m - 1, d + n));
   }
 
-  function astuce(a, b) {
-    const { table: t, autre: n } = tableDuFait(a, b);
+  /* Astuce après une erreur (relecture du 01/11/2026, point 6) : jamais un détour plus dur
+     que le résultat. Le facteur de la table qui sert reste à sa place dans la question
+     (pour 6 × 7, « 3 × 7 » et non « 7 × 3 ») : l'enfant y retrouve sa question.
+     Avec l'état, n × (n + 1) passe par le carré n × n quand celui-ci est su par cœur.
+     À faire valider par les maîtresses avant de figer les formules. */
+  function astuce(a, b, etat) {
     const p = a * b;
     const ecrit = `${a} × ${b}`;
-    if (a === b && a > 2) return `${ecrit}, c'est un carré : ${p}. Les carrés servent de repères.`;
+    // Remplace le facteur f de la question par v, en gardant l'autre à sa place.
+    const avec = (f, v) => (a === f ? `${v} × ${b}` : `${a} × ${v}`);
+    const autre = f => (a === f ? b : a);
+    if (a === 1 || b === 1) return `Fois 1, le nombre ne change pas : ${ecrit} = ${p}.`;
+    if (a === 10 || b === 10) return `${ecrit}, c'est ${autre(10)} dizaines : ${p}.`;
+    if (a === b) {
+      const carre = `${ecrit}, c'est un carré. `;
+      if (a === 6) return carre + `6 × 5 = 30, plus 6 : 36.`;
+      if (a === 7) return carre + `7 × 5 = 35, plus 7 × 2 = 14 : 49.`;
+      if (a === 8) return carre + `8 × 4 = 32, et le double de 32, c'est 64.`;
+    }
+    if ((a === 9 || b === 9) && autre(9) >= 3) {
+      const n = autre(9);
+      return `${avec(9, 10)} = ${n * 10}, moins ${n} : ${p}.`;
+    }
+    const petit = Math.min(a, b);
+    if (etat && Math.abs(a - b) === 1 && petit >= 6 && couleur(etat, petit, petit) === 'or') {
+      return `${petit} × ${petit} = ${petit * petit}, plus ${petit} : ${p}.`;
+    }
+    const { table: t, autre: n } = tableDuFait(a, b);
     switch (t) {
-      case 1: return `Fois 1, le nombre ne change pas : ${ecrit} = ${p}.`;
-      case 10: return `${n} × 10, c'est ${n} dizaines : ${p}.`;
-      case 5: return `${n} × 5, c'est la moitié de ${n} × 10 = ${n * 10} : ${p}.`;
-      case 2: return `${n} × 2, c'est le double de ${n} : ${p}.`;
-      case 4: return `${n} × 2 = ${n * 2}, et le double de ${n * 2}, c'est ${p}.`;
-      case 8: return `${n} × 4 = ${n * 4}, et le double de ${n * 4}, c'est ${p}.`;
+      case 5: return `${avec(5, 10)} = ${n * 10}, et la moitié de ${n * 10}, c'est ${p}.`;
+      case 2: return `${ecrit}, c'est le double de ${n} : ${p}.`;
+      case 4: return `${avec(4, 2)} = ${n * 2}, et le double de ${n * 2}, c'est ${p}.`;
+      case 8: return `${avec(8, 4)} = ${n * 4}, et le double de ${n * 4}, c'est ${p}.`;
       case 3: return `Le double de ${n}, c'est ${n * 2}, plus ${n} : ${p}.`;
-      case 6: return `${n} × 3 = ${n * 3}, et le double de ${n * 3}, c'est ${p}.`;
-      case 9: return `${n} × 10 = ${n * 10}, moins ${n} : ${p}.`;
-      case 7: return `${n} × 6 = ${n * 6}, plus ${n} : ${p}.`;
+      case 6: return `${avec(6, 3)} = ${n * 3}, et le double de ${n * 3}, c'est ${p}.`;
       default: return `${ecrit} = ${p}.`;
     }
+  }
+
+  /* ---------- Phrases lues par la voix fr-FR (décision de Louis du 01/11/2026) ----------
+     Toujours en toutes lettres, jamais le signe × : « neuf fois cinq, quarante-cinq ». */
+  const UNITES = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
+    'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+  const DIZAINES = { 2: 'vingt', 3: 'trente', 4: 'quarante', 5: 'cinquante', 6: 'soixante' };
+  function enLettres(n) {
+    if (!Number.isInteger(n) || n < 0 || n > 100) return String(n);
+    if (n < 20) return UNITES[n];
+    if (n === 100) return 'cent';
+    if (n < 70) {
+      const d = Math.floor(n / 10);
+      const u = n % 10;
+      return DIZAINES[d] + (u === 0 ? '' : u === 1 ? ' et un' : '-' + UNITES[u]);
+    }
+    if (n < 80) return n === 71 ? 'soixante et onze' : 'soixante-' + UNITES[n - 60];
+    if (n === 80) return 'quatre-vingts';
+    return 'quatre-vingt-' + UNITES[n - 80];
+  }
+  function faitDit(a, b) {
+    return `${enLettres(a)} fois ${enLettres(b)}, ${enLettres(a * b)}`;
+  }
+  /* multiple : « un multiple de » ou « dans la table de », comme à l'écran. */
+  function questionDite(q, multiple) {
+    if (q.type === 'manquant') return `${enLettres(q.a)} fois combien font ${enLettres(q.a * q.b)} ?`;
+    if (q.type === 'decomposition') return `${enLettres(q.produit)}, c'est quel produit ?`;
+    if (q.type === 'multiple') return `${enLettres(q.nombre)} est-il ${multiple || 'un multiple de'} ${enLettres(q.a)} ?`;
+    return `${enLettres(q.a)} fois ${enLettres(q.b)}`;
   }
 
   function etatNeuf() {
@@ -100,11 +148,42 @@
     return n;
   }
 
+  /* Les 36 paires de 2 à 9, chacune dans l'état le plus faible de ses deux ordres :
+     la grille, l'accueil et le coin parent comptent ainsi sur le même dénominateur (point 10). */
+  const RANG_ETAT = { gris: 0, bronze: 1, argent: 2, or: 3 };
+  function etatsDesPaires(etat) {
+    const l = [];
+    for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) {
+      const c1 = couleur(etat, a, b);
+      const c2 = couleur(etat, b, a);
+      l.push({ a, b, couleur: RANG_ETAT[c1] <= RANG_ETAT[c2] ? c1 : c2 });
+    }
+    return l;
+  }
+
+  /* Pour le coin parent : les paires de 2 à 9 ratées (en séance ou au diagnostic) et pas
+     encore remontées, et celles justes mais encore lentes. */
+  function fragiles(etat) {
+    const rates = [];
+    const lents = [];
+    for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) {
+      const deux = [etat.faits[cle(a, b)], etat.faits[cle(b, a)]].filter(f => f && f.vu);
+      if (!deux.length) continue;
+      const ecrit = `${a} × ${b}`;
+      const erreurs = deux.reduce((s, f) => s + (f.erreurs || 0), 0);
+      if (deux.some(f => f.erreurs > 0 && f.boite <= 2)) rates.push({ ecrit, erreurs });
+      else if (deux.some(f => f.dernierJuste && f.dernierTemps != null && f.dernierTemps > RAPIDE_MS && f.boite < 4)) lents.push({ ecrit });
+    }
+    rates.sort((x, y) => y.erreurs - x.erreurs);
+    return { rates: rates.map(x => x.ecrit), lents: lents.map(x => x.ecrit) };
+  }
+
   function enregistrer(etat, a, b, juste, ms, maintenant) {
     const f = fait(etat, a, b);
     const j = jour(maintenant);
     f.vu = true;
     f.dernierTemps = ms;
+    f.dernierJuste = !!juste;
     if (!etat.jours.includes(j)) etat.jours.push(j);
     if (!juste) {
       f.erreurs++;
@@ -177,24 +256,47 @@
     return l;
   }
 
+  /* Faux candidat d'une question « multiple » (point 11) : pas toujours le produit plus 1,
+     qu'un enfant repère sans réfléchir. Un produit d'une table voisine (48 pour la table de 7),
+     un nombre proche, pair quand c'est possible. */
+  function leurre(a, b, index) {
+    const p = a * b;
+    const candidats = [(a - 1) * b, (a + 1) * b, p + 2, p - 2, p + 1, p - 1]
+      .filter(n => n > 1 && n <= 100 && n % a !== 0);
+    return candidats.length ? candidats[(a + b + index) % candidats.length] : p + 1;
+  }
+
   function question(etat, a, b, index) {
-    const type = typeQuestion(etat.faits[cle(a, b)], index);
+    let type = typeQuestion(etat.faits[cle(a, b)], index);
+    // Un facteur 1 ne donne ni décomposition (seul 1 × p) ni question « multiple » (tout est multiple de 1).
+    if (a === 1 || b === 1) type = 'produit';
     const p = a * b;
     if (type === 'manquant') return { type, a, b, texte: `${a} × ? = ${p}`, reponse: b };
     if (type === 'decomposition') return { type, a, b, texte: `? × ? = ${p}`, produit: p, reponse: [a, b] };
     if (type === 'multiple') {
       const vrai = index % 2 === 0;
-      const n = vrai ? p : p + (b > 1 ? 1 : 2);
-      return { type, a, b, texte: `${n} est-il dans la table de ${a} ?`, nombre: n, reponse: n % a === 0 };
+      const n = vrai ? p : leurre(a, b, index);
+      return { type, a, b, texte: `${n} est-il un multiple de ${a} ?`, nombre: n, reponse: n % a === 0 };
     }
     return { type: 'produit', a, b, texte: `${a} × ${b}`, reponse: p };
+  }
+
+  /* Décomposition (point 5) : deux nombres des tables, de 2 à 10. Un facteur 1 ou plus grand
+     que 10 n'est pas une erreur mais une relance : « Essaie sans le 1 », sans rien enregistrer. */
+  function relanceDecomposition(q, saisie) {
+    if (q.type !== 'decomposition' || !Array.isArray(saisie)) return null;
+    const [x, y] = saisie;
+    if (!Number.isInteger(x) || !Number.isInteger(y) || x * y !== q.produit) return null;
+    if (x === 1 || y === 1) return 'sans1';
+    if (x > 10 || y > 10) return 'jusqua10';
+    return null;
   }
 
   function verifier(q, saisie) {
     if (q.type === 'decomposition') {
       if (!Array.isArray(saisie)) return false;
       const [x, y] = saisie;
-      return Number.isInteger(x) && Number.isInteger(y) && x > 0 && y > 0 && x * y === q.produit;
+      return Number.isInteger(x) && Number.isInteger(y) && x >= 2 && y >= 2 && x <= 10 && y <= 10 && x * y === q.produit;
     }
     if (q.type === 'multiple') return saisie === q.reponse;
     return Number(saisie) === q.reponse;
@@ -217,6 +319,10 @@
       [[r.a, r.b], [r.b, r.a]].forEach(([x, y]) => {
         const f = fait(etat, x, y);
         f.vu = true;
+        // Un échec au diagnostic compte comme une erreur : le coin parent le liste (point 10).
+        if (!r.juste) f.erreurs = (f.erreurs || 0) + 1;
+        f.dernierJuste = !!r.juste;
+        if (r.ms != null) f.dernierTemps = r.ms;
         f.boite = r.juste ? (r.ms <= RAPIDE_MS ? 3 : 2) : 1;
         f.prochain = ajouterJours(j, r.juste ? 1 : 0);
         if (r.juste && !f.justesJours.includes(j)) f.justesJours.push(j);
@@ -267,8 +373,8 @@
 
   racine.Tables = {
     FAMILLES, RAPIDE_MS, TAILLE_SEANCE,
-    cle, jour, astuce, etatNeuf, couleur, compteOr, enregistrer, majFamilles,
-    seance, question, verifier, questionsDiagnostic, appliquerDiagnostic,
+    cle, jour, astuce, enLettres, faitDit, questionDite, etatNeuf, couleur, compteOr, etatsDesPaires, fragiles, enregistrer, majFamilles,
+    seance, question, verifier, relanceDecomposition, questionsDiagnostic, appliquerDiagnostic,
     joursDeLaSemaine, familleDuFait, faitsDeFamille, charger, sauver,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

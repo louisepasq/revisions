@@ -6,8 +6,8 @@
   const racine = document.documentElement;
   const KR = {};
   const ENFANTS = {
-    henri: { prenom: 'Henri', mascotte: 'moussi', nomMascotte: 'Moussi' },
-    clara: { prenom: 'Clara', mascotte: 'ours', nomMascotte: 'Pooh Bear' },
+    henri: { prenom: 'Henri', mascotte: 'moussi', nomMascotte: 'Moussi', classe: 'CM1' },
+    clara: { prenom: 'Clara', mascotte: 'ours', nomMascotte: 'Pooh Bear', classe: 'CM2' },
   };
 
   KR.enfant = () => (ENFANTS[racine.dataset.enfant] ? racine.dataset.enfant : 'henri');
@@ -18,7 +18,9 @@
   KR.echapper = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   /* ---------- Réglages par enfant : langue du cadre, voix, sons ---------- */
-  const DEFAUT = { langue: 'en', voix: false, sons: true };
+  /* voix : active par défaut (décision de Louis du 01/11/2026) ; seul le module des tables la
+     lit aujourd'hui, qui dit chaque question et chaque fait juste. Le coin parent peut la couper. */
+  const DEFAUT = { langue: 'en', voix: true, sons: true };
   KR.reglages = function () {
     try {
       const brut = window.localStorage.getItem(KR.enfant() + '.reglages');
@@ -38,7 +40,7 @@
     window.Textes.traduirePage(document);
     return l;
   };
-  KR.t = (cle, valeurs) => window.Textes.t(cle, valeurs);
+  KR.t = (cle, valeurs, forcee) => window.Textes.t(cle, valeurs, forcee);
 
   /* ---------- Sons Web Audio, sans fichier ---------- */
   let ctx = null;
@@ -97,23 +99,38 @@
     }
     return voixEnAttente;
   }
-  function parler(texte, code, liste) {
+  function enonce(texte, langue, liste) {
+    const code = langue === 'en' ? 'en-GB' : 'fr-FR';
     const u = new SpeechSynthesisUtterance(texte);
     u.lang = code;
     u.rate = 0.9;
     const norm = v => v.lang.replace('_', '-');
     const v = liste.find(x => norm(x) === code) || liste.find(x => norm(x).indexOf(code.slice(0, 2)) === 0);
     if (v) u.voice = v;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
+    return u;
   }
-  KR.lire = function (texte, langue) {
-    if (!('speechSynthesis' in window) || !texte) return;
-    const code = langue === 'en' ? 'en-GB' : 'fr-FR';
+  let enCours = []; // garde les énoncés en vie : sans référence, Chrome peut perdre leur onend
+  function parler(morceaux, liste) {
+    window.speechSynthesis.cancel(); // une seule énonciation à la fois
+    return new Promise(fin => {
+      enCours = morceaux.map(m => enonce(m.texte, m.langue, liste));
+      const dernier = enCours[enCours.length - 1];
+      dernier.onend = () => fin(true);
+      dernier.onerror = () => fin(false);
+      enCours.forEach(u => window.speechSynthesis.speak(u));
+    });
+  }
+  /* Lit une suite de morceaux, chacun dans sa langue : [{ texte, langue: 'en' | 'fr' }].
+     Rend une promesse tenue à la fin de la lecture, ou au bout de `secours` ms au plus. */
+  KR.lireSuite = function (morceaux, secours) {
+    const l = (morceaux || []).filter(m => m && m.texte);
+    if (!('speechSynthesis' in window) || !l.length) return Promise.resolve(false);
     const liste = window.speechSynthesis.getVoices();
-    if (liste.length) parler(texte, code, liste); // dans le geste, pour Safari
-    else voixDisponibles().then(l => parler(texte, code, l));
+    const p = liste.length ? parler(l, liste) // dans le geste, pour Safari
+      : voixDisponibles().then(v => parler(l, v));
+    return secours ? Promise.race([p, new Promise(r => setTimeout(() => r(false), secours))]) : p;
   };
+  KR.lire = (texte, langue, secours) => KR.lireSuite([{ texte, langue }], secours);
   KR.taire = () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); };
 
   /* ---------- Sprite SVG : mascottes (quatre attitudes) et icônes ---------- */
@@ -121,9 +138,9 @@
 <filter id="bouclette" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="2" seed="4" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="1.8"/></filter>
 <path id="scintille" d="M0 -11 L2.6 -2.6 L11 0 L2.6 2.6 L0 11 L-2.6 2.6 L-11 0 L-2.6 -2.6Z"/>
 <g id="ours-corps" stroke="#C4A65A" stroke-width="2.6"><ellipse cx="78" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="122" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="78" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="122" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="100" cy="176" rx="42" ry="40" fill="#F7EBB3"/></g>
-<g id="ours-bras-bas" stroke="#C4A65A" stroke-width="2.6" fill="#F1E3A0"><ellipse cx="42" cy="158" rx="13" ry="22" transform="rotate(25 42 158)"/><ellipse cx="158" cy="158" rx="13" ry="22" transform="rotate(-25 158 158)"/></g>
-<g id="ours-bras-haut" stroke="#C4A65A" stroke-width="2.6" fill="#F1E3A0"><ellipse cx="34" cy="124" rx="13" ry="24" transform="rotate(-32 34 124)"/><ellipse cx="166" cy="124" rx="13" ry="24" transform="rotate(32 166 124)"/></g>
-<g id="ours-bras-aide" stroke="#C4A65A" stroke-width="2.6" fill="#F1E3A0"><ellipse cx="42" cy="158" rx="13" ry="22" transform="rotate(25 42 158)"/><ellipse cx="166" cy="124" rx="13" ry="24" transform="rotate(32 166 124)"/></g>
+<g id="ours-bras-g-bas"><path d="M46 146C34 160 29 175 31 188C32 204 56 206 57 191C59 178 62 164 64 150Z"/><ellipse cx="44" cy="195" rx="8" ry="5.5" fill="#E9D98F" stroke="none"/></g><g id="ours-bras-g-haut"><path d="M52 160C44 146 30 133 23 119C16 104 28 92 41 96C50 99 52 108 54 115C57 127 62 138 68 146Z"/><ellipse cx="33" cy="106" rx="8" ry="6" transform="rotate(-30 33 106)" fill="#E9D98F" stroke="none"/></g><g id="ours-bras-bas" stroke="#C4A65A" stroke-width="2.6" stroke-linejoin="round" fill="#F1E3A0"><use href="#ours-bras-g-bas"/><use href="#ours-bras-g-bas" transform="matrix(-1 0 0 1 200 0)"/></g>
+<g id="ours-bras-haut" stroke="#C4A65A" stroke-width="2.6" stroke-linejoin="round" fill="#F1E3A0"><use href="#ours-bras-g-haut"/><use href="#ours-bras-g-haut" transform="matrix(-1 0 0 1 200 0)"/></g>
+<g id="ours-bras-aide" stroke="#C4A65A" stroke-width="2.6" stroke-linejoin="round" fill="#F1E3A0"><use href="#ours-bras-g-bas"/><use href="#ours-bras-g-haut" transform="matrix(-1 0 0 1 200 0)"/></g>
 <g id="ours-buste"><path d="M58 138 Q100 126 142 138 L164 152 Q160 166 148 166 L144 176 Q100 186 56 176 L52 166 Q40 166 36 152 Z" fill="#D8392F" stroke="#A82A22" stroke-width="2.6" stroke-linejoin="round"/><path d="M84 136 Q100 146 116 136" stroke="#A82A22" stroke-width="3" fill="none" stroke-linecap="round"/><g stroke="#C4A65A" stroke-width="2.6"><circle cx="56" cy="40" r="17" fill="#EEDD93"/><circle cx="144" cy="40" r="17" fill="#EEDD93"/></g><circle cx="56" cy="42" r="9" fill="#E3CF7E"/><circle cx="144" cy="42" r="9" fill="#E3CF7E"/><ellipse cx="100" cy="80" rx="54" ry="56" fill="#F5E8A6" stroke="#C4A65A" stroke-width="2.6"/><ellipse cx="100" cy="102" rx="30" ry="24" fill="#F9F0C6"/><path d="M90 90 Q100 84 110 90 Q112 100 100 104 Q88 100 90 90 Z" fill="#7A4A2E"/><path d="M80 108 Q100 124 120 108" stroke="#6B3B24" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M72 58 Q80 52 88 57" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M112 57 Q120 52 128 58" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="68" cy="94" r="8" fill="#F2A07E" opacity=".35"/><circle cx="132" cy="94" r="8" fill="#F2A07E" opacity=".35"/></g>
 <g id="ours-yeux"><circle cx="80" cy="70" r="4.6" fill="#4A2A1A"/><circle cx="120" cy="70" r="4.6" fill="#4A2A1A"/><circle cx="81.6" cy="68.4" r="1.4" fill="#fff"/><circle cx="121.6" cy="68.4" r="1.4" fill="#fff"/></g>
 <g id="ours-yeux-rieurs" stroke="#4A2A1A" stroke-width="3" fill="none" stroke-linecap="round"><path d="M74.5 72 Q80 64 85.5 72"/><path d="M114.5 72 Q120 64 125.5 72"/></g>
@@ -132,7 +149,7 @@
 <g id="moussi-bras-bas" filter="url(#bouclette)" stroke="#968F84" stroke-width="2.6" fill="#B3ADA3"><ellipse cx="50" cy="168" rx="12" ry="22" transform="rotate(20 50 168)"/><ellipse cx="150" cy="168" rx="12" ry="22" transform="rotate(-20 150 168)"/></g>
 <g id="moussi-bras-haut" filter="url(#bouclette)" stroke="#968F84" stroke-width="2.6" fill="#B3ADA3"><ellipse cx="44" cy="146" rx="12" ry="23" transform="rotate(-34 44 146)"/><ellipse cx="156" cy="146" rx="12" ry="23" transform="rotate(34 156 146)"/></g>
 <g id="moussi-bras-aide" filter="url(#bouclette)" stroke="#968F84" stroke-width="2.6" fill="#B3ADA3"><ellipse cx="50" cy="168" rx="12" ry="22" transform="rotate(20 50 168)"/><ellipse cx="156" cy="146" rx="12" ry="23" transform="rotate(34 156 146)"/></g>
-<g id="moussi-tete"><g filter="url(#bouclette)" stroke="#968F84" stroke-width="2.6"><circle cx="46" cy="58" r="33" fill="#BDB7AD"/><circle cx="154" cy="58" r="33" fill="#BDB7AD"/><ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/></g><path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/><circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/><ellipse cx="100" cy="134" rx="15" ry="13" fill="#1E1E24"/><circle cx="95" cy="130" r="3.5" fill="#fff" opacity=".35"/><path d="M78 108 Q100 126 122 108" stroke="#4A4640" stroke-width="2.8" fill="none" stroke-linecap="round"/><circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/></g>
+<g id="moussi-tete"><g filter="url(#bouclette)" stroke="#968F84" stroke-width="2.6"><circle cx="46" cy="58" r="33" fill="#BDB7AD"/><circle cx="154" cy="58" r="33" fill="#BDB7AD"/><ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/></g><path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/><circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/><ellipse cx="100" cy="111" rx="14" ry="11.5" fill="#1E1E24"/><circle cx="95" cy="107.5" r="3.4" fill="#fff" opacity=".35"/><path d="M100 122.5V128.5M85 127Q92.5 136 100 128.5Q107.5 136 115 127" stroke="#4A4640" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/></g>
 <g id="moussi-yeux"><circle cx="80" cy="86" r="4.6" fill="#1E1E24"/><circle cx="120" cy="86" r="4.6" fill="#1E1E24"/><circle cx="81.6" cy="84.4" r="1.4" fill="#fff"/><circle cx="121.6" cy="84.4" r="1.4" fill="#fff"/></g>
 <g id="moussi-yeux-rieurs" stroke="#1E1E24" stroke-width="3" fill="none" stroke-linecap="round"><path d="M74.5 88 Q80 80 85.5 88"/><path d="M114.5 88 Q120 80 125.5 88"/></g>
 <g id="moussi-yeux-fermes" stroke="#1E1E24" stroke-width="3" fill="none" stroke-linecap="round"><path d="M74.5 85 Q80 91 85.5 85"/><path d="M114.5 85 Q120 91 125.5 85"/></g>

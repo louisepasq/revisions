@@ -14,6 +14,12 @@
   const MAX_CHIFFRES = 3;
   const ETAT_CASE = { gris: 'pas', bronze: 'com', argent: 'pre', or: 'or' };
   const NOM_CASE = { pas: 'etat_gris', com: 'etat_bronze', pre: 'etat_argent', or: 'etat_or', auj: 'etat_auj' };
+  const RANG_CASE = { pas: 0, com: 1, pre: 2, or: 3, auj: 3 };
+  /* « 48 est-il un multiple de 6 ? » en CM2, le vocabulaire d'Eduscol ; « dans la table de »
+     en CM1, tant que la maîtresse d'Henri n'emploie pas « multiple » (à lui demander). */
+  const MULTIPLE = KR.infos().classe === 'CM2' ? 'un multiple de' : 'dans la table de';
+  const RELANCE = { sans1: 'Essaie sans le 1 !', jusqua10: "Essaie avec des nombres jusqu'à 10 !" };
+  const JETONS_MAX = 4;
 
   KR.demarrer();
   let etat = T.charger(enfant);
@@ -50,12 +56,13 @@
     if (champ === undefined) return `<span class="case-rep${active ? ' active' : ''}${valeur ? '' : ' case-vide'}" ${attr} aria-live="polite">${contenu}</span>`;
     return `<button type="button" class="case-rep${active ? ' active' : ''}${valeur ? '' : ' case-vide'}" data-a="champ" data-champ="${champ}" ${attr}>${contenu}</button>`;
   }
-  function aLire(q) {
-    if (q.type === 'manquant') return `${q.a} fois combien égale ${q.a * q.b} ?`;
-    if (q.type === 'decomposition') return `Combien fois combien égale ${q.produit} ?`;
-    if (q.type === 'multiple') return `${q.nombre} est-il dans la table de ${q.a} ?`;
-    return `${q.a} fois ${q.b}`;
-  }
+  /* Voix (décision de Louis du 01/11/2026) : chaque question est lue dès qu'elle s'affiche,
+     chaque réponse juste fait dire le fait complet avant la question suivante. */
+  const SECOURS_VOIX = 6000;
+  const voixActive = () => KR.reglages().voix;
+  const aLire = q => T.questionDite(q, MULTIPLE);
+  function direQuestion(q) { if (voixActive()) KR.lire(aLire(q), 'fr'); }
+  function direFait(a, b) { return voixActive() ? KR.lire(T.faitDit(a, b), 'fr', SECOURS_VOIX) : Promise.resolve(false); }
   function etatCase(a, b) {
     const f = etat.faits[T.cle(a, b)];
     const c = T.couleur(etat, a, b);
@@ -68,19 +75,39 @@
     if (e === 'com') return '<span class="pts"><i></i></span>';
     return '';
   }
+  /* Le résultat le plus fragile qui revient aujourd'hui, de 2 à 9, ou null. */
+  function revientAujourdhui(maintenant) {
+    const j = T.jour(maintenant);
+    const dus = Object.keys(etat.faits).map(k => k.split('x').map(Number)).filter(([a, b]) => {
+      const f = etat.faits[T.cle(a, b)];
+      return a >= 2 && a <= 9 && b >= 2 && b <= 9 && f.vu && f.prochain && f.prochain <= j && T.familleDuFait(a, b) < etat.familles;
+    }).sort((x, y) => {
+      const fx = etat.faits[T.cle(...x)];
+      const fy = etat.faits[T.cle(...y)];
+      return fx.boite - fy.boite || (fy.erreurs || 0) - (fx.erreurs || 0);
+    });
+    return dus.length ? `${dus[0][0]} × ${dus[0][1]}` : null;
+  }
 
   /* =================== Accueil du module =================== */
   function accueil() {
     etat = T.charger(enfant);
     if (!etat.diagnostic) return introDiagnostic();
     const or = T.compteOr(etat);
+    // Ce qui attend l'enfant aujourd'hui : la carte le montre au lieu d'un aplat vide (point 9).
+    const maintenant = new Date();
+    const nbQuestions = T.seance(etat, maintenant).length;
+    const revient = revientAujourdhui(maintenant);
+    const infos = `<span class="ce-info">${KR.icone('ok')}<span>${t('questions_auj', { n: nbQuestions })}</span></span>`
+      + (revient ? `<span class="ce-info">${KR.icone('cal')}<span>${t('revient_auj', { fait: `<b lang="fr">${revient}</b>` })}</span></span>` : '');
     changerEcran(`<div class="ecran accueil-tables">
       <header class="barre">${nav('', 'retour', 'retour', './')}
         <div class="titre"><h1 class="titre-ecran">${t('module_tables')}</h1><p class="indice">${t('tables_par_coeur', { n: or, total: 36 })}</p></div>
       </header>
       <div class="accueil-grille">
         <button type="button" class="carte-entrainement" data-a="seance">
-          <span class="ce-masc">${KR.mascotte('attend')}</span>
+          <span class="ce-haut"><span class="ce-masc">${KR.mascotte('attend')}</span><span class="ce-infos">${infos}</span></span>
+          <span class="ce-semaine">${KR.semaine(T.joursDeLaSemaine(etat, maintenant))}</span>
           <span class="ce-texte"><b>${t('entrainement')}</b><span>${t('entrainement_sous')}</span></span>
           <span class="ce-go">${KR.icone('jouer')}</span>
         </button>
@@ -134,7 +161,8 @@
       T.appliquerDiagnostic(etat, reponses, new Date());
       sauver();
       KR.son('fete');
-      parole('fete', t('diag_fin'), 'commencer', accueil, nav('', 'retour', 'retour', './'));
+      // « Let's go » enchaîne sur la première séance, sans repasser par l'accueil (point 12).
+      parole('fete', t('diag_fin'), 'commencer', demarrerSeance, nav('', 'retour', 'retour', './'));
     }
     function majCase() {
       app.querySelector('.ligne-rep').innerHTML = eg + caseRep(saisie, true);
@@ -160,7 +188,7 @@
       pave.etat('vide');
       debutQ = performance.now();
       premiereTouche = 0;
-      if (KR.reglages().voix) KR.lire(aLire(q), 'fr');
+      direQuestion(q);
     }
 
     changerEcran(`<div class="ecran ecran-fixe exo diagnostic">
@@ -181,7 +209,7 @@
   /* =================== Séance d'entraînement =================== */
   function demarrerSeance() {
     etat = T.charger(enfant);
-    const s = S.creer(etat, new Date());
+    const s = S.creer(etat, new Date(), undefined, { multiple: MULTIPLE });
     const resultats = [];
     let q = null;
     let saisie = '';
@@ -191,6 +219,9 @@
     let debutQ = 0;
     let premiereTouche = 0;
     let pave = null;
+    let revoir = null;
+    // Bulle de la mascotte, en anglais : « Nearly! Let's look again » (point 8).
+    const bulleRevoir = () => `${t('presque')} ${t('on_regarde')}`;
 
     changerEcran(`<div class="ecran ecran-fixe exo">
       <header class="barre">${nav('retour', 'retour', 'retour')}
@@ -204,8 +235,13 @@
     pave = KR.pave({
       chiffre(d) {
         if (phase === 'question' && !premiereTouche) premiereTouche = performance.now();
+        // Retape : la bonne réponse se masque au premier chiffre, l'enfant la rappelle (point 12).
+        if (phase === 'revoir') { const rev = zone.querySelector('.carte-rev'); if (rev) rev.classList.add('masque'); }
         if (phase === 'question' && q.type === 'decomposition') {
           if (duo[champ].length < MAX_CHIFFRES) duo[champ] = (duo[champ] + d).replace(/^0+(?=\d)/, '');
+          // Le premier nombre est complet dès qu'il ne peut plus commencer un nombre des tables :
+          // tout chiffre sauf 1 (qui peut devenir 10), ou deux chiffres. On passe alors à la seconde case.
+          if (champ === 0 && duo[0] && (duo[0] !== '1' || duo[0].length > 1)) champ = 1;
         } else if (saisie.length < MAX_CHIFFRES) saisie = (saisie + d).replace(/^0+(?=\d)/, '');
         majSaisie();
       },
@@ -220,8 +256,11 @@
         if (etatPave === 'suite') return suivante();
         if (phase === 'question') {
           if (q.type === 'decomposition') {
-            if (!duo[1]) { champ = 1; return majSaisie(); }
-            return repondre([Number(duo[0]), Number(duo[1])]);
+            if (!duo[0] || !duo[1]) return;
+            const deux = [Number(duo[0]), Number(duo[1])];
+            const relance = T.relanceDecomposition(q, deux);
+            if (relance) return relancer(relance);
+            return repondre(deux);
           }
           return repondre(Number(saisie));
         }
@@ -252,6 +291,7 @@
 
     function question() {
       q = S.courante(s);
+      numeroQ++;
       phase = 'question';
       saisie = '';
       duo = ['', ''];
@@ -266,7 +306,7 @@
       } else if (q.type === 'decomposition') {
         corps = `<p class="consigne">Trouve deux nombres</p><div class="fait ligne-op" data-case>${caseRep('', true, 0)}${x}${caseRep('', false, 1)}</div><div class="fait ligne-rep">${eg}${p}</div>`;
       } else {
-        corps = `<div class="fait ligne-op">${q.nombre}</div><p class="ligne-texte">est-il dans la table de ${q.a}&nbsp;?</p>`;
+        corps = `<div class="fait ligne-op">${q.nombre}</div><p class="ligne-texte">est-il ${MULTIPLE} ${q.a}&nbsp;?</p>`;
       }
       zone.innerHTML = `<div class="carte-q carte-pleine" lang="fr" data-type="${q.type}" data-a-fait="${q.a}" data-b-fait="${q.b}"${q.type === 'multiple' ? ` data-nombre="${q.nombre}"` : ''}>${corps}</div>`;
       if (q.type === 'multiple') {
@@ -277,20 +317,32 @@
       }
       debutQ = performance.now();
       premiereTouche = 0;
-      if (KR.reglages().voix) KR.lire(aLire(q), 'fr');
+      direQuestion(q);
     }
 
     function majSaisie() {
       const ligne = zone.querySelector('[data-case]');
       if (phase === 'question' && q.type === 'decomposition') {
         ligne.innerHTML = caseRep(duo[0], champ === 0, 0) + x + caseRep(duo[1], champ === 1, 1);
-        pave.etat(duo[0] ? 'pret' : 'vide');
+        // Check reste en pointillé tant que les deux cases ne sont pas remplies (point 5).
+        pave.etat(duo[0] && duo[1] ? 'pret' : 'vide');
         return;
       }
       if (phase === 'question' && q.type === 'manquant') ligne.innerHTML = `${q.a}${x}${caseRep(saisie, true)}`;
       else if (phase === 'question') ligne.innerHTML = eg + caseRep(saisie, true);
       else ligne.innerHTML = `${q.a}${x}${q.b}${eg}${caseRep(saisie, true)}`;
       pave.etat(saisie ? 'pret' : 'vide');
+    }
+
+    /* « 1 × 24 » ou « 2 × 12 » : ni erreur ni crédit, une relance dans la consigne (point 5). */
+    function relancer(cle) {
+      KR.son('doux');
+      duo = ['', ''];
+      champ = 0;
+      const consigne = zone.querySelector('.consigne');
+      if (consigne) { consigne.textContent = RELANCE[cle]; consigne.classList.add('relance'); }
+      majSaisie();
+      if (voixActive()) KR.lire(RELANCE[cle], 'fr');
     }
 
     function repondre(valeur) {
@@ -303,6 +355,16 @@
       }
       resultats[s.index] = 'r';
       montrerRevoir(r);
+    }
+
+    /* Après une réponse juste : la voix dit le fait complet (« neuf fois cinq, quarante-cinq »),
+       et la question suivante attend la fin de la phrase (onend, au plus SECOURS_VOIX) et la jauge. */
+    let numeroQ = 0;
+    function enchainer(a, b) {
+      const ici = numeroQ;
+      pave.etat('suite', DUREE_SUITE);
+      const jauge = new Promise(r => plusTard(r, DUREE_SUITE));
+      Promise.all([direFait(a, b), jauge]).then(() => { if (ici === numeroQ && phase === 'juste') suivante(); });
     }
 
     function montrerJuste(rapide, valeur) {
@@ -322,13 +384,14 @@
         </div>
         <div class="retour-masc fete">${KR.medaillon('fete')}${KR.mascotte('fete', 'rebondit')}<div class="bulles"><div class="bulle parle">${t('bravo')}</div></div></div>`;
       montrerPave();
-      pave.etat('suite', DUREE_SUITE);
-      plusTard(suivante, DUREE_SUITE);
+      if (q.type === 'decomposition') enchainer(valeur[0], valeur[1]);
+      else enchainer(q.a, q.b);
     }
 
     function montrerRevoir(r) {
       phase = 'revoir';
       saisie = '';
+      revoir = r;
       majAvance();
       KR.son('doux');
       zone.innerHTML = `
@@ -336,18 +399,21 @@
           ? `<div class="fait">${q.a}${x}${q.b}${eg}<span class="surligne">${r.bonne}</span></div>`
           : `<div class="fait"><span class="surligne">${KR.echapper(r.correction.reponse)}</span></div><p class="ligne-texte">${KR.echapper(r.correction.phrase)}</p>`}</div>
         <div class="retour-masc">${KR.medaillon('aide')}${KR.mascotte('aide')}
-          <div class="bulles"><div class="bulle parle">${t('on_regarde')}</div>
+          <div class="bulles"><div class="bulle parle">${bulleRevoir()}</div>
           <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(r.astuce)}</div></div></div>
         <div class="carte-q carte-retape" lang="fr"><p class="consigne">À toi de le retaper</p>
           <div class="fait" data-case>${q.a}${x}${q.b}${eg}${caseRep('', true)}</div></div>`;
       montrerPave();
       pave.etat('vide');
+      direFait(q.a, q.b); // le fait juste, sur un ton neutre
     }
 
     function retaper() {
       if (!S.retaper(s, Number(saisie))) {
         KR.son('doux');
         saisie = '';
+        // Retape fausse : la bonne réponse réapparaît, on ne laisse pas l'enfant sans repère.
+        zone.querySelector('.carte-rev').classList.remove('masque');
         return majSaisie();
       }
       phase = 'juste';
@@ -356,8 +422,7 @@
       carte.classList.add('carte-juste');
       carte.querySelector('[data-case]').innerHTML = `${q.a}${x}${q.b}${eg}<span class="rep-verte">${q.a * q.b}</span>`;
       majAvance();
-      pave.etat('suite', DUREE_SUITE);
-      plusTard(suivante, DUREE_SUITE);
+      enchainer(q.a, q.b);
     }
 
     function suivante() {
@@ -368,9 +433,36 @@
       question();
     }
 
+    /* Un Back par erreur ne fait pas perdre la séance : on demande d'abord (point 12). */
+    function confirmerArret() {
+      if (document.querySelector('.voile')) return;
+      const voile = document.createElement('div');
+      voile.className = 'voile';
+      voile.innerHTML = `<div class="feuille feuille-arret" role="dialog" aria-modal="true" aria-labelledby="arret-titre">
+        <h2 id="arret-titre">${t('arreter_question')}</h2>
+        <div class="boutons"><button type="button" class="btn btn-secondaire" data-arret="non">${t('continuer')}</button>
+        <button type="button" class="btn btn-primaire" data-arret="oui">${t('arreter')}</button></div></div>`;
+      document.body.appendChild(voile);
+      const fermer = () => voile.remove();
+      voile.addEventListener('click', e => {
+        if (e.target === voile) return fermer();
+        const b = e.target.closest('[data-arret]');
+        if (!b) return;
+        fermer();
+        if (b.dataset.arret === 'oui') accueil();
+      });
+      voile.querySelector('[data-arret="non"]').focus();
+    }
+
     brancher({
-      retour: accueil,
-      ecouter: () => KR.lire(phase === 'revoir' ? `${q.a} fois ${q.b} égale ${q.a * q.b}` : aLire(q), 'fr'),
+      retour: confirmerArret,
+      // Sur l'écran d'erreur, Listen lit la bulle (langue du cadre), le fait juste puis l'astuce en français (point 8).
+      ecouter: () => {
+        if (phase === 'revoir' && revoir) {
+          KR.lireSuite([{ texte: bulleRevoir(), langue: KR.reglages().langue }, { texte: T.faitDit(q.a, q.b), langue: 'fr' }, { texte: revoir.astuce.replace(/×/g, 'fois'), langue: 'fr' }]);
+        } else if (phase === 'juste') KR.lire(T.faitDit(q.a, q.b), 'fr');
+        else KR.lire(aLire(q), 'fr');
+      },
       champ: b => { champ = Number(b.dataset.champ); majSaisie(); },
       choix: b => { if (phase === 'question') repondre(b.dataset.valeur === 'oui'); },
     });
@@ -384,11 +476,13 @@
     KR.son('fete');
     const vues = new Set();
     const montees = b.montees.filter(m => { const k = T.cle(m.a, m.b); if (vues.has(k)) return false; vues.add(k); return true; });
-    const jetons = montees.slice(0, 4).map(m => {
+    // Au-delà de quatre cases montées, un jeton « +N » : l'enfant compte autant de jetons que le titre en annonce (point 12).
+    const montrees = montees.length > JETONS_MAX ? montees.slice(0, JETONS_MAX - 1) : montees;
+    const jetons = montrees.map(m => {
       const e = m.couleur === 'or' ? 'auj' : ETAT_CASE[m.couleur];
       const cle = m.couleur === 'or' ? 'etat_or_court' : NOM_CASE[e];
       return `<div class="jeton m-${e}"><b lang="fr">${m.a} × ${m.b}</b><span>${marque(e)}${t(cle)}</span></div>`;
-    }).join('');
+    }).join('') + (montees.length > montrees.length ? `<div class="jeton jeton-plus"><b>+${montees.length - montrees.length}</b></div>` : '');
     const titreMontee = montees.length === 1 ? t('case_monte') : t('cases_montent', { n: montees.length });
     const demain = b.demain ? t('demain_revient', { fait: `<b lang="fr">${b.demain}</b>` }) : t('demain_simple');
     changerEcran(`<div class="ecran fin-seance">
@@ -411,19 +505,30 @@
   /* =================== Ma grille =================== */
   function grille(retour) {
     etat = T.charger(enfant);
+    /* Un seul dénominateur partout (point 10) : la légende compte les 36 paires de 2 à 9, chacune
+       dans l'état le plus faible de ses deux cases, comme l'accueil (« 2 of 36 by heart »).
+       Les lignes et colonnes 1 et 10, faciles, restent visibles mais atténuées, hors du compte. */
     const compte = { auj: 0, or: 0, pre: 0, com: 0, pas: 0 };
+    for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) {
+      const e1 = etatCase(a, b);
+      const e2 = etatCase(b, a);
+      const faible = RANG_CASE[e1] <= RANG_CASE[e2] ? e1 : e2;
+      compte[faible === 'or' && (e1 === 'auj' || e2 === 'auj') ? 'auj' : faible]++;
+    }
+    const facile = n => n === 1 || n === 10;
     let h = '<div class="ent coin" aria-hidden="true"></div>';
-    for (let b = 1; b <= 10; b++) h += `<div class="ent" data-col="${b}" role="columnheader">${b}</div>`;
+    for (let b = 1; b <= 10; b++) h += `<div class="ent${facile(b) ? ' ent-facile' : ''}" data-col="${b}" role="columnheader">${b}</div>`;
     for (let a = 1; a <= 10; a++) {
-      h += `<div class="ent" data-ligne="${a}" role="rowheader">${a}</div>`;
+      h += `<div class="ent${facile(a) ? ' ent-facile' : ''}" data-ligne="${a}" role="rowheader">${a}</div>`;
       for (let b = 1; b <= 10; b++) {
         const e = etatCase(a, b);
-        compte[e]++;
-        h += `<button type="button" class="cell m-${e}" data-a="case" data-x="${a}" data-y="${b}" data-etat="${e}" role="gridcell" aria-label="${a} × ${b}, ${KR.echapper(t(NOM_CASE[e]))}">${marque(e)}</button>`;
+        h += `<button type="button" class="cell m-${e}${facile(a) || facile(b) ? ' facile' : ''}" data-a="case" data-x="${a}" data-y="${b}" data-etat="${e}" role="gridcell" aria-label="${a} × ${b}, ${KR.echapper(t(NOM_CASE[e]))}">${marque(e)}</button>`;
       }
     }
-    const legende = ['auj', 'or', 'pre', 'com', 'pas'].map(e =>
-      `<div><span class="ech m-${e}">${marque(e)}</span><span class="lib">${t(NOM_CASE[e])}</span><span class="n">${compte[e]}</span></div>`).join('');
+    const parCoeur = compte.auj + compte.or;
+    const legende = `<p class="legende-titre">${KR.icone('etoile')}${t('tables_par_coeur', { n: parCoeur, total: 36 })}</p>`
+      + ['auj', 'or', 'pre', 'com', 'pas'].map(e =>
+        `<div><span class="ech m-${e}">${marque(e)}</span><span class="lib">${t(NOM_CASE[e])}</span><span class="n">${compte[e]}</span></div>`).join('');
     changerEcran(`<div class="ecran grille-ecran">
       <header class="barre">${nav('retour', 'retour', 'retour')}
         <div class="titre"><h1 class="titre-ecran">${t('ma_grille')}</h1><p class="indice">${t('touche_case')}</p></div></header>
@@ -449,7 +554,7 @@
         app.querySelector('.detail').innerHTML = `
           <div class="fait" lang="fr">${a}${x}${c}${eg}${a * c}</div>
           <span class="pastille m-${e}">${marque(e)}${t(NOM_CASE[e])}</span>
-          <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(T.astuce(a, c))}</div>`;
+          <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(T.astuce(a, c, etat))}</div>`;
       },
     });
   }

@@ -1,6 +1,10 @@
-/* Les textes du cadre des apps, en deux langues (relecture sur l'anglais du 01/11/2026) :
-   le cadre (portail, boutons, mascotte, fins de séance) suit le réglage de langue de l'enfant,
-   le contenu scolaire (questions, astuces, dictée) reste dans sa langue et n'est pas ici. */
+/* Les textes du cadre des apps, en deux langues (relecture sur l'anglais du 01/11/2026,
+   décisions des parents du 01/11/2026) :
+   - le cadre (portail, boutons, bulles de la mascotte, fins de séance) suit le réglage de langue
+     de l'enfant, anglais par défaut, voix en-GB ; phrases courtes, lues par le bouton Listen ;
+   - le contenu scolaire (questions, consignes, Oui et Non, astuces et leur étiquette, dictée)
+     reste en français et n'est pas ici : il vit dans le module ;
+   - le coin parent est toujours en français : ses clés s'appellent avec t(cle, valeurs, 'fr'). */
 (function (racine) {
   'use strict';
 
@@ -18,14 +22,11 @@
     effacer: { fr: 'Effacer', en: 'Delete' },
     suite: { fr: 'Suite', en: 'Next' },
     je_passe: { fr: 'Je passe', en: 'Skip' },
-    oui: { fr: 'Oui', en: 'Yes' },
-    non: { fr: 'Non', en: 'No' },
     avancement: { fr: '{n} sur {total}', en: '{n} of {total}' },
     rapide: { fr: 'Rapide !', en: 'Quick!' },
     bravo: { fr: 'Bravo !', en: 'Well done!' },
     presque: { fr: 'Presque !', en: 'Nearly!' },
     on_regarde: { fr: 'On regarde ensemble', en: "Let's look again" },
-    a_toi_retaper: { fr: 'À toi de le retaper', en: 'Now type it yourself' },
     voir_grille: { fr: 'Voir ma grille', en: 'See my grid' },
     fini: { fr: "Fini pour aujourd'hui", en: 'Done for today' },
     cases_montent: { fr: '{n} cases montent', en: '{n} squares went up' },
@@ -76,7 +77,7 @@
     parent_aide: { fr: 'Appui long pour ouvrir', en: 'Press and hold to open' },
     parent_langue: { fr: "Langue de l'app", en: 'App language' },
     parent_langue_note: { fr: 'Les questions et les astuces restent en français.', en: 'Questions and tips stay in French.' },
-    parent_voix: { fr: 'Lire chaque question à voix haute', en: 'Read each question aloud' },
+    parent_voix: { fr: 'Lire les questions et les réponses à voix haute', en: 'Read questions and answers aloud' },
     parent_sons: { fr: 'Sons', en: 'Sounds' },
     active: { fr: 'Oui', en: 'On' },
     coupee: { fr: 'Non', en: 'Off' },
@@ -99,16 +100,25 @@
     parent_jour_un: { fr: '1 jour de pratique en tout.', en: '1 day of practice so far.' },
     parent_aucun_fragile: { fr: 'Aucun résultat fragile pour le moment.', en: 'No shaky facts at the moment.' },
     parent_jours: { fr: '{n} jours de pratique en tout.', en: '{n} days of practice so far.' },
+    parent_lents: { fr: '{n} sont justes mais encore lents : {liste}.', en: '{n} are right but still slow: {liste}.' },
+    parent_lent_un: { fr: '1 est juste mais encore lent : {liste}.', en: '1 is right but still slow: {liste}.' },
+    // Ajouts de la relecture de l'app des tables (01/11/2026, points 9 et 12)
+    questions_auj: { fr: "{n} questions aujourd'hui", en: '{n} questions today' },
+    revient_auj: { fr: "{fait} revient aujourd'hui", en: '{fait} comes back today' },
+    arreter_question: { fr: "On s'arrête pour aujourd'hui ?", en: 'Stop for today?' },
+    continuer: { fr: 'Je continue', en: 'Keep going' },
+    arreter: { fr: "J'arrête", en: 'Stop' },
   };
 
   let langue = 'fr';
 
   function choisirLangue(l) { langue = l === 'en' ? 'en' : 'fr'; return langue; }
 
-  function t(cle, valeurs) {
+  /* forcee : 'fr' ou 'en' pour ignorer le réglage de l'enfant (le coin parent est en français). */
+  function t(cle, valeurs, forcee) {
     const entree = TEXTES[cle];
     if (!entree) return cle;
-    let s = entree[langue] || entree.fr;
+    let s = entree[forcee || langue] || entree.fr;
     if (valeurs) Object.keys(valeurs).forEach(k => { s = s.split('{' + k + '}').join(valeurs[k]); });
     return s;
   }

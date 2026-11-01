@@ -51,4 +51,20 @@ assert.ok(b.montees.length >= 1);
 assert.ok(b.semaine.find(x => x.aujourdhui).fait);
 assert.strictEqual(b.demain !== null, true, 'des faits reviennent demain');
 
+// Décomposition (point 5) : la réponse est créditée au résultat que l'enfant a réellement donné.
+const e2 = T.etatNeuf();
+e2.faits['3x8'] = { boite: 2, vu: true, prochain: '2026-11-02', justesJours: [], erreurs: 0, dernierTemps: null };
+const s2 = { questions: [{ type: 'decomposition', a: 3, b: 8, produit: 24, reponse: [3, 8] }], index: 0, aRetaper: null, justes: 0, reponses: 0, montees: [], revues: new Set(), multiple: 'un multiple de' };
+assert.strictEqual(S.repondre(s2, e2, [4, 6], 1500, jour).juste, true);
+assert.ok(e2.faits['4x6'] && e2.faits['4x6'].vu, '4 × 6 est crédité');
+assert.strictEqual(e2.faits['3x8'].boite, 2, '3 × 8 ne bouge pas');
+assert.strictEqual(s2.montees[0].a, 4);
+const s3 = Object.assign({}, s2, { questions: [{ type: 'decomposition', a: 3, b: 8, produit: 24, reponse: [3, 8] }], revues: new Set(), montees: [] });
+assert.strictEqual(S.repondre(s3, e2, [1, 24], 1500, jour).juste, false, '1 × 24 n est pas une décomposition des tables');
+
+// Question « multiple » (point 11) : la correction reprend la formulation de l'enfant.
+assert.ok(/n'est pas dans la table de 6/.test(S.correction({ type: 'multiple', a: 6, b: 8, nombre: 49, reponse: false }, 'dans la table de').phrase));
+assert.ok(/n'est pas un multiple de 6/.test(S.correction({ type: 'multiple', a: 6, b: 8, nombre: 49, reponse: false }).phrase));
+assert.strictEqual(S.creer(T.etatNeuf(), jour, undefined, { multiple: 'dans la table de' }).multiple, 'dans la table de');
+
 console.log('séance : tous les tests passent');

@@ -42,7 +42,7 @@
     document.title = KR.prenom();
     main.innerHTML = `
       <header class="heros">
-        <button type="button" class="coin-parent" id="coin-parent" aria-label="${KR.echapper(t('coin_parent') + ', ' + t('parent_aide'))}">${KR.icone('cadenas')}<span>${t('coin_parent')}</span></button>
+        <button type="button" class="coin-parent" id="coin-parent" aria-label="${KR.echapper(tp('coin_parent') + ', ' + tp('parent_aide'))}">${KR.icone('cadenas')}<span>${tp('coin_parent')}</span></button>
         <div class="heros-masc">
           <div class="bulle parle bas">${KR.echapper(t(fini ? 'repos_bulle' : 'attente_bulle'))}</div>
           ${KR.mascotte(fini ? 'repos' : 'attend')}
@@ -59,18 +59,19 @@
     KR.appuiLong(document.getElementById('coin-parent'), ouvrirCoinParent);
   }
 
-  /* ---------- Coin parent ---------- */
+  /* ---------- Coin parent : toujours en français, quelle que soit la langue de l'enfant ---------- */
+  const tp = (cle, valeurs) => t(cle, valeurs, 'fr');
+  const liste8 = l => l.slice(0, 8).join(', ') + (l.length > 8 ? ` et ${l.length - 8} autre${l.length > 9 ? 's' : ''}` : '');
   function resume(etat) {
-    const cles = Object.keys(etat.faits).filter(k => etat.faits[k].vu);
-    if (!cles.length) return `<p>${t('parent_pas_commence')}</p>`;
-    const fragiles = cles
-      .filter(k => etat.faits[k].erreurs > 0 && etat.faits[k].boite <= 2)
-      .sort((a, b) => etat.faits[b].erreurs - etat.faits[a].erreurs)
-      .map(k => k.replace('x', ' × '));
-    const liste = fragiles.slice(0, 8).join(', ') + (fragiles.length > 8 ? '…' : '');
-    return `<p>${t('parent_auto', { n: T.compteOr(etat) })}</p>
-      <p>${fragiles.length ? t(fragiles.length === 1 ? 'parent_fragile_un' : 'parent_fragiles', { n: fragiles.length, liste }) : t('parent_aucun_fragile')}</p>
-      <p>${etat.jours.length === 1 ? t('parent_jour_un') : t('parent_jours', { n: etat.jours.length })}</p>`;
+    const vus = Object.keys(etat.faits).filter(k => etat.faits[k].vu);
+    if (!vus.length) return `<p>${tp('parent_pas_commence')}</p>`;
+    // Paires de 2 à 9 seulement, ratées en séance ou au diagnostic, puis justes mais lentes.
+    const { rates, lents } = T.fragiles(etat);
+    const phrase = (l, un, plusieurs) => tp(l.length === 1 ? un : plusieurs, { n: l.length, liste: liste8(l) });
+    return `<p>${tp('parent_auto', { n: T.compteOr(etat) })}</p>
+      <p>${rates.length ? phrase(rates, 'parent_fragile_un', 'parent_fragiles') : tp('parent_aucun_fragile')}</p>
+      ${lents.length ? `<p>${phrase(lents, 'parent_lent_un', 'parent_lents')}</p>` : ''}
+      <p>${etat.jours.length === 1 ? tp('parent_jour_un') : tp('parent_jours', { n: etat.jours.length })}</p>`;
   }
 
   function segment(cle, options, valeur) {
@@ -83,26 +84,27 @@
     const r = KR.reglages();
     const voile = document.createElement('div');
     voile.className = 'voile';
+    voile.lang = 'fr';
     voile.innerHTML = `<div class="feuille" role="dialog" aria-modal="true" aria-labelledby="cp-titre">
-      <div class="feuille-tete"><h2 id="cp-titre">${t('parent_titre')}</h2><button type="button" class="btn btn-calme" data-a="fermer">${t('fermer')}</button></div>
-      <section class="reglage"><h3>${t('parent_tables')}</h3>${resume(T.charger(enfant))}</section>
-      <section class="reglage"><h3>${t('parent_langue')}</h3>${segment('langue', [['en', 'English'], ['fr', 'Français']], r.langue)}<p class="note">${t('parent_langue_note')}</p></section>
+      <div class="feuille-tete"><h2 id="cp-titre">${tp('parent_titre')}</h2><button type="button" class="btn btn-calme" data-a="fermer">${tp('fermer')}</button></div>
+      <section class="reglage"><h3>${tp('parent_tables')}</h3>${resume(T.charger(enfant))}</section>
+      <section class="reglage"><h3>${tp('parent_langue')}</h3>${segment('langue', [['en', 'English'], ['fr', 'Français']], r.langue)}<p class="note">${tp('parent_langue_note')}</p></section>
       <section class="reglage">
-        <div class="ligne-reglage"><span>${t('parent_voix')}</span>${segment('voix', [[true, t('active')], [false, t('coupee')]], r.voix)}</div>
-        <div class="ligne-reglage" style="margin-top:12px"><span>${t('parent_sons')}</span>${segment('sons', [[true, t('active')], [false, t('coupee')]], r.sons)}</div>
+        <div class="ligne-reglage"><span>${tp('parent_voix')}</span>${segment('voix', [[true, tp('active')], [false, tp('coupee')]], r.voix)}</div>
+        <div class="ligne-reglage" style="margin-top:12px"><span>${tp('parent_sons')}</span>${segment('sons', [[true, tp('active')], [false, tp('coupee')]], r.sons)}</div>
       </section>
-      <section class="reglage"><h3>${t('parent_sauvegarde')}</h3>
+      <section class="reglage"><h3>${tp('parent_sauvegarde')}</h3>
         <div class="boutons">
-          <button type="button" class="btn btn-secondaire" data-a="exporter">${KR.icone('sortir')}${t('parent_export')}</button>
-          <label class="btn btn-secondaire">${KR.icone('entrer')}${t('parent_import')}<input type="file" class="lecteur" accept="application/json,.json" data-a="importer"></label>
+          <button type="button" class="btn btn-secondaire" data-a="exporter">${KR.icone('sortir')}${tp('parent_export')}</button>
+          <label class="btn btn-secondaire">${KR.icone('entrer')}${tp('parent_import')}<input type="file" class="lecteur" accept="application/json,.json" data-a="importer"></label>
         </div>
-        <p class="note">${t('parent_sauvegarde_note')}</p>
+        <p class="note">${tp('parent_sauvegarde_note')}</p>
         <p class="message" aria-live="polite"></p>
       </section>
       <section class="reglage">
-        <div class="boutons" data-zone="raz"><button type="button" class="btn btn-calme" data-a="raz">${t('parent_raz')}</button></div>
-        <div class="cache" data-zone="confirmer"><p>${KR.echapper(t('parent_raz_question', { prenom: KR.prenom() }))}</p>
-          <div class="boutons"><button type="button" class="btn btn-secondaire" data-a="annuler">${t('annuler')}</button><button type="button" class="btn btn-primaire" data-a="raz-oui">${t('parent_raz_oui')}</button></div></div>
+        <div class="boutons" data-zone="raz"><button type="button" class="btn btn-calme" data-a="raz">${tp('parent_raz')}</button></div>
+        <div class="cache" data-zone="confirmer"><p>${KR.echapper(tp('parent_raz_question', { prenom: KR.prenom() }))}</p>
+          <div class="boutons"><button type="button" class="btn btn-secondaire" data-a="annuler">${tp('annuler')}</button><button type="button" class="btn btn-primaire" data-a="raz-oui">${tp('parent_raz_oui')}</button></div></div>
       </section>
     </div>`;
     document.body.appendChild(voile);
@@ -143,8 +145,8 @@
       const lecteur = new FileReader();
       lecteur.onload = () => {
         const ok = KR.importer(String(lecteur.result));
-        if (ok) { rendre(); ouvrirCoinParent(); document.querySelector('.voile .message').textContent = t('parent_import_ok'); }
-        else message.textContent = t('parent_import_ko', { prenom: KR.prenom() });
+        if (ok) { rendre(); ouvrirCoinParent(); document.querySelector('.voile .message').textContent = tp('parent_import_ok'); }
+        else message.textContent = tp('parent_import_ko', { prenom: KR.prenom() });
       };
       lecteur.readAsText(f);
     });

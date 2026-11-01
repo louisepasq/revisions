@@ -4,11 +4,21 @@ a.rond{text-decoration:none}
 /* ---------- Accueil du module ---------- */
 .accueil-grille{flex:1;display:grid;gap:24px;padding-top:24px;
   grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto 1fr;grid-template-areas:"entr grille" "entr bientot"}
-.carte-entrainement{grid-area:entr;position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:16px;text-align:left;
+.carte-entrainement{grid-area:entr;position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:22px;text-align:left;
   background:var(--e-700);color:var(--sur-e);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-relief);padding:30px;min-height:300px;transition:transform .08s,box-shadow .08s}
 .carte-entrainement:active{transform:translateY(var(--relief));box-shadow:none}
-.ce-masc{width:190px;height:190px;border-radius:50%;background:var(--e-100);display:grid;place-items:center;margin-bottom:auto}
+.ce-haut{display:flex;align-items:center;gap:24px;width:100%}
+.ce-masc{flex:none;width:190px;height:190px;border-radius:50%;background:var(--e-100);display:grid;place-items:center}
 .ce-masc .masc{width:150px;height:162px}
+/* Ce qui attend l'enfant aujourd'hui, à la place de l'aplat vide (relecture du 01/11/2026, point 9) */
+.ce-infos{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ce-info{display:flex;align-items:center;gap:12px;font-weight:700;font-size:22px;line-height:1.2}
+.ce-info .ico{flex:none;font-size:28px}
+.ce-info b{font-family:var(--f-jeu);font-weight:800;font-size:26px;white-space:nowrap}
+.ce-semaine{display:block;background:var(--carte);color:var(--encre);border-radius:var(--r-m);padding:12px 16px}
+.ce-texte{margin-top:auto;padding-right:100px}
+/* La place libre de la carte se répartit au-dessus et au-dessous de la semaine */
+.ce-semaine{margin-top:auto}
 .ce-texte b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:52px;line-height:1}
 .ce-texte span{display:block;font-size:21px;margin-top:8px}
 .ce-go{position:absolute;right:28px;bottom:28px;width:84px;height:84px;border-radius:50%;background:var(--sur-e);color:var(--e-700);display:grid;place-items:center}
@@ -41,6 +51,13 @@ a.rond{text-decoration:none}
 .sous-carte{display:flex;justify-content:center;flex:none}
 .carte-pleine .consigne{font-size:clamp(20px,6cqb,26px);margin-bottom:.3em}
 .carte-pleine .ligne-texte{font-size:clamp(20px,min(6cqi,7cqb),34px)}
+.carte-pleine .consigne.relance{color:var(--e-900);background:var(--surligneur);border-radius:12px;padding:2px 12px}
+/* Retape : la bonne réponse se cache dès le premier chiffre tapé (point 12) */
+.carte-rev.masque .surligne{color:transparent}
+.carte-rev.masque .ligne-texte{visibility:hidden}
+.feuille-arret{width:min(520px,100%);text-align:center}
+.feuille-arret h2{margin:6px 0 22px}
+.feuille-arret .boutons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 .retour-masc.fete{align-items:flex-end}
 .retour-masc.fete .bulles{padding-bottom:70px}
 
@@ -60,6 +77,7 @@ a.rond{text-decoration:none}
 .jeton span{font-size:17px;font-weight:700;display:flex;align-items:center;gap:7px;text-align:center}
 .jeton.m-pre,.jeton.m-com{color:var(--e-900)}
 .jeton.m-auj{color:#1E2147}
+.jeton-plus{background:var(--e-100);color:var(--e-900)}
 .jeton:nth-child(2){animation-delay:.12s}.jeton:nth-child(3){animation-delay:.24s}.jeton:nth-child(4){animation-delay:.36s}
 .ligne-fin{display:flex;align-items:center;gap:22px;margin-top:22px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:14px 20px}
 .jours-n{font-weight:700;font-size:19px;color:var(--e-900);line-height:1.25}
@@ -77,6 +95,9 @@ a.rond{text-decoration:none}
 .cell{border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-width:0;min-height:0;padding:0}
 .cell .ico{font-size:16px}
 .cell.m-auj .ico{font-size:24px}
+/* Lignes et colonnes 1 et 10 : atténuées, hors du compte sur 36 (point 10) */
+.cell.facile:not(.touchee){opacity:.45}
+.ent.ent-facile:not(.actif){opacity:.55}
 .cell.touchee{outline:5px solid var(--e-700);outline-offset:3px;z-index:2;transform:scale(1.06)}
 .cell.touchee b{font-family:var(--f-jeu);font-weight:800;font-size:26px;line-height:1;color:var(--e-900)}
 .cell.touchee.m-or b,.cell.touchee.m-auj b{color:#1E2147}
@@ -91,22 +112,28 @@ a.rond{text-decoration:none}
 .detail-vide{font-size:19px;color:var(--encre-douce);font-weight:700}
 .detail .pastille .ico{color:var(--or-fonce)}
 .legende-m{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:10px 18px}
+.legende-titre{display:flex;align-items:center;gap:8px;font-family:var(--f-jeu);font-weight:700;font-size:21px;color:var(--e-900);padding:6px 0 4px}
+.legende-titre .ico{color:var(--or-fonce);font-size:22px}
 .legende-m div{display:flex;align-items:center;gap:12px;min-height:46px;font-size:17px;font-weight:700}
 .legende-m .ech{width:36px;height:36px;border-radius:9px;flex:none;display:grid;place-items:center}
 .legende-m .ech .ico{font-size:16px}
 .legende-m .ech .pts i{width:6px;height:6px}
 .legende-m .n{margin-left:auto;font-family:var(--f-jeu);font-weight:700;font-size:22px}
-@media (prefers-color-scheme: dark){ .cell.m-auj .ico,.legende-m .m-auj .ico{color:#4A3500} }
+@media (prefers-color-scheme: dark){ .cell.m-auj .ico,.legende-m .m-auj .ico{color:#4A3500} .legende-titre .ico{color:var(--or-vif)} }
 
 /* ===================== Formats ===================== */
 /* iPad paysage */
 @media (orientation: landscape) and (min-width: 900px){
+  .ce-haut{flex-direction:column;align-items:flex-start;gap:20px}
+  .ce-masc{width:220px;height:220px}
+  .ce-masc .masc{width:176px;height:190px}
+  .ce-info{font-size:24px}
   .exo .zone{max-width:560px}
   .exo .corps{justify-content:space-between}
 }
 /* iPad portrait et iPhone : colonnes empilées */
 @media (orientation: portrait), (max-width: 899px){
-  .accueil-grille{grid-template-columns:1fr;grid-template-rows:auto auto auto;grid-template-areas:"entr" "grille" "bientot";align-content:start}
+  .accueil-grille{grid-template-columns:1fr;grid-template-rows:1fr auto auto;grid-template-areas:"entr" "grille" "bientot"}
   .bientots{flex-direction:row}
   .carte-bientot{flex:1}
   .retour-masc .masc{width:120px;height:130px}
@@ -125,9 +152,15 @@ a.rond{text-decoration:none}
 /* iPhone */
 @media (max-width: 600px){
   .accueil-grille{gap:16px;padding-top:12px}
-  .carte-entrainement{min-height:0;padding:20px;flex-direction:row;align-items:center;gap:14px}
+  .carte-entrainement{min-height:0;padding:20px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px}
+  .ce-haut{gap:14px}
   .ce-masc{width:96px;height:96px;margin:0;flex:none}
   .ce-masc .masc{width:76px;height:82px}
+  .ce-info{font-size:17px;gap:8px}
+  .ce-info .ico{font-size:22px}
+  .ce-info b{font-size:20px}
+  .ce-semaine{width:100%;padding:10px 12px;margin-top:0}
+  .ce-texte{flex:1;min-width:0;margin-top:0;padding-right:0}
   .ce-texte b{font-size:34px}
   .ce-texte span{font-size:18px}
   .ce-go{position:static;width:60px;height:60px;margin-left:auto;flex:none}
@@ -179,6 +212,11 @@ a.rond{text-decoration:none}
   .carte-entrainement{min-height:400px}
   .ce-masc{width:220px;height:220px}
   .ce-masc .masc{width:176px;height:190px}
+  .ce-info{font-size:26px}
+  .ce-info b{font-size:30px}
+  /* Fin de séance au centre de l'écran, mascotte plus grande (point 9) */
   .fin-seance{justify-content:center;gap:24px}
+  .fin-contenu{flex:none} /* sinon flex:1 avale la place libre et tout reste collé en haut */
+  .fin-masc .masc{width:250px;height:270px}
   .grille-ecran{--case:58px}
 }
