@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette des écrans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF8EC; --ink:#2D2A32; --muted:#7A7468; --card:#FFFFFF; --line:#EADFCB;
+  --ours:#E4572E; --ours-soft:#FDE3D9; --miel:#F6C14B;
+  --koala:#2A9D8F; --koala-soft:#D8F1EC;
+  --gris:#ECE7DD; --bronze:#E9A86E; --argent:#BCC7D2; --or:#F2C230;
+  --ok:#3BB273; --ok-soft:#DDF3E6; --doux:#F4A259; --doux-soft:#FDEBD8;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Fredoka',system-ui,sans-serif;background:#E7E2D8;color:var(--ink)}
+.page{max-width:1140px;margin:0 auto;padding:32px 16px 80px}
+.intro{background:var(--card);border-radius:20px;padding:24px 28px;margin-bottom:24px}
+.intro h1{margin:0 0 6px;font-size:30px}
+.intro p{margin:6px 0;color:#4a4650;line-height:1.45}
+.sons{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.sons button{font:inherit;font-size:16px;border:0;border-radius:12px;padding:10px 16px;background:var(--ink);color:#fff;cursor:pointer}
+.ecran{margin:48px 0}
+.ecran h2{font-size:22px;margin:0 0 4px}
+.ecran .note{color:#4a4650;margin:0 0 14px;line-height:1.45;max-width:1000px}
+.cote{display:flex;gap:16px;justify-content:center}
+
+.ipad{width:1080px;height:750px;margin:0 auto;background:var(--bg);border:14px solid #1F1F24;border-radius:38px;
+  box-shadow:0 18px 40px rgba(0,0,0,.18);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.theme-ours{--acc:var(--ours);--acc-soft:var(--ours-soft)}
+.theme-koala{--acc:var(--koala);--acc-soft:var(--koala-soft)}
+
+.barre{height:72px;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:2px solid var(--line);background:#FFFDF8;flex:none}
+.barre .retour{width:48px;height:48px;border-radius:14px;background:var(--gris);display:grid;place-items:center;font-size:24px}
+.barre .avatar{width:48px;height:48px}
+.barre .titre{font-size:22px;font-weight:600;flex:1}
+.barre .pastille{background:var(--acc-soft);color:var(--acc);border-radius:999px;padding:6px 14px;font-weight:600;font-size:17px;white-space:nowrap}
+.barre .ico{width:48px;height:48px;border-radius:14px;background:var(--gris);display:grid;place-items:center;font-size:22px}
+.corps{flex:1;display:flex;min-height:0}
+
+.mascotte{display:block}
+.bulle{background:#fff;border-radius:24px;padding:20px 24px;font-size:22px;line-height:1.35;box-shadow:0 4px 0 var(--line);position:relative}
+.bouton{font:inherit;border:0;border-radius:22px;padding:20px 28px;font-size:26px;font-weight:600;color:#fff;background:var(--acc);box-shadow:0 6px 0 rgba(0,0,0,.18);cursor:pointer;text-align:left}
+.bouton.sec{background:#fff;color:var(--ink);box-shadow:0 6px 0 var(--line)}
+.bouton small{display:block;font-size:17px;font-weight:500;opacity:.85;margin-top:2px}
+
+/* entraînement */
+.zoneq{flex:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;position:relative}
+.points{display:flex;gap:7px;position:absolute;top:22px;left:50%;transform:translateX(-50%)}
+.points i{width:14px;height:14px;border-radius:50%;background:var(--gris);display:block}
+.points i.f{background:var(--acc)}
+.points i.e{background:var(--doux)}
+.question{font-size:112px;font-weight:600;letter-spacing:2px;line-height:1}
+.reponse{min-width:200px;height:110px;border-radius:24px;background:#fff;border:4px solid var(--acc);display:grid;place-items:center;font-size:76px;font-weight:600}
+.reponse.vide{color:var(--gris)}
+.pave{flex:none;width:400px;padding:28px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-content:center;background:#FFFDF8;border-left:2px solid var(--line)}
+.pave span{height:96px;border-radius:22px;background:#fff;box-shadow:0 6px 0 var(--line);display:grid;place-items:center;font-size:42px;font-weight:600}
+.pave span.ok{background:var(--acc);color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.2)}
+.pave span.eff{font-size:34px;color:var(--muted)}
+.pave.eteint{opacity:.35}
+.chip{display:inline-block;border-radius:999px;padding:8px 18px;font-size:20px;font-weight:600}
+.astuce{background:#fff;border-radius:22px;padding:18px 24px;font-size:24px;line-height:1.4;box-shadow:0 4px 0 var(--line);max-width:520px}
+.astuce b{color:var(--acc)}
+
+/* grille */
+.grille{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
+.grille div{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-weight:600}
+.grille .t{background:transparent;color:var(--muted)}
+.c-gris{background:var(--gris);color:#B5AE9F}
+.c-bronze{background:var(--bronze);color:#fff}
+.c-argent{background:var(--argent);color:#fff}
+.c-or{background:var(--or);color:#6B4E00}
+.legende{display:flex;gap:18px;flex-wrap:wrap;font-size:18px}
+.legende span{display:flex;align-items:center;gap:8px}
+.legende i{width:22px;height:22px;border-radius:6px;display:block}
+.mini{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;width:230px}
+.mini div{aspect-ratio:1;border-radius:3px}
+
+/* chemin */
+.chemin{display:flex;align-items:flex-start;justify-content:space-between;position:relative;padding:0 10px}
+.chemin:before{content:"";position:absolute;left:70px;right:70px;top:62px;border-top:8px dotted #D8CDB8}
+.etape{position:relative;width:150px;text-align:center}
+.etape .rond{width:124px;height:124px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:700;background:#fff;box-shadow:0 6px 0 var(--line)}
+.etape.fait .rond{background:var(--or);color:#6B4E00}
+.etape.encours .rond{background:var(--acc);color:#fff;outline:6px solid var(--acc-soft)}
+.etape.ferme .rond{background:var(--gris);color:#B5AE9F}
+.etape b{display:block;font-size:19px}
+.etape small{color:var(--muted);font-size:16px}
+
+/* rectangle de points */
+.rect{display:grid;grid-template-columns:repeat(10,34px);gap:8px}
+.rect i{width:34px;height:34px;border-radius:50%;background:var(--acc);display:block}
+.rect i.barre{background:var(--gris);outline:3px dashed #C9BFAD;outline-offset:-3px}
+
+/* défi */
+.chrono{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font-size:40px;font-weight:700;
+  background:conic-gradient(var(--acc) 0 63%, var(--gris) 63% 100%);position:relative}
+.chrono:after{content:"";position:absolute;inset:16px;border-radius:50%;background:var(--bg)}
+.chrono span{position:relative;z-index:1}
+.barres{display:flex;align-items:flex-end;gap:14px;height:180px}
+.barres div{width:60px;border-radius:12px 12px 4px 4px;background:var(--acc-soft);display:flex;align-items:flex-start;justify-content:center;font-weight:600;font-size:20px;padding-top:6px}
+.barres div.dernier{background:var(--acc);color:#fff}
+
+/* parent */
+.colp{flex:1;padding:26px 30px;display:flex;flex-direction:column;gap:14px}
+.colp + .colp{border-left:2px solid var(--line)}
+.carte{background:#fff;border-radius:18px;padding:16px 20px;box-shadow:0 3px 0 var(--line);font-size:19px;line-height:1.4}
+.carte b{font-size:20px}
+.fragile{display:inline-block;background:var(--doux-soft);color:#A4561A;border-radius:10px;padding:3px 10px;margin:4px 6px 0 0;font-weight:600}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="bouclette" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="b"/>
+      <feDisplacementMap in="SourceGraphic" in2="b" scale="5"/>
+    </filter>
+    <symbol id="ours" viewBox="0 0 200 240">
+      <ellipse cx="78" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="122" cy="212" rx="17" ry="26" fill="#F1E3A0"/>
+      <ellipse cx="78" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="122" cy="234" rx="18" ry="7" fill="#E9D98F"/>
+      <ellipse cx="100" cy="176" rx="42" ry="40" fill="#F7EBB3"/>
+      <ellipse cx="42" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(25 42 158)"/>
+      <ellipse cx="158" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(-25 158 158)"/>
+      <path d="M58 138 Q100 126 142 138 L164 152 Q160 166 148 166 L144 176 Q100 186 56 176 L52 166 Q40 166 36 152 Z" fill="#D8392F"/>
+      <path d="M84 136 Q100 146 116 136" stroke="#B12A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="56" cy="40" r="17" fill="#EEDD93"/><circle cx="56" cy="42" r="9" fill="#E3CF7E"/>
+      <circle cx="144" cy="40" r="17" fill="#EEDD93"/><circle cx="144" cy="42" r="9" fill="#E3CF7E"/>
+      <ellipse cx="100" cy="80" rx="54" ry="56" fill="#F5E8A6"/>
+      <ellipse cx="100" cy="102" rx="30" ry="24" fill="#F9F0C6"/>
+      <path d="M90 90 Q100 84 110 90 Q112 100 100 104 Q88 100 90 90 Z" fill="#7A4A2E"/>
+      <path d="M80 108 Q100 124 120 108" stroke="#6B3B24" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="70" r="4.5" fill="#6B3B24"/><circle cx="120" cy="70" r="4.5" fill="#6B3B24"/>
+      <path d="M72 58 Q80 52 88 57" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M112 57 Q120 52 128 58" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <circle cx="68" cy="94" r="8" fill="#F2A07E" opacity=".35"/><circle cx="132" cy="94" r="8" fill="#F2A07E" opacity=".35"/>
+    </symbol>
+    <symbol id="koala" viewBox="0 0 200 240">
+      <g filter="url(#bouclette)">
+        <ellipse cx="80" cy="222" rx="20" ry="13" fill="#B3ADA3"/><ellipse cx="120" cy="222" rx="20" ry="13" fill="#B3ADA3"/>
+        <ellipse cx="100" cy="182" rx="44" ry="44" fill="#C2BDB3"/>
+        <ellipse cx="50" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(20 50 168)"/>
+        <ellipse cx="150" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(-20 150 168)"/>
+        <circle cx="46" cy="58" r="33" fill="#BDB7AD"/>
+        <circle cx="154" cy="58" r="33" fill="#BDB7AD"/>
+        <ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/>
+        <path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/>
+      </g>
+      <circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/>
+      <ellipse cx="100" cy="134" rx="15" ry="13" fill="#1E1E24"/>
+      <circle cx="95" cy="130" r="3.5" fill="#fff" opacity=".35"/>
+      <path d="M78 108 Q100 126 122 108" stroke="#4A4640" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="86" r="4" fill="#1E1E24"/><circle cx="120" cy="86" r="4" fill="#1E1E24"/>
+      <circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+<div class="intro">
+  <h1>Maquette des écrans de l'appli des tables, iPad en paysage</h1>
+  <p>Quatorze écrans, de A à N, dans l'ordre où l'enfant les rencontre. Les écrans de Pooh Bear (CM2, accent rouge) et de Moussi (CM1, accent eucalyptus) alternent pour montrer les deux thèmes. Rien n'est cliquable, sauf les sons ci-dessous.</p>
+  <p>Les sons sont fabriqués par le navigateur, sans fichier : écoute-les pour juger s'ils plaisent.</p>
+  <div class="sons">
+    <button type="button" data-son="juste">🔔 Bonne réponse</button>
+    <button type="button" data-son="erreur">🫧 Erreur, son doux</button>
+    <button type="button" data-son="record">🎉 Nouveau record</button>
+    <button type="button" data-son="touche">⌨️ Touche du pavé</button>
+    <button type="button" data-son="voix">🗣️ Voix : « Sept fois huit ? »</button>
+  </div>
+</div>
+
+<!-- A -->
+<section class="ecran">
+  <h2>A. Accueil : l'enfant touche sa mascotte, aucun prénom à l'écran</h2>
+  <p class="note">Le niveau CM1 ou CM2 est rattaché à la mascotte. Le coin parent s'ouvre par un appui long sur le cadenas, pour que les enfants n'y tombent pas par hasard.</p>
+  <div class="ipad">
+    <div class="corps" style="flex-direction:column;align-items:center;justify-content:center;gap:34px">
+      <div style="font-size:46px;font-weight:600">Qui joue aujourd'hui ?</div>
+      <div style="display:flex;gap:48px">
+        <div style="width:360px;background:#fff;border-radius:34px;padding:26px;text-align:center;box-shadow:0 8px 0 #F2C9BA;border:5px solid var(--ours)">
+          <svg class="mascotte" width="230" height="266" style="margin:0 auto"><use href="#ours"/></svg>
+          <div style="font-size:30px;font-weight:600;margin-top:8px">Pooh Bear</div>
+          <span class="chip" style="background:var(--ours-soft);color:var(--ours);margin-top:8px">CM2 · 🔥 5 jours</span>
+        </div>
+        <div style="width:360px;background:#fff;border-radius:34px;padding:26px;text-align:center;box-shadow:0 8px 0 #BFE3DC;border:5px solid var(--koala)">
+          <svg class="mascotte" width="230" height="266" style="margin:0 auto"><use href="#koala"/></svg>
+          <div style="font-size:30px;font-weight:600;margin-top:8px">Moussi</div>
+          <span class="chip" style="background:var(--koala-soft);color:var(--koala);margin-top:8px">CM1 · 🔥 3 jours</span>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;right:24px;bottom:20px;color:var(--muted);font-size:17px">🔒 Coin parent (appui long)</div>
+  </div>
+</section>
+
+<!-- B -->
+<section class="ecran">
+  <h2>B. Premier lancement : un défi d'une minute pour savoir par où commencer, sans score affiché</h2>
+  <p class="note">Le diagnostic place chaque résultat dans sa boîte de départ. À la fin, l'enfant ne voit pas de note, seulement « Super, je sais par où on commence ! », pour qu'un premier contact raté ne le décourage pas. Le bouton « Je passe » existe : ne pas savoir n'est pas une faute.</p>
+  <div class="ipad theme-koala">
+    <div class="corps" style="align-items:center;justify-content:center;gap:40px;padding:40px">
+      <svg class="mascotte" width="330" height="383"><use href="#koala"/></svg>
+      <div style="display:flex;flex-direction:column;gap:26px;max-width:520px">
+        <div class="bulle">Salut ! Avant de jouer, on fait un petit défi d'<b>une minute</b>.<br><br>Réponds à tout ce que tu peux. Si tu ne sais pas, appuie sur <b>Je passe</b>, ce n'est pas grave : ça m'aide à savoir par où on commence.</div>
+        <button class="bouton" type="button" style="align-self:flex-start">C'est parti !</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- C -->
+<section class="ecran">
+  <h2>C. Maison de la mascotte : un gros bouton pour la séance du jour, la grille et la série en vue</h2>
+  <p class="note">L'enfant n'a qu'une chose évidente à faire : « Entraînement du jour ». La grille miniature et la série de jours sont la récompense visible en permanence. La famille du moment et le record sont à côté, sans concurrencer la séance.</p>
+  <div class="ipad theme-ours">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#ours"/></svg><div class="titre">La maison de Pooh Bear</div><div class="pastille">🔥 5 jours de suite</div><div class="ico">🔊</div></div>
+    <div class="corps" style="padding:34px 40px;gap:40px">
+      <div style="width:330px;display:flex;flex-direction:column;align-items:center;gap:18px">
+        <svg class="mascotte" width="210" height="244"><use href="#ours"/></svg>
+        <div class="mini" id="mini-ours"></div>
+        <div style="font-size:20px;text-align:center"><b>14</b> résultats en or sur 36<br><span style="color:var(--muted)">toucher pour voir ma grille</span></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:22px;justify-content:center">
+        <button class="bouton" type="button" style="font-size:34px;padding:30px 34px">▶︎ Entraînement du jour<small>5 minutes · 9 × 7 et 8 × 6 reviennent aujourd'hui</small></button>
+        <button class="bouton sec" type="button">🧭 Découvrir une famille<small>En cours : la table de 9</small></button>
+        <button class="bouton sec" type="button">⏱️ Défi 1 minute<small>Ton record : 23</small></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- D E F -->
+<section class="ecran">
+  <h2>D. Entraînement : une question en grand, un pavé géant, la question peut être lue à voix haute</h2>
+  <p class="note">Vingt questions environ, les points en haut montrent l'avancement. Le haut-parleur relit la question. Le pavé est à droite pour un enfant droitier, iPad posé à plat ou sur un support.</p>
+  <div class="ipad theme-koala">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#koala"/></svg><div class="titre">Entraînement du jour</div><div class="ico">🔊</div></div>
+    <div class="corps">
+      <div class="zoneq">
+        <div class="points"><i class="f"></i><i class="f"></i><i class="f"></i><i class="e"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="question">7 × 8</div>
+        <div class="reponse">5<span style="color:var(--acc);font-weight:400">|</span></div>
+      </div>
+      <div class="pave"><span>7</span><span>8</span><span>9</span><span>4</span><span>5</span><span>6</span><span>1</span><span>2</span><span>3</span><span class="eff">⌫</span><span>0</span><span class="ok">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ecran">
+  <h2>E. Bonne réponse : un tintement, une étoile, « Rapide ! » si elle est venue en moins de 3 secondes</h2>
+  <p class="note">L'écran passe au vert une demi-seconde puis enchaîne seul sur la question suivante. « Rapide ! » récompense le réflexe, sans chrono affiché pendant l'entraînement.</p>
+  <div class="ipad theme-koala">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#koala"/></svg><div class="titre">Entraînement du jour</div><div class="ico">🔊</div></div>
+    <div class="corps">
+      <div class="zoneq" style="background:var(--ok-soft)">
+        <div class="points"><i class="f"></i><i class="f"></i><i class="f"></i><i class="e"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="question">7 × 8</div>
+        <div class="reponse" style="border-color:var(--ok);color:var(--ok)">56 ✓</div>
+        <div style="display:flex;gap:12px"><span class="chip" style="background:#fff;color:var(--ok)">⭐ +1</span><span class="chip" style="background:var(--ok);color:#fff">⚡ Rapide !</span></div>
+      </div>
+      <div class="pave eteint"><span>7</span><span>8</span><span>9</span><span>4</span><span>5</span><span>6</span><span>1</span><span>2</span><span>3</span><span class="eff">⌫</span><span>0</span><span class="ok">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ecran">
+  <h2>F. Erreur : pas de croix rouge, la bonne réponse avec son astuce, puis l'enfant la retape lui-même</h2>
+  <p class="note">L'enfant a tapé 54. Un son doux, la bonne réponse en orange, l'astuce de la famille. Il doit retaper 56 avant de continuer (l'astuce reste visible) : c'est ce geste qui fixe le résultat. La question reviendra quelques questions plus loin, puis demain.</p>
+  <div class="ipad theme-koala">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#koala"/></svg><div class="titre">Entraînement du jour</div><div class="ico">🔊</div></div>
+    <div class="corps">
+      <div class="zoneq" style="background:var(--doux-soft)">
+        <div class="points"><i class="f"></i><i class="f"></i><i class="f"></i><i class="e"></i><i class="f"></i><i class="f"></i><i class="e"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div style="font-size:26px;color:#A4561A;font-weight:600">Presque ! Ce n'est pas 54.</div>
+        <div class="question" style="font-size:96px">7 × 8 = <span style="color:#D9782D">56</span></div>
+        <div class="astuce">💡 <b>7 × 4 = 28</b>, et le double de 28, c'est <b>56</b>.</div>
+        <div style="display:flex;align-items:center;gap:16px;font-size:24px">À toi de le retaper : <div class="reponse vide" style="height:84px;min-width:150px;font-size:56px">_ _</div></div>
+      </div>
+      <div class="pave"><span>7</span><span>8</span><span>9</span><span>4</span><span>5</span><span>6</span><span>1</span><span>2</span><span>3</span><span class="eff">⌫</span><span>0</span><span class="ok">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- G -->
+<section class="ecran">
+  <h2>G. Les trois autres questions d'Eduscol se glissent dans la séance : facteur manquant, deux facteurs, multiple</h2>
+  <p class="note">Les trois panneaux montrent trois questions différentes, qui arrivent mélangées dans la même séance que « 7 × 8 = ? ». Pour « ? × ? = 48 », toute bonne paire est acceptée (6 × 8, 4 × 12, 2 × 24) et l'appli montre les autres ensuite.</p>
+  <div class="ipad theme-ours">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#ours"/></svg><div class="titre">Entraînement du jour</div><div class="ico">🔊</div></div>
+    <div class="corps" style="gap:18px;padding:26px">
+      <div style="flex:1;background:#fff;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;box-shadow:0 5px 0 var(--line)">
+        <span class="chip" style="background:var(--acc-soft);color:var(--acc)">Le nombre caché</span>
+        <div class="question" style="font-size:72px">7 × <span style="display:inline-block;width:86px;height:86px;border:4px dashed var(--acc);border-radius:18px;vertical-align:middle"></span> = 56</div>
+        <div style="font-size:20px;color:var(--muted)">Dans 56, combien de fois 7 ?</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;box-shadow:0 5px 0 var(--line)">
+        <span class="chip" style="background:var(--acc-soft);color:var(--acc)">Trouve deux nombres</span>
+        <div class="question" style="font-size:66px"><span style="display:inline-block;width:80px;height:80px;border:4px solid var(--acc);border-radius:18px;vertical-align:middle;font-size:52px;line-height:72px;text-align:center">6</span> × <span style="display:inline-block;width:80px;height:80px;border:4px dashed var(--acc);border-radius:18px;vertical-align:middle"></span> = 48</div>
+        <div style="font-size:20px;color:var(--muted)">Il y a plusieurs bonnes réponses</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;box-shadow:0 5px 0 var(--line)">
+        <span class="chip" style="background:var(--acc-soft);color:var(--acc)">Oui ou non ?</span>
+        <div style="font-size:40px;font-weight:600;text-align:center;line-height:1.25">48 est-il dans<br>la table de 6 ?</div>
+        <div style="display:flex;gap:16px"><button class="bouton" type="button" style="background:var(--ok);font-size:30px">Oui</button><button class="bouton" type="button" style="background:#8C8577;font-size:30px">Non</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- H -->
+<section class="ecran">
+  <h2>H. Fin de séance : ce qui a progressé dans la grille, la série de jours, et ce qui revient demain</h2>
+  <p class="note">Le récapitulatif parle de progrès, pas de note sur 20 en gros. Les cases qui ont changé de couleur s'animent : c'est le moment de fierté de la séance.</p>
+  <div class="ipad theme-ours">
+    <div class="corps" style="align-items:center;justify-content:center;gap:50px;padding:40px">
+      <svg class="mascotte" width="300" height="348"><use href="#ours"/></svg>
+      <div style="display:flex;flex-direction:column;gap:18px;width:520px">
+        <div style="font-size:52px;font-weight:700">Bravo ! 🎉</div>
+        <div class="carte"><b>3 cases passent en argent</b><br><span class="chip c-argent" style="margin-top:8px">6 × 7</span> <span class="chip c-argent">7 × 6</span> <span class="chip c-argent">8 × 4</span></div>
+        <div class="carte"><b>🔥 6 jours de suite</b> · 18 bonnes réponses sur 20</div>
+        <div class="carte">Demain, <b>9 × 7</b> revient te voir.</div>
+        <div style="display:flex;gap:14px"><button class="bouton" type="button">Voir ma grille</button><button class="bouton sec" type="button">Fini pour aujourd'hui</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- I -->
+<section class="ecran">
+  <h2>I. La grille : la table de Pythagore se colore case par case, du gris à l'or</h2>
+  <p class="note">Une case passe en or quand le résultat sort juste, en moins de 3 secondes, sur plusieurs jours différents. Toucher une case montre le calcul et son astuce. Les cases de la table de 1 et de 10 se dorent vite : elles montrent dès le premier jour que la grille avance.</p>
+  <div class="ipad theme-ours">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#ours"/></svg><div class="titre">Ma grille</div><div class="pastille">14 en or sur 36</div></div>
+    <div class="corps" style="padding:22px 30px;gap:30px">
+      <div style="width:610px"><div class="grille" id="grille-ours"></div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px;justify-content:center">
+        <div class="legende" style="flex-direction:column;gap:10px">
+          <span><i class="c-gris"></i>Pas encore</span>
+          <span><i class="c-bronze"></i>Je commence</span>
+          <span><i class="c-argent"></i>Presque</span>
+          <span><i class="c-or"></i>Je sais par cœur</span>
+        </div>
+        <div class="carte" style="border:4px solid var(--acc)">
+          <div style="font-size:40px;font-weight:600">6 × 7 = 42</div>
+          <span class="chip c-argent" style="margin:6px 0">Presque</span>
+          <div>💡 6 × 6 = 36, et une fois 6 de plus : 42.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- J -->
+<section class="ecran">
+  <h2>J. Le chemin des familles : on débloque les tables dans l'ordre d'Eduscol, la table de 7 en boss final</h2>
+  <p class="note">Une famille s'ouvre quand la précédente est surtout en argent ou en or. L'ordre suit les propriétés : chaque famille s'appuie sur la précédente.</p>
+  <div class="ipad theme-koala">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#koala"/></svg><div class="titre">Découvrir une famille</div></div>
+    <div class="corps" style="flex-direction:column;justify-content:center;gap:40px;padding:30px">
+      <div class="chemin">
+        <div class="etape fait"><div class="rond">×0 ×1<br>×10 ×5</div><b>Les faciles</b><small>⭐⭐⭐</small></div>
+        <div class="etape fait"><div class="rond">×2</div><b>Les doubles</b><small>⭐⭐⭐</small></div>
+        <div class="etape encours"><div class="rond">×4 ×8</div><b>Doubles des doubles</b><small>⭐⭐ en cours</small></div>
+        <div class="etape ferme"><div class="rond">×3 ×6</div><b>Le double plus un</b><small>🔒</small></div>
+        <div class="etape ferme"><div class="rond">×9</div><b>Dix moins un</b><small>🔒</small></div>
+        <div class="etape ferme"><div class="rond">×7</div><b>Le boss final</b><small>🔒</small></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:22px;justify-content:center">
+        <svg class="mascotte" width="120" height="139"><use href="#koala"/></svg>
+        <div class="bulle" style="max-width:560px">La table de 8, c'est le double de la table de 4 ! On regarde comment ?</div>
+        <button class="bouton" type="button">Je regarde</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- K -->
+<section class="ecran">
+  <h2>K. Découvrir une famille : le rectangle de points rend l'astuce visible (ici, la table de 9)</h2>
+  <p class="note">L'animation montre 4 rangées de 10, puis barre une colonne : 4 × 9, c'est 40 moins 4. Trois ou quatre écrans par famille au plus, puis on s'entraîne tout de suite sur cette famille.</p>
+  <div class="ipad theme-koala">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#koala"/></svg><div class="titre">La table de 9 : dix moins un</div><div class="pastille">2 / 3</div></div>
+    <div class="corps" style="align-items:center;justify-content:center;gap:56px;padding:30px">
+      <div class="rect" id="rect9"></div>
+      <div style="display:flex;flex-direction:column;gap:18px;width:400px">
+        <div class="astuce" style="font-size:26px">4 rangées de 10 : <b>40</b></div>
+        <div class="astuce" style="font-size:26px">On enlève une colonne de 4 : <b>40 − 4</b></div>
+        <div class="astuce" style="font-size:30px;border:4px solid var(--acc)">4 × 9 = <b>36</b></div>
+        <button class="bouton" type="button" style="align-self:flex-start">Suivant ›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- L M -->
+<section class="ecran">
+  <h2>L. Défi 1 minute : le format de l'évaluation nationale, contre son propre record seulement</h2>
+  <p class="note">Le défi ne s'ouvre qu'une fois les réponses justes installées. Pas de son d'erreur pendant le défi pour ne pas casser le rythme, et le bouton « Je passe » reste là.</p>
+  <div class="ipad theme-ours">
+    <div class="barre"><div class="retour">‹</div><svg class="avatar"><use href="#ours"/></svg><div class="titre">Défi 1 minute</div><div class="pastille">Record : 23</div></div>
+    <div class="corps">
+      <div class="zoneq" style="flex-direction:row;gap:60px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+          <div class="chrono"><span>0:38</span></div>
+          <div style="font-size:26px"><b style="font-size:44px;color:var(--acc)">12</b> réponses</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+          <div class="question" style="font-size:96px">6 × 9</div>
+          <div class="reponse vide">?</div>
+          <button class="bouton sec" type="button" style="font-size:20px;padding:12px 22px">Je passe ›</button>
+        </div>
+      </div>
+      <div class="pave"><span>7</span><span>8</span><span>9</span><span>4</span><span>5</span><span>6</span><span>1</span><span>2</span><span>3</span><span class="eff">⌫</span><span>0</span><span class="ok">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ecran">
+  <h2>M. Fin du défi : nouveau record, fanfare, et l'historique de ses propres scores</h2>
+  <p class="note">Les barres ne montrent que ses scores à lui ou à elle, jamais ceux de l'autre enfant. Un défi sans record dit « 21, ton record reste 26 », sans commentaire négatif.</p>
+  <div class="ipad theme-ours">
+    <div class="corps" style="align-items:center;justify-content:center;gap:60px;padding:40px">
+      <div style="display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+        <div style="font-size:30px;color:var(--acc);font-weight:600">Nouveau record ! 🎉</div>
+        <div style="font-size:96px;font-weight:700;line-height:1">26</div>
+        <div style="font-size:26px">bonnes réponses en une minute<br><span style="color:var(--muted)">ton record d'avant : 23</span></div>
+        <div style="display:flex;gap:14px;margin-top:10px"><button class="bouton" type="button">Rejouer</button><button class="bouton sec" type="button">Retour à la maison</button></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+        <div class="barres">
+          <div style="height:62%">16</div><div style="height:72%">18</div><div style="height:80%">20</div><div style="height:88%">23</div><div class="dernier" style="height:100%">26</div>
+        </div>
+        <div style="color:var(--muted);font-size:18px">Mes 5 derniers défis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- N -->
+<section class="ecran">
+  <h2>N. Coin parent : en phrases, ce qui est devenu automatique, ce qui reste fragile, quoi réviser en voiture</h2>
+  <p class="note">Ouvert par l'appui long du cadenas de l'accueil. Les résultats fragiles sont ceux à poser à l'oral en voiture ou au petit-déjeuner. Un bouton discret (non montré) remet une progression à zéro.</p>
+  <div class="ipad">
+    <div class="barre" style="--acc:var(--ink);--acc-soft:var(--gris)"><div class="retour">‹</div><div class="titre">🔒 Coin parent</div><div class="pastille">Semaine du 26 octobre</div></div>
+    <div class="corps">
+      <div class="colp theme-ours">
+        <div style="display:flex;align-items:center;gap:12px"><svg width="56" height="65"><use href="#ours"/></svg><b style="font-size:26px">Pooh Bear · CM2</b></div>
+        <div class="carte"><b>5 séances sur 7</b> cette semaine, 🔥 6 jours de suite.</div>
+        <div class="carte"><b>12 multiplications</b> sont devenues automatiques. 14 sur 36 sont en or.</div>
+        <div class="carte"><b>Encore fragiles</b><br><span class="fragile">7 × 8</span><span class="fragile">9 × 7</span><span class="fragile">6 × 7</span><span class="fragile">8 × 4</span></div>
+        <div class="carte">Record du défi : <b>26</b> en une minute (repère de l'évaluation de début de CM2).</div>
+      </div>
+      <div class="colp theme-koala">
+        <div style="display:flex;align-items:center;gap:12px"><svg width="56" height="65"><use href="#koala"/></svg><b style="font-size:26px">Moussi · CM1</b></div>
+        <div class="carte"><b>4 séances sur 7</b> cette semaine, 🔥 3 jours de suite.</div>
+        <div class="carte">Il termine <b>la famille ×4 et ×8</b>. 7 sur 36 sont en or.</div>
+        <div class="carte"><b>Encore fragiles</b><br><span class="fragile">4 × 8</span><span class="fragile">8 × 6</span><span class="fragile">8 × 8</span></div>
+        <div class="carte">Le défi d'une minute s'ouvrira avec la famille ×3 et ×6.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+function etat(a, b) {
+  const faciles = [1, 2, 5, 10];
+  const durs = ['6x7','7x6','7x8','8x7','9x7','7x9','8x9','9x8','6x8','8x6','7x7','8x8'];
+  if (faciles.includes(a) || faciles.includes(b)) return 'or';
+  if (durs.includes(a + 'x' + b)) return (a + b) % 3 === 0 ? 'bronze' : 'gris';
+  if (a === 3 || b === 3 || a === 4 || b === 4) return (a * b) % 2 ? 'argent' : 'or';
+  return a === 9 || b === 9 ? 'bronze' : 'argent';
+}
+const g = document.getElementById('grille-ours');
+g.insertAdjacentHTML('beforeend', '<div class="t">×</div>');
+for (let b = 1; b <= 10; b++) g.insertAdjacentHTML('beforeend', '<div class="t">' + b + '</div>');
+for (let a = 1; a <= 10; a++) {
+  g.insertAdjacentHTML('beforeend', '<div class="t">' + a + '</div>');
+  for (let b = 1; b <= 10; b++) {
+    const e = etat(a, b);
+    const sel = a === 6 && b === 7 ? ' style="outline:4px solid var(--acc);outline-offset:2px"' : '';
+    g.insertAdjacentHTML('beforeend', '<div class="c-' + e + '"' + sel + '>' + (e === 'gris' ? '' : a * b) + '</div>');
+  }
+}
+const m = document.getElementById('mini-ours');
+for (let a = 1; a <= 10; a++) for (let b = 1; b <= 10; b++) m.insertAdjacentHTML('beforeend', '<div class="c-' + etat(a, b) + '"></div>');
+const r = document.getElementById('rect9');
+for (let i = 0; i < 40; i++) r.insertAdjacentHTML('beforeend', '<i' + (i % 10 === 9 ? ' class="barre"' : '') + '></i>');
+
+let ctx;
+function note(freq, debut, duree, type, vol) {
+  const o = ctx.createOscillator(), v = ctx.createGain();
+  o.type = type || 'sine'; o.frequency.value = freq;
+  const t = ctx.currentTime + debut;
+  v.gain.setValueAtTime(0, t);
+  v.gain.linearRampToValueAtTime(vol || 0.25, t + 0.02);
+  v.gain.exponentialRampToValueAtTime(0.001, t + duree);
+  o.connect(v).connect(ctx.destination); o.start(t); o.stop(t + duree + 0.05);
+}
+const sons = {
+  juste: () => { note(880, 0, 0.25, 'triangle'); note(1320, 0.09, 0.35, 'triangle'); },
+  erreur: () => { note(330, 0, 0.3, 'sine', 0.2); note(262, 0.14, 0.4, 'sine', 0.18); },
+  record: () => { [523, 659, 784, 1047].forEach((f, i) => note(f, i * 0.12, 0.3, 'triangle')); note(1047, 0.5, 0.7, 'triangle'); note(1319, 0.5, 0.7, 'sine', 0.15); },
+  touche: () => note(660, 0, 0.06, 'square', 0.06),
+  voix: () => { const u = new SpeechSynthesisUtterance('Sept fois huit ?'); u.lang = 'fr-FR'; u.rate = 0.9; speechSynthesis.speak(u); }
+};
+document.querySelectorAll('[data-son]').forEach(btn => btn.addEventListener('click', () => {
+  ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+  sons[btn.dataset.son]();
+}));
+</script>
+</body>
+</html>
