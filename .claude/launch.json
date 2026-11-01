@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "faux-upstash",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["outils/essais/faux_upstash.py"],
+      "port": 3171
+    },
+    {
+      "name": "nos-revisions",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "CODE_PARENT=parent-essai-local KV_REST_API_URL=http://127.0.0.1:3171 KV_REST_API_TOKEN=essai vercel dev --listen 3170 --yes"],
+      "port": 3170
+    }
+  ]
+}
