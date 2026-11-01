@@ -1,6 +1,8 @@
 .claude
 modules/tables/captures
 modules/zoom/captures
+modules/cible/captures
+commun/captures
 modules/zoom/outils
 henri/outils/captures
 docs/design-system/archive/**/*.png

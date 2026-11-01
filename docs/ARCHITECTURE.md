@@ -35,13 +35,16 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 | `henri/`, `clara/` | L'app de chaque enfant : `index.html` (portail), `tables.html` (page fine du module), `manifest.webmanifest`, `icone-180.png`, `icone-512.png`. `henri/planisphere.html` est le module de Louise |
 | `commun/kit.css`, `commun/kit.js` | Système de design v2 : jetons, composants, sons, voix, pavé, mascottes (sprite SVG), réglages, export et import. Doc : `docs/design-system/DESIGN-SYSTEM.md` |
 | `commun/textes.js` | Textes du cadre en français et en anglais (`Textes.t(cle)`) |
-| `commun/portail.js`, `commun/portail.css` | Portail d'un enfant et coin parent (appui long sur « Grown-ups ») |
+| `commun/modules.js` | Le catalogue fixe des modules (`window.Catalogue`) et les cinq matières (`window.Matieres`) : section 8 |
+| `commun/portail.js`, `commun/portail.css` | Portail d'un enfant en cahiers par matière (D-19) : carte « Today », cahiers, page d'une matière, « My week », coin parent (appui long sur « Coin parent »). Il ne charge aucun moteur de module (section 8) |
+| `commun/test_portail.py` | Parcours Playwright du portail, captures dans `commun/captures/` (ignoré par git) |
 | `commun/sync.js`, `commun/synchro-page.js` | Sauvegarde en ligne côté page (section 5) |
 | `commun/voix/` | Voix fabriquées d'avance (section 6) : `index.json` et les MP3 `fr/`, `en/` |
 | `commun/polices/` | Baloo 2 et Andika, hébergées (licences OFL à côté) |
 | `commun/outils/` | Outils de fabrication : `voix.py` et `phrases.js` (voix), générateur d'icônes |
-| `modules/tables/` | Module des tables : `moteur.js` (logique pure, testée), `seance.js` (déroulé), `tables.js` et `tables.css` (interface), `README.md` |
-| `modules/zoom/` | Module « De l'univers à Éguilles » : `contenu.js`, `cartes.js` (fabriqué par `outils/cartes.py`), `geometrie.js`, `moteur.js` (logique pure, testée), `zoom.js` et `zoom.css`, `README.md` |
+| `modules/tables/` | Module des tables : `moteur.js` (logique pure, testée), `seance.js` (déroulé), `album.js` (album à tampons), `resume.js` (résumé pour le portail), `tables.js` et `tables.css` (interface), `README.md` |
+| `modules/zoom/` | Module « De l'univers à Éguilles » : `contenu.js`, `cartes.js` (fabriqué par `outils/cartes.py`), `geometrie.js`, `moteur.js` (logique pure, testée), `resume.js` (résumé pour le portail), `zoom.js` et `zoom.css`, `README.md` |
+| `modules/cible/` | Jeu du nombre cible (D-18) : `moteur.js`, `contenu.js`, `etat.js` (état et résumé), `cible.js` et `cible.css`, `README.md` |
 | `middleware.js`, `lib/acces.js` | Contrôle d'accès (section 4) |
 | `api/`, `lib/serveur.js`, `lib/fusion.js` | Fonctions serveur (sections 4 et 5) |
 | `test/` | Tests node du serveur, de la fusion et des accès |
@@ -70,8 +73,8 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 ## 5. Sauvegarde en ligne : le local fait foi, la base suit et réconcilie
 
 - **Le local d'abord** : chaque module garde son état dans `localStorage`, clé `<enfant>.<module>` (par exemple `henri.tables`), sous try/catch. Les réglages : `<enfant>.reglages`.
-- `commun/synchro-page.js` enveloppe le `sauver` de chaque module présent sur la page (`Tables`, `Zoom` : liste `MODULES` en tête du fichier) : chaque sauvegarde locale part aussi au service (`PUT /api/progression?enfant=&module=`). Au chargement, il tire l'état distant, **fusionne**, renvoie le résultat, et recharge la page une fois si l'état distant apportait du progrès (nouvel appareil, icône refaite), sauf pendant un exercice.
-- **La fusion** (`lib/fusion.js`, recopiée à l'identique dans `commun/sync.js`) : pour chaque fait, la version la plus avancée (`prochain` le plus récent, sinon la boîte la plus haute) ; union des jours joués et des jours de réussite ; maximum des familles ouvertes ; union des records. Pour le zoom (`fusionZoom`) : chaque carte de Leitner comme un fait, maximum des étapes ouvertes, union des jours, grand voyage vu sur l'un ou l'autre. Deux appareils joués hors ligne se réconcilient sans rien perdre. **Toute modification de la fusion se fait dans les deux fichiers**, et `test/fusion.test.js` vérifie qu'ils donnent le même résultat.
+- `commun/synchro-page.js` suit les modules du catalogue (`commun/modules.js`) : tous ceux de l'enfant sur le portail, le seul module de la page ailleurs (`<html data-module="tables">`) ; un module marqué `synchro: false` (le planisphère de Louise, qui range son état sous plusieurs clés) est ignoré. Il enveloppe le `sauver` de l'objet global du module (champ `objet` du catalogue : `Tables`, `Zoom`, `CibleEtat`) : chaque sauvegarde locale part aussi au service (`PUT /api/progression?enfant=&module=`) ; et quand un module publie son résumé (événement `kr:resume`), son état local part aussi. Au chargement, il tire l'état distant, **fusionne**, renvoie le résultat, et recharge la page une fois si l'état distant apportait du progrès ou un résumé plus récent (nouvel appareil, icône refaite), sauf pendant un exercice. Un nouveau module n'y ajoute rien : sa ligne au catalogue suffit.
+- **La fusion** (`lib/fusion.js`, recopiée à l'identique dans `commun/sync.js`) : pour chaque fait, la version la plus avancée (`prochain` le plus récent, sinon la boîte la plus haute) ; union des jours joués et des jours de réussite ; maximum des familles ouvertes ; union des records. Pour le zoom (`fusionZoom`) : chaque carte de Leitner comme un fait, maximum des étapes ouvertes, union des jours, grand voyage vu sur l'un ou l'autre. Un module sans règle propre : le nouvel état remplace l'ancien. **Pour tous les modules, le résumé du portail le plus récent (`ecritLe`) l'emporte** (`fusionResume`). Deux appareils joués hors ligne se réconcilient sans rien perdre. **Toute modification de la fusion se fait dans les deux fichiers**, et `test/fusion.test.js` vérifie qu'ils donnent le même résultat.
 - **Hors ligne** : rien ne bloque ; l'envoi est retenté plus tard (événement `online`, ou toutes les minutes).
 - **Remise à zéro** (coin parent) : efface le local et l'état en ligne (`DELETE`) ; un autre appareil qui garde l'ancien état local le renverra, donc remettre à zéro sur chaque appareil.
 
@@ -89,3 +92,65 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 - `.vercelignore` écarte les tests, les captures et les outils lourds du déploiement.
 - **Variables Vercel** : `CODE_PARENT` (Louis) ; `KV_REST_API_URL`, `KV_REST_API_TOKEN` et les autres `KV_*` (posées par l'intégration Upstash, marquées sensibles, donc illisibles en local : les essais locaux utilisent une base factice).
 - **GitHub Pages** (`louisepasq.github.io/revisions/`) sert encore l'ancienne version publique : à couper quand le dépôt passera en privé.
+
+## 8. Le portail : un catalogue fixe et un résumé publié par chaque module, pour ne jamais modifier `portail.js`
+
+Le portail en cahiers par matière (D-19, rendu de référence `design-system/archive/2026-11-01_accueil/2-cahiers.html`) ne connaît l'intérieur d'aucun module et n'en charge aucun moteur. Il lit deux choses : le catalogue, fixe, et le résumé que chaque module tient à jour dans son état.
+
+**Ce que montre le portail** (`commun/portail.js`, vues dans l'adresse : rien, `#matiere-<id>`, `#semaine`) :
+
+- le bandeau : la mascotte et sa bulle (la toucher la lit à voix haute), « Hello, {prénom}! », la semaine comptée sur tous les modules (`resume.jours`) ; toucher la semaine ouvre « My week » ;
+- la carte « Today » : trois activités au plus, quinze minutes au plus, une matière à la fois au premier passage, les révisions d'abord (`planDuJour`, la règle de la maquette) ; la première porte le seul bouton plein, Start, à droite ; les suivantes sont sous « Then ». Rien de dû et rien de fait : « Today, you choose. » ; tout fait : « All done. See you tomorrow! » ;
+- un cahier par matière, les cinq toujours (D-19) ; une matière sans activité est un cahier « Coming soon » qu'on ne touche pas ; sous la couverture, une jauge par activité, jamais une moyenne ;
+- la page d'une matière : Back, le titre sur le motif du cahier, une grande carte par module (phrase de progrès, « monté aujourd'hui » en or vif, jauge, badge « Today ») ;
+- « My week » : la semaine en grand, puis une rangée de jauges par matière ;
+- le coin parent, en français : la phrase `parent` de chaque résumé, les crédits d'un module (`noteParent`), puis langue, voix, sons, sauvegarde et remise à zéro.
+
+**La partie fixe : une ligne par module dans `commun/modules.js`.**
+
+```js
+window.Catalogue = {
+  tables: {
+    titre: { en: 'Times tables', fr: 'Les tables' },  // court, sans « My »
+    matiere: 'maths',          // maths | francais | hg | sciences | anglais
+    icone: 'grille',           // symbole i-<nom> du sprite de kit.js
+    page: 'tables.html',       // relative au dossier de l'enfant
+    enfants: ['henri', 'clara'],
+    etat: 'actif',             // actif | bientot
+    objet: 'Tables',           // facultatif : l'objet global qui porte charger et sauver
+  },
+};
+```
+
+Champs facultatifs de plus : `synchro: false` (état hors de `<enfant>.<module>`, ignoré par la sauvegarde en ligne), `noteParent` (clé de `textes.js` montrée sous le bilan dans le coin parent). Les matières (`window.Matieres`) donnent l'ordre de l'emploi du temps, l'icône et le motif de la couverture ; leurs noms sont dans `textes.js` (`mat_<id>`, `mat_<id>_court`). L'ordre des lignes du catalogue est l'ordre des modules dans leur cahier ; `enfants` remplace la liste `data-modules` de l'ancienne page.
+
+**La partie vivante : `resume`, écrit par le module, dans `localStorage['<enfant>.<module>'].resume`.**
+
+```js
+{
+  version: 1,
+  ecritLe: '2026-11-04T16:42:10.000Z',  // posé par le kit ; le plus récent gagne à la synchronisation
+  progres: {
+    avancement: 0.73,          // 0 à 1, ne redescend jamais (le kit garde le plus haut publié) ; null si le module n'en a pas
+    phrase: { en: '105 stamps · 15 gold', fr: '105 tampons · 15 en or' },  // 28 caractères au plus
+    aujourdhui: { en: '+6 stamps', fr: '+6 tampons' },  // monté aujourd'hui, ou null
+    jour: '2026-11-04',        // le jour auquel `aujourdhui` se rapporte ; ignoré le lendemain
+  },
+  du: {                        // ce que le module propose pour le « Today », ou null
+    des: '2026-11-04',         // à partir de quand c'est dû ; le portail compare à la date du jour
+    nature: 'revision',        // revision | seance | decouverte
+    phrase: { en: '12 cards come back', fr: '12 cartes reviennent' },
+    minutes: 5,                // durée honnête, de 2 à 8
+    lien: 'tables.html',       // facultatif : une page du site, sinon la page du catalogue
+  },
+  jours: ['2026-10-30', '2026-11-04'],   // jours pratiqués, les 14 derniers au plus
+  parent: 'Les tables : 15 multiplications sur 36 sont devenues automatiques. …',  // français, coin parent
+}
+```
+
+- **Publier** : `KR.publierResume(module, resume)` (`commun/kit.js`) pose `version` et `ecritLe`, garde l'avancement au plus haut déjà publié, range le résumé dans l'état local et prévient la sauvegarde en ligne. Il rend le résumé complet : le module le recopie dans son état en mémoire (`etat.resume = KR.publierResume(...)`), sinon son prochain `sauver` l'effacerait. À appeler à l'ouverture du module et en fin de séance (les tables et le zoom le font dans leur `accueil()` et leur `fin()`).
+- **Le portail calcule, le module déclare** : dû ou pas (`du.des` comparé à aujourd'hui), fait aujourd'hui (`jours` contient la date), au programme ou pas. Un module qui a déjà été pratiqué aujourd'hui calcule son `du` pour demain.
+- **Un module sans résumé** s'affiche quand même, sans jauge ni phrase, et n'entre jamais dans le « Today » : c'est le planisphère tant qu'il n'en publie pas, et chaque module tant qu'il n'a pas été rouvert une fois depuis la mise en service du portail.
+- **Ce qu'un résumé ne porte jamais** : un pourcentage écrit, un rang, une comparaison, une série, un compte à rebours, une perte.
+- **Lecture prudente** : le portail ignore un champ mal formé sans faire tomber le reste (`nettoyerResume`, testé dans `test/portail.test.js`). Les résumés des tables et du zoom sont testés dans `test/resume.test.js`.
+- **Textes** : les phrases des résumés vivent dans `commun/textes.js` (clés `res_*`, jamais lues à voix haute, donc écartées par `commun/outils/phrases.js`) ; celles du portail dans le bloc `/* accueil */`.

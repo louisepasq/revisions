@@ -31,6 +31,9 @@
   const x = '<span class="x">×</span>';
   const eg = '<span class="eg">=</span>';
   const sauver = () => T.sauver(enfant, etat);
+  // Le résumé du portail (D-19), à l'ouverture et en fin de séance ; gardé dans l'état en mémoire
+  // pour que le prochain sauver ne l'efface pas.
+  const publier = () => { etat.resume = KR.publierResume('tables', window.TablesResume.resume(etat, new Date())); };
 
   function plusTard(fn, ms) { minuteurs.push(setTimeout(fn, ms)); }
   function changerEcran(html) {
@@ -124,6 +127,7 @@
   /* =================== Accueil du module =================== */
   function accueil() {
     etat = T.charger(enfant);
+    publier();
     if (!etat.diagnostic) return introDiagnostic();
     // Ce qui attend l'enfant aujourd'hui : la carte le montre au lieu d'un aplat vide (point 9).
     const maintenant = new Date();
@@ -530,6 +534,7 @@
     const j = T.jour(maintenant);
     const b = S.bilan(s, etat, maintenant);
     sauver();
+    publier();
     KR.son('fete');
     const dj = A.duJour(etat, j);
     const total = A.total(etat);

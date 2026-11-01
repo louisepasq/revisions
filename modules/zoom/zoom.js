@@ -26,6 +26,9 @@
   let minuteurs = [];
   let jeton = 0; // change à chaque écran : une suite (voix, animation) d'un écran quitté s'arrête
   const sauver = () => Z.sauver(enfant, etat);
+  // Le résumé du portail (D-19), à l'ouverture et en fin de séance ; gardé dans l'état en mémoire
+  // pour que le prochain sauver ne l'efface pas.
+  const publier = () => { etat.resume = KR.publierResume('zoom', window.ZoomResume.resume(etat, enfant, new Date())); };
   const fr = s => `<span lang="fr">${KR.echapper(s)}</span>`;
   const voixActive = () => KR.reglages().voix;
   const dire = (textes, secours) => (voixActive() ? KR.lireSuite(textes.filter(Boolean).map(texte => ({ texte, langue: 'fr' })), secours || SECOURS_VOIX) : Promise.resolve(false));
@@ -255,6 +258,7 @@
   /* =================== Accueil du module =================== */
   function accueil() {
     etat = Z.charger(enfant);
+    publier();
     if (!etat.intro) return introVoyage();
     Z.majEtages(etat, PROG);
     const maintenant = new Date();
@@ -696,6 +700,7 @@
   function fin(s) {
     const b = Z.bilan(s, etat, PROG, new Date());
     sauver();
+    publier();
     KR.son('fete');
     const vus = new Set();
     const montees = b.montees.filter(m => { if (vus.has(m.lieu)) return false; vus.add(m.lieu); return true; });

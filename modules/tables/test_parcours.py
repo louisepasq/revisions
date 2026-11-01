@@ -295,6 +295,19 @@ def seance(page, err, fmt):
     sauve = page.evaluate("JSON.parse(localStorage.getItem('clara.tables')).diagnostic")
     if not sauve:
         PROBLEMES.append(f"{fmt} : la progression n'est pas sauvée")
+    # Le résumé du portail (D-19) est publié, et Back ramène au portail, où il s'affiche.
+    resume = page.evaluate("JSON.parse(localStorage.getItem('clara.tables')).resume")
+    if not resume or not resume.get("ecritLe") or not resume.get("progres") or not resume.get("parent"):
+        PROBLEMES.append(f"{fmt} : les tables ne publient pas leur résumé ({resume})")
+    page.click(".accueil-tables .barre a.rond[href='./']")
+    page.wait_for_selector(".portail .cahiers")
+    if "stamp" not in page.inner_text(".cahier[data-matiere='maths']") and not page.locator(".cahier[data-matiere='maths'] .jauge-m i").count():
+        PROBLEMES.append(f"{fmt} : le cahier de maths ne montre pas la jauge des tables")
+    if page.locator(".jour-n[href='tables.html'], .jour-1[href='tables.html']").count():
+        PROBLEMES.append(f"{fmt} : les tables restent au programme du jour après la séance")
+    capture(page, f"clara_{fmt}_05b-retour-portail", err)
+    page.go_back()
+    page.wait_for_selector(".accueil-tables")
     if fmt == "ipad-paysage":
         coin_parent(page, err, fmt)
 

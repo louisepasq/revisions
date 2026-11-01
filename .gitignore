@@ -2,6 +2,8 @@ docs/design-system/archive/2026-11-01_panel/*.png
 
 modules/tables/captures/
 modules/zoom/captures/
+modules/cible/captures/
+commun/captures/
 modules/zoom/outils/cache/
 henri/outils/captures/
 .vercel

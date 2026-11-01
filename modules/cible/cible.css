@@ -1,0 +1,230 @@
+/* Jeu du nombre cible : les écrans propres au module. Les composants viennent de commun/kit.css.
+   L'écran de fin reprend la forme de celui des tables et du zoom (.fin-seance, .montee, .ligne-fin),
+   recopiée ici tant qu'elle n'est pas dans le kit : à remonter dans kit.css (troisième module à s'en servir). */
+a.rond{text-decoration:none}
+
+/* ---------- Accueil du jeu : barème à gauche, chrono et départ à droite ---------- */
+.c-accueil-corps{flex:1;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;padding-top:20px;align-items:start}
+.c-presente{display:flex;flex-direction:column;gap:18px;min-width:0}
+.c-intro{display:flex;align-items:center;gap:14px}
+.c-intro .masc{width:150px;height:162px;flex:none;margin-left:-10px}
+.c-intro .bulle{flex:1;min-width:0;font-size:23px}
+.c-bareme,.c-semaine,.c-depart{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 4px 0 var(--trait);padding:16px 20px 18px}
+.c-bareme h2,.c-depart h2{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1;color:var(--e-900);margin-bottom:12px}
+.c-bareme ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.c-bareme li{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 10px;border-radius:var(--r-m);background:var(--e-50);border:2px solid var(--e-200)}
+.c-bareme .c-op-sym{font-family:var(--f-jeu);font-weight:800;font-size:44px;line-height:1;color:var(--e-700)}
+.c-op-pts{font-family:var(--f-jeu);font-weight:700;font-size:19px;line-height:1.1;color:var(--encre)}
+.c-parfait{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700;font-size:18px;line-height:1.25;color:var(--encre)}
+.c-parfait .ico{flex:none;font-size:26px;color:var(--or-fonce)}
+.c-parfait b{margin-left:auto;flex:none;padding:4px 12px;border-radius:99px;background:var(--or-clair);font-family:var(--f-jeu);font-size:19px}
+.c-semaine{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.c-depart{display:flex;flex-direction:column;gap:16px}
+.c-depart h2{margin-bottom:0}
+.c-depart h2 .ico{font-size:28px;color:var(--e-700)}
+.c-chronos{display:grid;grid-template-columns:1fr;gap:12px}
+.c-chrono-choix{display:flex;align-items:center;justify-content:center;gap:10px;min-height:72px;padding:0 16px;border-radius:var(--r-m);border:3px solid var(--e-200);background:var(--carte);color:var(--e-900);box-shadow:0 4px 0 var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:24px;transition:transform .08s,box-shadow .08s}
+.c-chrono-choix .ico{font-size:26px}
+.c-chrono-choix:active{transform:translateY(4px);box-shadow:none}
+.c-chrono-choix[aria-pressed="true"]{background:var(--e-700);border-color:var(--e-700);color:var(--sur-e);box-shadow:0 4px 0 var(--e-relief)}
+.c-note{font-size:18px;color:var(--encre-douce)}
+.c-go{align-self:stretch;min-height:88px;font-size:30px}
+
+/* ---------- La partie ---------- */
+.c-statut{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;padding-top:10px}
+.c-pastille{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 16px;border-radius:99px;background:var(--carte);border:3px solid var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:21px;line-height:1;color:var(--encre);white-space:nowrap}
+.c-pastille .ico{font-size:22px;color:var(--e-700)}
+.c-points .ico{color:var(--or-fonce)}
+.c-moins{background:var(--or-clair);border-color:var(--astuce-trait)}
+.c-moins .ico{color:var(--or-fonce)}
+.c-chrono{background:var(--e-100);font-variant-numeric:tabular-nums}
+
+.c-zone{gap:14px}
+.c-haut{display:flex;gap:16px;flex:none}
+.c-cible{flex:none;width:176px;min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:var(--r-l);background:var(--e-700);color:var(--sur-e);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.c-cible-mot{font-family:var(--f-jeu);font-weight:700;font-size:20px;line-height:1}
+.c-cible-n{font-family:var(--f-jeu);font-weight:800;font-size:76px;line-height:1}
+.c-calcul{flex:1;min-width:0;min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 16px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 4px 0 var(--trait);text-align:center}
+.c-expr{display:flex;align-items:center;justify-content:center;gap:.25em;font-family:var(--f-jeu);font-weight:800;font-size:52px;line-height:1;color:var(--encre);white-space:nowrap}
+.c-terme{min-width:1.3em;padding:0 .15em;border-radius:18px;border:4px solid var(--e-500);background:var(--e-50);color:var(--e-900);text-align:center}
+.c-terme.vide,.c-op-choisie.vide{border:4px dashed var(--e-300);background:transparent;color:var(--e-300)}
+.c-op-choisie{min-width:1em;padding:0 .1em;border-radius:14px;border:4px solid transparent;color:var(--e-700);text-align:center}
+.c-fait{font-size:46px}
+.c-res{background:var(--e-100);color:var(--e-900);border-radius:16px;padding:0 .18em}
+.c-res-gagne{background:var(--juste-700);color:var(--sur-juste);box-shadow:0 4px 0 var(--juste-900)}
+.c-consigne{font-family:var(--f-texte);font-weight:700;font-size:21px;line-height:1.25;color:var(--encre-douce)}
+.c-consigne:empty{display:none}
+.c-consigne-seule{font-size:26px;color:var(--encre)}
+
+.c-tuiles{flex:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.c-tuile{min-width:56px;min-height:104px;border-radius:var(--r-m);background:var(--carte);border:3px solid var(--e-200);box-shadow:0 var(--relief) 0 var(--e-200);font-family:var(--f-jeu);font-weight:800;font-size:50px;line-height:1;color:var(--encre);display:grid;place-items:center;transition:transform .08s,box-shadow .08s}
+.c-tuile:active:not(:disabled){transform:translateY(var(--relief));box-shadow:none}
+.c-tuile.c-resultat{background:var(--e-100);border-color:var(--e-300);box-shadow:0 var(--relief) 0 var(--e-300)}
+.c-tuile.c-choisie{background:var(--e-700);border-color:var(--e-700);color:var(--sur-e);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.c-tuile.c-montree{background:var(--surligneur);border-color:#9A7A00;color:#1E2147;box-shadow:0 var(--relief) 0 #9A7A00}
+.c-tuile.c-gagne{background:var(--juste-700);border-color:var(--juste-700);color:var(--sur-juste);box-shadow:0 var(--relief) 0 var(--juste-900);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.c-tuile.c-nouvelle{animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
+
+.c-retour{flex:none}
+.c-retour:empty{display:none}
+.c-retour .retour-masc .masc{width:96px;height:104px}
+.c-retour .bulle{font-size:20px}
+
+.c-etapes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
+.c-zone .c-etapes{flex:1 1 0}
+.c-etapes li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 8px 6px 16px;border-radius:14px;background:var(--carte);border:2px solid var(--trait)}
+.c-calc{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.15;color:var(--encre)}
+.c-pt{flex:none;padding:4px 12px;border-radius:99px;background:var(--e-100);font-family:var(--f-jeu);font-weight:700;font-size:19px;color:var(--e-900)}
+
+.c-action{align-items:stretch !important;gap:16px}
+.c-ops{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.c-op{min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:var(--r-m);background:var(--carte);border:3px solid var(--e-200);box-shadow:0 var(--relief) 0 var(--e-200);color:var(--e-900);transition:transform .08s,box-shadow .08s}
+.c-op:active:not(:disabled){transform:translateY(var(--relief));box-shadow:none}
+.c-op .c-op-sym{font-family:var(--f-jeu);font-weight:800;font-size:56px;line-height:.9;color:var(--e-700)}
+.c-op .c-op-pts{color:var(--e-900)}
+.c-op[aria-pressed="true"]{background:var(--e-700);border-color:var(--e-700);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.c-op[aria-pressed="true"] .c-op-sym,.c-op[aria-pressed="true"] .c-op-pts{color:var(--sur-e)}
+.c-op.inactif{background:transparent;border:3px dashed var(--pointille);box-shadow:none}
+.c-op.inactif .c-op-sym,.c-op.inactif .c-op-pts{color:var(--encre-douce)}
+.c-parfait-jeu{margin-top:0;font-size:16px;color:var(--encre-douce)}
+.c-parfait-jeu b{font-size:17px;color:var(--encre)}
+.c-outils{display:grid;grid-template-columns:1fr;gap:14px}
+.c-outils .btn{min-height:64px;font-size:22px;padding:0 16px;gap:10px}
+.c-outils .btn .ico{font-size:26px}
+.c-btn-indice .ico{color:var(--or-fonce)}
+
+/* Feuilles : indice, chrono fini, arrêt */
+.feuille-arret{width:min(540px,100%);text-align:center}
+.feuille-arret h2{margin:6px 0 12px}
+.c-feuille-masc .masc{width:110px;height:119px;margin:0 auto}
+.c-feuille-texte{font-size:20px;margin-bottom:18px;color:var(--encre)}
+.feuille-arret .boutons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+
+/* ---------- Fin de partie ---------- */
+.fin-seance{flex-direction:row;align-items:center;gap:32px}
+.fin-masc{flex:none;width:220px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.fin-masc .masc{width:220px;height:238px}
+.fin-nb{font-family:var(--f-jeu);font-weight:700;font-size:28px;color:var(--e-900)}
+.fin-contenu{flex:1;min-width:0}
+.fin-contenu h1{margin:0 0 16px;font-family:var(--f-jeu);font-weight:700;font-size:48px;line-height:1;color:var(--e-900)}
+.montee{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 4px 0 var(--trait);padding:16px 20px 18px}
+.montee .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1}
+.montee .titre .ico{color:var(--juste-700);font-size:30px}
+.c-score-ligne{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:10px}
+.c-score-n{font-family:var(--f-jeu);font-weight:800;font-size:44px;line-height:1;color:var(--e-900)}
+.c-badge-parfait{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:99px;background:var(--or-vif);box-shadow:0 4px 0 var(--or-relief);font-family:var(--f-jeu);font-weight:700;font-size:20px;color:#1E2147}
+.c-badge-parfait .ico{color:#7A5200}
+.c-score-moins{font-weight:700;font-size:18px;color:var(--encre-douce)}
+.c-chemin-titre{margin-top:12px;font-weight:700;font-size:17px;color:var(--encre-douce)}
+.c-etapes-fin{margin-top:6px;flex-direction:row;flex-wrap:wrap;gap:8px}
+.c-etapes-fin li{padding:4px 6px 4px 12px;gap:10px}
+.c-etapes-fin .c-calc,.c-solution .c-calc{font-size:22px}
+.c-defi{margin-top:16px;align-items:flex-start}
+.c-defi .bulles{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding-left:0}
+.c-defi .bulle.parle{flex:0 1 auto}
+.c-defi .bulle.parle{font-size:21px}
+.c-defi .bulle.parle::before{display:none}
+.c-defi .medaillon-zone{display:block}
+.c-montre{min-height:56px;font-size:20px;padding:0 20px}
+.c-solution{flex:1 1 100%}
+.c-solution .c-etapes{gap:4px;margin-top:4px}
+.c-solution .c-etapes li{background:transparent;border:0;padding:0}
+.ligne-fin{display:flex;align-items:center;gap:22px;margin-top:16px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 20px}
+.jours-n{font-weight:700;font-size:19px;color:var(--e-900);line-height:1.25}
+.actions-fin{display:flex;gap:14px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+.actions-fin .btn{min-height:64px;font-size:22px;padding:0 22px}
+@media (prefers-color-scheme: dark){
+  .c-parfait .ico,.c-pastille.c-points .ico,.c-moins .ico,.c-btn-indice .ico{color:var(--or-vif)}
+}
+
+/* ===================================================================
+   iPad paysage : le jeu à gauche, les opérations à droite
+   =================================================================== */
+@media (orientation: landscape) and (min-width: 900px){
+  .c-jeu .corps{flex-direction:row}
+  .c-action{width:320px;flex:none}
+  .c-depart .c-chronos{grid-template-columns:1fr}
+}
+/* iPad portrait et iPhone : le jeu en haut, les opérations dessous */
+@media (orientation: portrait), (max-width: 899px){
+  .c-accueil-corps{grid-template-columns:1fr;gap:18px}
+  .c-chronos{grid-template-columns:repeat(3,1fr)}
+  .c-action{width:100%;flex:none}
+  .c-ops{grid-template-columns:repeat(4,1fr)}
+  .c-outils{grid-template-columns:repeat(3,1fr)}
+  .fin-seance{flex-direction:column;align-items:stretch;gap:12px}
+  .fin-masc{width:auto;flex-direction:row;justify-content:center;gap:20px}
+  .fin-masc .masc{width:170px;height:184px}
+}
+@media (orientation: portrait) and (min-width: 601px){
+  .fin-seance{justify-content:center}
+  .fin-contenu{flex:none}
+  .c-tuile{min-height:112px;font-size:54px}
+}
+
+/* iPhone */
+@media (max-width: 600px){
+  .c-accueil-corps{padding-top:10px;gap:14px}
+  .c-intro .masc{display:none}
+  .c-intro .bulle{font-size:19px}
+  .c-intro .bulle.parle::before{display:none}
+  .c-bareme,.c-semaine,.c-depart{padding:12px 14px 14px}
+  .c-bareme h2,.c-depart h2{font-size:22px;margin-bottom:8px}
+  .c-bareme ul{gap:6px}
+  .c-bareme .c-op-sym{font-size:36px}
+  .c-op-pts{font-size:16px}
+  .c-parfait{font-size:16px;margin-top:10px}
+  .c-semaine{gap:10px}
+  .c-semaine .semaine{gap:4px}
+  .c-chronos{gap:8px}
+  .c-chrono-choix{min-height:64px;font-size:19px;padding:0 6px;gap:4px;flex-direction:column}
+  .c-chrono-choix .ico{font-size:20px}
+  .c-note{font-size:16px}
+  .c-go{min-height:72px;font-size:26px}
+
+  .c-statut{gap:6px;padding-top:4px}
+  .c-pastille{min-height:36px;padding:0 10px;font-size:17px;gap:5px;border-width:2px}
+  .c-pastille .ico{font-size:18px}
+  .c-zone{gap:10px}
+  .c-haut{gap:10px}
+  .c-cible{width:104px;min-height:96px;border-radius:22px}
+  .c-cible-mot{font-size:16px}
+  .c-cible-n{font-size:50px}
+  .c-calcul{min-height:96px;padding:6px 10px;border-radius:22px;gap:4px}
+  .c-expr{font-size:34px}
+  .c-fait{font-size:30px}
+  .c-terme{border-width:3px;border-radius:12px}
+  .c-terme.vide,.c-op-choisie.vide{border-width:3px}
+  .c-consigne{font-size:16px}
+  .c-consigne-seule{font-size:19px}
+  .c-tuiles{gap:8px}
+  .c-tuile{min-height:66px;font-size:32px;border-radius:16px}
+  .c-retour .bulle{font-size:16px}
+  .c-etapes{gap:5px}
+  .c-etapes li{padding:3px 6px 3px 12px;border-radius:12px}
+  .c-calc{font-size:20px}
+  .c-pt{font-size:15px;padding:2px 8px}
+  .c-action{gap:10px}
+  .c-ops{gap:8px}
+  .c-op{min-height:68px;gap:0}
+  .c-op .c-op-sym{font-size:38px}
+  .c-op .c-op-pts{font-size:14px}
+  .c-parfait-jeu{display:none}
+  .c-outils{gap:8px}
+  .c-outils .btn{min-height:58px;font-size:16px;padding:0 6px;gap:4px;flex-direction:column}
+  .c-outils .btn .ico{font-size:22px}
+
+  .fin-masc .masc{width:100px;height:108px}
+  .fin-nb{font-size:22px}
+  .fin-contenu h1{font-size:32px;margin-bottom:12px;text-align:center}
+  .montee{padding:12px 14px 14px}
+  .montee .titre{font-size:21px}
+  .c-score-n{font-size:34px}
+  .c-defi .bulle.parle{font-size:17px}
+  .c-defi .medaillon-zone{display:none}
+  .ligne-fin{flex-direction:column;align-items:flex-start;gap:8px;padding:10px 14px;margin-top:12px}
+  .ligne-fin .semaine{gap:4px}
+  .actions-fin{margin-top:16px;gap:10px}
+  .actions-fin .btn{flex:1 1 100%}
+  .feuille-arret .boutons .btn{flex:1 1 100%}
+}

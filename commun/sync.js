@@ -100,11 +100,35 @@
     };
   }
 
-  function fusionner(module, enregistre, recu) {
+  /* Résumé publié pour le portail (D-19), commun à tous les modules : le plus récent (ecritLe)
+     l'emporte ; à égalité, celui qui vient d'arriver. Rend null si aucun des deux n'en a. */
+  function dateResume(r) {
+    const t = Date.parse(r && r.ecritLe);
+    return Number.isFinite(t) ? t : -1;
+  }
+
+  function fusionResume(a, b) {
+    const ra = estObjet(a) && estObjet(a.resume) ? a.resume : null;
+    const rb = estObjet(b) && estObjet(b.resume) ? b.resume : null;
+    if (!ra) return rb;
+    if (!rb) return ra;
+    return dateResume(ra) > dateResume(rb) ? ra : rb;
+  }
+
+  function fusionEtat(module, enregistre, recu) {
     if (module === 'tables') return fusionTables(enregistre, recu);
     if (module === 'zoom') return fusionZoom(enregistre, recu);
     if (vide(recu)) return vide(enregistre) ? {} : enregistre;
     return recu;
+  }
+
+  /* enregistre : l'état connu jusqu'ici ; recu : le nouvel état.
+     Module sans règle de fusion : le nouvel état remplace l'ancien. Dans tous les cas, le résumé
+     le plus récent est gardé. */
+  function fusionner(module, enregistre, recu) {
+    const etat = fusionEtat(module, enregistre, recu);
+    const resume = fusionResume(enregistre, recu);
+    return resume && !vide(etat) ? { ...etat, resume } : etat;
   }
   /* ---------- Fin de la copie ---------- */
 
@@ -230,5 +254,5 @@
     racine.addEventListener('online', () => { retenter(); });
   }
 
-  racine.Sync = { configurer, tirer, pousser, synchroniser, effacer, etat, fusionner };
+  racine.Sync = { configurer, tirer, pousser, synchroniser, effacer, etat, fusionner, fusionResume };
 })(typeof window !== 'undefined' ? window : globalThis);

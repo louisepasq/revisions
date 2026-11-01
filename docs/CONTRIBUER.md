@@ -16,7 +16,8 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
   npm test
   ```
 
-  Ce sont les tests du serveur, de la fusion, des accès, du moteur des tables et du déroulé d'une séance.
+  Ce sont les tests du serveur, de la fusion, des accès, du portail (catalogue, « Today », résumés publiés) et des moteurs des modules.
+- **Le portail au rendu** : `uv run commun/test_portail.py` (Henri et Clara, peu de données et état riche, aux trois formats ; captures dans `commun/captures/`).
 - **Le module des tables au rendu** (Playwright, avec Chrome installé) : `uv run modules/tables/test_parcours.py`. Il fait le parcours complet aux trois formats (iPad paysage, iPad portrait, iPhone) et range ses captures dans `modules/tables/captures/`, ignoré par git. **Regarder les captures**, pas seulement le résultat.
 - **Le site complet, codes et sauvegarde compris** : lancer les deux configurations de `.claude/launch.json`, `faux-upstash` (une base factice qui parle comme Upstash) puis `nos-revisions` (`vercel dev` sur le port 3170, code parent d'essai `parent-essai-local`). Ensuite :
 
@@ -34,13 +35,16 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
 3. **Structure du code**, comme le module des tables :
    - une logique pure et testée en node (`modules/<module>/moteur.js` et ses `*.test.js`) ;
    - une interface qui réutilise le kit (`commun/kit.css`, `commun/kit.js`, classes `kr-*`) ;
-   - une page fine par enfant (`henri/<module>.html`, `clara/<module>.html`), sur le modèle de `henri/tables.html` ;
-   - une carte sur le portail de l'enfant (`commun/portail.js`).
-4. **Stockage** : clé `localStorage` `<enfant>.<module>`, sous try/catch. Pour la sauvegarde en ligne, charger `commun/sync.js` et `commun/synchro-page.js`, et ajouter le module à `MODULES` en tête de `synchro-page.js` (son objet global doit porter `charger` et `sauver`). Si l'état n'a pas la forme de celui des tables, ajouter sa fusion dans `lib/fusion.js` **et** dans `commun/sync.js`, avec un test.
-5. **Accès** : un nouveau dossier commun est ouvert aux enfants ; un dossier propre à un enfant suit la règle de `lib/acces.js`. Vérifier avec `test/acces.test.mjs`.
-6. **Textes** : le cadre (boutons, mascotte) va dans `commun/textes.js`, en français et en anglais ; le contenu scolaire reste dans sa langue, dans le module.
-7. **Voix** : toute phrase que l'app dit doit apparaître dans `commun/outils/phrases.js`, avec exactement le texte que le code passe à `KR.lire`. Puis relancer la fabrication (section 4). Sans ça, la voix de l'appareil prend le relais, en moins bien.
-8. **Vérifier au rendu** aux trois formats, en clair et en mode sombre, avant de pousser.
+   - une page fine par enfant (`henri/<module>.html`, `clara/<module>.html`), sur le modèle de `henri/tables.html`, avec `data-module="<module>"` sur `<html>` et `commun/modules.js` chargé avant `commun/sync.js`.
+4. **Le brancher au portail : une ligne au catalogue et un résumé, `commun/portail.js` ne change pas.**
+   - Une ligne dans `commun/modules.js` : titre court en `{ en, fr }`, matière, icône du sprite de `kit.js` (en ajouter une au sprite au besoin), page, enfants, état (`actif` ou `bientot`), et `objet` si son objet global porte `charger` et `sauver`.
+   - Le module publie son résumé par `etat.resume = KR.publierResume('<module>', resume)` à son ouverture et en fin de séance : progrès, ce qui est dû, jours pratiqués, phrase pour le coin parent. Contrat, règles et exemple : `ARCHITECTURE.md`, section 8 ; modèles : `modules/tables/resume.js` et `modules/zoom/resume.js`, testés dans `test/resume.test.js`.
+   - Vérifier au rendu : `uv run commun/test_portail.py`, en regardant les captures de `commun/captures/`.
+5. **Stockage** : clé `localStorage` `<enfant>.<module>`, sous try/catch. La sauvegarde en ligne suit le catalogue (`commun/synchro-page.js` n'a rien à apprendre) ; un état rangé ailleurs se déclare `synchro: false`. Si l'état n'a pas la forme de celui des tables, ajouter sa fusion dans `lib/fusion.js` **et** dans `commun/sync.js`, avec un test ; le résumé, lui, se fusionne déjà pour tous les modules (le plus récent gagne).
+6. **Accès** : un nouveau dossier commun est ouvert aux enfants ; un dossier propre à un enfant suit la règle de `lib/acces.js`. Vérifier avec `test/acces.test.mjs`.
+7. **Textes** : le cadre (boutons, mascotte) va dans `commun/textes.js`, en français et en anglais ; le contenu scolaire reste dans sa langue, dans le module.
+8. **Voix** : toute phrase que l'app dit doit apparaître dans `commun/outils/phrases.js`, avec exactement le texte que le code passe à `KR.lire`. Puis relancer la fabrication (section 4). Sans ça, la voix de l'appareil prend le relais, en moins bien.
+9. **Vérifier au rendu** aux trois formats, en clair et en mode sombre, avant de pousser.
 
 ## 4. Fabriquer les voix
 

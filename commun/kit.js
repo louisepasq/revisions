@@ -246,6 +246,12 @@
 <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
 <symbol id="i-moins" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
 <symbol id="i-entrer" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-maths" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3.5v9M3 8h9M14.5 14.5l6 6M20.5 14.5l-6 6M14 6h7M14 9.5h7"/></g></symbol>
+<symbol id="i-livre" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C9.5 4.8 6.5 4.4 3 5v13.5c3.5-.5 6.5-.1 9 1.5 2.5-1.6 5.5-2 9-1.5V5c-3.5-.6-6.5-.2-9 1.5z"/><path d="M12 6.5V20"/></g></symbol>
+<symbol id="i-fiole" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3.5h5M10.5 3.5v6L5 18.6A1.6 1.6 0 006.4 21h11.2a1.6 1.6 0 001.4-2.4L13.5 9.5v-6"/><path d="M7.6 15h8.8"/></g></symbol>
+<symbol id="i-bulle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h16A1.5 1.5 0 0121.5 6v9.5A1.5 1.5 0 0120 17h-9.5L6 20.5V17H4a1.5 1.5 0 01-1.5-1.5V6A1.5 1.5 0 014 4.5z"/><path d="M7 9h10M7 12.5h6"/></g></symbol>
+<symbol id="i-cible" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/></symbol>
+<symbol id="i-carte" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.2l6-2.4 6 2.4 6-2.4v14l-6 2.4-6-2.4-6 2.4z"/><path d="M9 3.8v14M15 6.2v14"/></g></symbol>
 </defs></svg>`;
 
   KR.icone = (nom, classe) => `<svg class="ico${classe ? ' ' + classe : ''}" aria-hidden="true"><use href="#i-${nom}"/></svg>`;
@@ -386,6 +392,32 @@
   KR.effacerTout = function () {
     clesDeLEnfant().forEach(k => { try { window.localStorage.removeItem(k); } catch (e) { /* rien */ } });
   };
+  /* ---------- Résumé d'un module pour le portail (D-19) ----------
+     Contrat dans docs/ARCHITECTURE.md : { progres, du, jours, parent }, textes en { en, fr }.
+     Le kit pose version et ecritLe, garde l'avancement au plus haut déjà publié (il ne
+     redescend jamais), range le résumé dans l'état du module (localStorage['<enfant>.<module>']
+     .resume) et prévient la sauvegarde en ligne (événement kr:resume, écouté par
+     commun/synchro-page.js). Rend le résumé complet : un module qui garde son état en mémoire le
+     recopie dans cet état (etat.resume = KR.publierResume(...)), sinon son prochain sauver
+     effacerait le résumé. */
+  KR.publierResume = function (module, resume) {
+    const cle = KR.enfant() + '.' + module;
+    const complet = Object.assign({}, resume, { version: 1, ecritLe: new Date().toISOString() });
+    try {
+      const brut = window.localStorage.getItem(cle);
+      let etat = brut ? JSON.parse(brut) : {};
+      if (!etat || typeof etat !== 'object' || Array.isArray(etat)) etat = {};
+      const avant = etat.resume && etat.resume.progres && etat.resume.progres.avancement;
+      if (complet.progres && typeof complet.progres.avancement === 'number' && typeof avant === 'number' && avant > complet.progres.avancement) {
+        complet.progres = Object.assign({}, complet.progres, { avancement: avant });
+      }
+      etat.resume = complet;
+      window.localStorage.setItem(cle, JSON.stringify(etat));
+    } catch (e) { /* stockage indisponible : le portail affichera le module sans résumé */ }
+    try { document.dispatchEvent(new CustomEvent('kr:resume', { detail: { module } })); } catch (e) { /* rien */ }
+    return complet;
+  };
+
   KR.telecharger = function (nom, texte) {
     const url = URL.createObjectURL(new Blob([texte], { type: 'application/json' }));
     const a = document.createElement('a');

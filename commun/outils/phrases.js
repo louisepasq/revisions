@@ -5,6 +5,8 @@ globalThis.window = undefined;
 require(path.join(racine, 'modules/tables/moteur.js'));
 require(path.join(racine, 'commun/textes.js'));
 require(path.join(racine, 'modules/zoom/contenu.js'));
+require(path.join(racine, 'modules/cible/moteur.js'));
+require(path.join(racine, 'modules/cible/contenu.js'));
 const T = globalThis.Tables;
 const X = globalThis.Textes;
 
@@ -48,9 +50,24 @@ for (const e of ZC.ETAGES) {
   }
 }
 
+// Jeu du nombre cible : la cible annoncée (10 à 99), les consignes, les refus expliqués, l'indice,
+// l'impasse ; puis les bulles du cadre qui nomment la mascotte (défi jusqu'au coup parfait, indice).
+const CI = globalThis.Cible;
+const CCI = globalThis.CibleContenu;
+for (const d of Object.values(CCI.DIT)) {
+  if (typeof d === 'function') { for (let n = 10; n <= CI.CIBLE_MAX; n++) ajouter('fr', d(n)); } else ajouter('fr', d);
+}
+// Le cadre n'a de voix fabriquée qu'en anglais, comme plus bas.
+for (const mascotte of ['Moussi', 'Pooh Bear']) {
+  ajouter('en', X.t('cible_indice_question', { mascotte }, 'en'));
+  for (let n = 2; n <= CI.COUP_PARFAIT; n++) ajouter('en', X.t('cible_defi', { mascotte, n }, 'en'));
+}
+ajouter('en', X.t('cible_indice_cout', { n: CI.COUT_INDICE }, 'en'));
+
 for (const langue of ['en', 'fr']) {
   X.choisirLangue(langue);
   for (const cle of Object.keys(X.TEXTES)) {
+    if (cle.startsWith('res_')) continue; // résumés des modules : écrits sur le portail, jamais dits
     const brut = X.TEXTES[cle][langue];
     if (!brut || langue === 'fr') continue;
     if (!brut.includes('{')) { ajouter(langue, brut); continue; }

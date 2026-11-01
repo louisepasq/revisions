@@ -215,7 +215,9 @@ def portails(navigateur, base):
         for fmt in FORMATS:
             ctx, page, err = contexte(navigateur, fmt)
             page.goto(f"{base}/{enfant}/index.html")
-            page.wait_for_selector("a.module[href='zoom.html']")
+            # Portail en cahiers (D-19) : le voyage est dans le cahier d'histoire-géographie.
+            page.click(".cahier[data-matiere='hg']")
+            page.wait_for_selector("a.mod[href='zoom.html']")
             capture(page, f"portail_{enfant}_{fmt}", err)
             ctx.close()
 
@@ -266,6 +268,20 @@ def premier_lancement(navigateur, base, fmt):
     page.wait_for_selector(".z-explorer h1:has-text('Les Bouches-du-Rhône')")
     page.click(".z-puce[data-lieu='eguilles']")
     capture(page, f"clara_explorer_bdr_{fmt}", err)
+    # Le résumé du portail (D-19) est publié ; « Done for today » ramène au portail, où il s'affiche.
+    resume = page.evaluate("JSON.parse(localStorage.getItem('clara.zoom')).resume")
+    if not resume or not resume.get("ecritLe") or not resume.get("progres") or not resume.get("parent"):
+        PROBLEMES.append(f"résumé {fmt} : le zoom ne publie pas son résumé ({resume})")
+    page.goto(page.url.replace("zoom.html", "index.html"))
+    page.click(".cahier[data-matiere='hg']")
+    page.wait_for_selector("a.mod[href='zoom.html'] .jauge-m")
+    if "places" not in page.inner_text("a.mod[href='zoom.html']"):
+        PROBLEMES.append(f"portail {fmt} : la carte du voyage ne montre pas sa phrase de progrès")
+    capture(page, f"clara_portail_apres_{fmt}", err)
+    page.click("a.mod[href='zoom.html']")
+    page.wait_for_selector(".z-accueil")
+    page.click(".z-accueil .barre a.rond[href='./']")
+    page.wait_for_selector(".portail .cahiers")
     ctx.close()
 
 

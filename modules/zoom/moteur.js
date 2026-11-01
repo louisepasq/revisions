@@ -280,7 +280,7 @@
   }
 
   racine.Zoom = {
-    MODULE: 'zoom', RAPIDE_MS, TAILLE_SEANCE, NOUVEAUX_PAR_SEANCE, INTERVALLE_JOURS,
+    MODULE: 'zoom', RAPIDE_MS, TAILLE_SEANCE, NOUVEAUX_PAR_SEANCE, INTERVALLE_JOURS, BOITE_NOMMER, ajouterJours,
     cle, jour, etatNeuf, boite, decouvrir, enregistrer, couleur, majEtages, lieuxOuverts, seance, choix,
     creerSeance, courante, repondre, suivante, finie, avancement, bilan, compte, fragiles, joursDeLaSemaine,
     charger, sauver,

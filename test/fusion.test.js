@@ -136,4 +136,42 @@ for (const [nom, impl] of [['serveur', serveur.fusionner], ['client', (m, a, b) 
     assert.deepEqual(impl('carte', { a: 1 }, { b: 2 }), { b: 2 });
     assert.deepEqual(impl('carte', { a: 1 }, {}), { a: 1 });
   });
+
+  // Résumé du portail (D-19) : règle commune à tous les modules, le plus récent ecritLe gagne.
+  const resume = (ecritLe, phrase) => ({ version: 1, ecritLe, progres: { avancement: 0.5, phrase: { en: phrase, fr: phrase } }, du: null, jours: [], parent: phrase });
+  const vieux = resume('2026-11-01T08:00:00.000Z', 'vieux');
+  const recent = resume('2026-11-01T10:00:00+01:00', 'récent'); // 09:00 UTC, autre fuseau
+
+  for (const module of ['tables', 'zoom', 'cible']) {
+    test(`${nom} : ${module}, le résumé le plus récent gagne dans les deux sens`, () => {
+      const a = { version: 1, jours: ['2026-10-31'], resume: vieux };
+      const b = { version: 1, jours: ['2026-11-01'], resume: recent };
+      assert.equal(impl(module, a, b).resume.parent, 'récent');
+      assert.equal(impl(module, b, a).resume.parent, 'récent');
+    });
+
+    test(`${nom} : ${module}, un résumé d'un seul côté est gardé`, () => {
+      const a = { version: 1, jours: ['2026-10-31'], resume: vieux };
+      const b = { version: 1, jours: ['2026-11-01'] };
+      assert.equal(impl(module, a, b).resume.parent, 'vieux');
+      assert.equal(impl(module, b, a).resume.parent, 'vieux');
+      assert.equal(impl(module, b, b).resume, undefined, 'aucun résumé inventé');
+    });
+  }
+
+  test(`${nom} : résumé, les tables gardent leur fusion propre`, () => {
+    const a = { ...ipad, resume: recent };
+    const b = { ...autre, resume: vieux };
+    const f = impl('tables', a, b);
+    assert.equal(f.faits['4x5'].boite, 4);
+    assert.equal(f.familles, 3);
+    assert.deepEqual(f.resume, recent);
+    assert.deepEqual(impl('tables', a, a), a, 'fusionner avec soi-même ne change rien');
+  });
+
+  test(`${nom} : résumé, un ecritLe illisible perd contre une date`, () => {
+    const a = { x: 1, resume: { ...vieux, ecritLe: 'hier' } };
+    const b = { x: 2, resume: vieux };
+    assert.equal(impl('carte', b, a).resume.ecritLe, vieux.ecritLe);
+  });
 }

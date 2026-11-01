@@ -61,5 +61,5 @@ La relecture proposait de garder la commune hors du code public. Depuis D-03, to
 - Les questions qui relient deux étapes (« Gap est la préfecture de quel département ? ») et l'adresse cosmique à remettre dans l'ordre : types 3 et 4 de la relecture, après un essai des deux premiers.
 - La réponse sans proposition (dire le nom à voix haute, puis *Voir*) : la relecture la propose après les choix ; à décider avec les parents.
 - Le planisphère de Louise comme étape « La Terre » : à proposer à Louise (TODO), le zoom a sa propre étape Terre en attendant.
-- Le résumé `resume` de D-19 pour le futur portail en cahiers : à publier dès que `KR.publierResume` existe.
+- Le résumé `resume` de D-19 : publié depuis le 01/11/2026 (`modules/zoom/resume.js`, à l'ouverture et en fin de séance).
 - Les voix fabriquées : les phrases sont dans `commun/outils/phrases.js` ; en attendant `voix.py`, c'est la voix de l'appareil qui parle.
