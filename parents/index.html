@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Parents</title>
+<style>
+  @font-face { font-family: "Baloo 2"; src: url("../commun/polices/baloo2-latin.woff2") format("woff2"); font-weight: 400 800; }
+  :root { --fond:#FFF8EF; --carte:#fff; --encre:#1E2147; --douce:#545878; --trait:#EADFCB; --henri:#1668D6; --henri-relief:#0D4A9E; --clara:#7B34D1; --clara-relief:#5320A0; --ok:#137A2F; }
+  @media (prefers-color-scheme: dark) { :root { --fond:#14172B; --carte:#1E2240; --encre:#F2F2F8; --douce:#B9BCD6; --trait:#33385E; --ok:#5FD08A; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--fond); color:var(--encre); font:18px/1.45 system-ui, -apple-system, sans-serif;
+    padding:24px max(16px, env(safe-area-inset-left)) 48px; }
+  main { max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+  h1, h2 { font-family:"Baloo 2", system-ui; margin:0; line-height:1.1; }
+  h1 { font-size:34px; }
+  h2 { font-size:24px; }
+  p { margin:0; color:var(--douce); }
+  .grille { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+  section { background:var(--carte); border:2px solid var(--trait); border-radius:24px; padding:20px; display:flex; flex-direction:column; gap:12px; }
+  label { font-weight:600; }
+  input { font:inherit; font-size:22px; padding:12px 14px; min-height:56px; border-radius:14px; border:3px solid var(--trait); background:var(--fond); color:var(--encre); width:100%; }
+  button, a.bouton { font:inherit; font-weight:700; min-height:56px; border:0; border-radius:16px; color:#fff; padding:0 20px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
+  .henri button, .henri a.bouton { background:var(--henri); box-shadow:0 4px 0 var(--henri-relief); }
+  .clara button, .clara a.bouton { background:var(--clara); box-shadow:0 4px 0 var(--clara-relief); }
+  .etat { font-weight:600; }
+  .etat.ok { color:var(--ok); }
+  .message { min-height:1.4em; }
+  .liens { display:flex; flex-wrap:wrap; gap:12px; }
+  a { color:inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Parents</h1>
+  <p>Chaque enfant choisit son code secret, au moins 4 lettres ou chiffres. Donnez-lui l'iPad pour qu'il le tape deux fois. Son code n'ouvre que son app ; le code parent ouvre tout.</p>
+  <div class="grille">
+    <section class="henri" data-enfant="henri">
+      <h2>Henri</h2>
+      <p class="etat">…</p>
+      <label for="c-henri">Nouveau code</label><input id="c-henri" type="password" autocomplete="new-password">
+      <label for="v-henri">Le même, encore une fois</label><input id="v-henri" type="password" autocomplete="new-password">
+      <button type="button" data-a="enregistrer">Enregistrer le code d'Henri</button>
+      <p class="message" role="status"></p>
+      <a class="bouton" href="../henri/">Ouvrir l'app d'Henri</a>
+    </section>
+    <section class="clara" data-enfant="clara">
+      <h2>Clara</h2>
+      <p class="etat">…</p>
+      <label for="c-clara">Nouveau code</label><input id="c-clara" type="password" autocomplete="new-password">
+      <label for="v-clara">Le même, encore une fois</label><input id="v-clara" type="password" autocomplete="new-password">
+      <button type="button" data-a="enregistrer">Enregistrer le code de Clara</button>
+      <p class="message" role="status"></p>
+      <a class="bouton" href="../clara/">Ouvrir l'app de Clara</a>
+    </section>
+  </div>
+  <section>
+    <h2>Installer l'app d'un enfant sur l'iPad</h2>
+    <p>Dans Safari, ouvrir l'app de l'enfant, taper son code, puis Partager et « Sur l'écran d'accueil ». Ouvrir l'icône et taper son code une dernière fois : l'app de l'écran d'accueil garde ses propres réglages.</p>
+    <div class="liens"><a href="../">Page des parents de Louise</a><a href="../sortir">Se déconnecter de cet appareil</a></div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  function majEtats() {
+    fetch('../api/codes').then(r => r.json()).then(etat => {
+      document.querySelectorAll('section[data-enfant]').forEach(s => {
+        const e = s.dataset.enfant;
+        const p = s.querySelector('.etat');
+        p.textContent = etat[e] ? 'Code choisi.' : 'Pas encore de code.';
+        p.classList.toggle('ok', !!etat[e]);
+      });
+    }).catch(() => {});
+  }
+  document.querySelectorAll('section[data-enfant] [data-a="enregistrer"]').forEach(b => b.addEventListener('click', () => {
+    const s = b.closest('section');
+    const e = s.dataset.enfant;
+    const code = s.querySelector('#c-' + e).value;
+    const encore = s.querySelector('#v-' + e).value;
+    const msg = s.querySelector('.message');
+    if (code !== encore) { msg.textContent = 'Les deux codes ne sont pas pareils.'; return; }
+    fetch('../api/codes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enfant: e, code }) })
+      .then(r => r.json().then(j => ({ ok: r.ok, j })))
+      .then(({ ok, j }) => {
+        msg.textContent = ok ? 'Code enregistré.' : (j.erreur || 'Erreur');
+        if (ok) { s.querySelector('#c-' + e).value = ''; s.querySelector('#v-' + e).value = ''; majEtats(); }
+      })
+      .catch(() => { msg.textContent = 'Pas de réseau, réessayez.'; });
+  }));
+  majEtats();
+})();
+</script>
+</body>
+</html>
