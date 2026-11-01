@@ -1,6 +1,6 @@
 # Tables de multiplication : plan de l'appli
 
-Le module des tables du site « Nos révisions » : une petite appli web, ludique et sonore, pour que deux enfants (un en CM1, une en CM2) apprennent leurs tables sur iPad. Publiée sur GitHub Pages depuis ce dépôt, comme les autres modules.
+Le module des tables du site « Nos révisions » : une petite appli web, ludique et sonore, pour que deux enfants (un en CM1, une en CM2) apprennent leurs tables sur iPad. Servie par Vercel avec les autres modules (`../ARCHITECTURE.md`).
 
 **Statut au 01/11/2026** : recherche faite, décisions arrêtées (section 4), maquette des écrans faite, design v2 retenu (panel du 01/11/2026), **module codé** (`modules/tables/`, pages `henri/tables.html` et `clara/tables.html`) : diagnostic, entraînement, erreur à retaper, fin de séance, grille, coin parent. Pas encore essayé sur un vrai iPad. À venir : défi d'une minute, découverte d'une famille, « Practise it » depuis la grille.
 
@@ -73,7 +73,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 
 ### Technique
 
-- Un seul `index.html`, sans bibliothèque ni build, publié sur GitHub Pages. Pensé pour l'iPad en paysage et en portrait.
+- Un seul `index.html`, sans bibliothèque ni build, servi par Vercel depuis le 01/11/2026 (`../ARCHITECTURE.md`). Pensé pour l'iPad en paysage et en portrait.
 - **Progression gardée sur l'iPad**, aucun serveur. **L'appli s'ajoute à l'écran d'accueil** : Safari efface les données d'un site qu'on n'a pas ouvert depuis sept jours, une appli posée sur l'écran d'accueil n'a pas cette limite (à vérifier sur l'iPad).
 
 ## 3 bis. Accès : une app par enfant sur l'écran d'accueil, toutes servies par un seul site
