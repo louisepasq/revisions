@@ -36,7 +36,7 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
    - une interface qui réutilise le kit (`commun/kit.css`, `commun/kit.js`, classes `kr-*`) ;
    - une page fine par enfant (`henri/<module>.html`, `clara/<module>.html`), sur le modèle de `henri/tables.html` ;
    - une carte sur le portail de l'enfant (`commun/portail.js`).
-4. **Stockage** : clé `localStorage` `<enfant>.<module>`, sous try/catch. Pour la sauvegarde en ligne, charger `commun/sync.js` et `commun/synchro-page.js`. Si l'état n'a pas la forme de celui des tables, ajouter sa fusion dans `lib/fusion.js` **et** dans `commun/sync.js`, avec un test.
+4. **Stockage** : clé `localStorage` `<enfant>.<module>`, sous try/catch. Pour la sauvegarde en ligne, charger `commun/sync.js` et `commun/synchro-page.js`, et ajouter le module à `MODULES` en tête de `synchro-page.js` (son objet global doit porter `charger` et `sauver`). Si l'état n'a pas la forme de celui des tables, ajouter sa fusion dans `lib/fusion.js` **et** dans `commun/sync.js`, avec un test.
 5. **Accès** : un nouveau dossier commun est ouvert aux enfants ; un dossier propre à un enfant suit la règle de `lib/acces.js`. Vérifier avec `test/acces.test.mjs`.
 6. **Textes** : le cadre (boutons, mascotte) va dans `commun/textes.js`, en français et en anglais ; le contenu scolaire reste dans sa langue, dans le module.
 7. **Voix** : toute phrase que l'app dit doit apparaître dans `commun/outils/phrases.js`, avec exactement le texte que le code passe à `KR.lire`. Puis relancer la fabrication (section 4). Sans ça, la voix de l'appareil prend le relais, en moins bien.

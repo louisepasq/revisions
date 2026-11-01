@@ -2,7 +2,7 @@
 
 Le module des tables du site « Nos révisions » : une petite appli web, ludique et sonore, pour que deux enfants (un en CM1, une en CM2) apprennent leurs tables sur iPad. Servie par Vercel avec les autres modules (`../ARCHITECTURE.md`).
 
-**Statut au 01/11/2026** : recherche faite, décisions arrêtées (section 4), maquette des écrans faite, design v2 retenu (panel du 01/11/2026), **module codé** (`modules/tables/`, pages `henri/tables.html` et `clara/tables.html`) : diagnostic, entraînement, erreur à retaper, fin de séance, grille, coin parent. Pas encore essayé sur un vrai iPad. À venir : défi d'une minute, découverte d'une famille, « Practise it » depuis la grille.
+**Statut au 01/11/2026** : recherche faite, décisions arrêtées (section 4), maquette des écrans faite, design v2 retenu (panel du 01/11/2026), **module codé** (`modules/tables/`, pages `henri/tables.html` et `clara/tables.html`) : diagnostic, entraînement, erreur à retaper, fin de séance, **album à tampons** (D-20, construit le 01/11/2026) avec la grille en bascule, coin parent. Pas encore essayé sur un vrai iPad. À venir : défi d'une minute, découverte d'une famille, « Practise it » depuis la grille.
 
 Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; **[recherche]** étude citée, non relue en entier ; **[brief GPT]** repris d'un brief rédigé avec ChatGPT le 01/11/2026 ; **[appréciation]** avis de conception.
 
@@ -43,7 +43,8 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 
 ### Écrans
 
-- **La grille** : la table de Pythagore 10 x 10, chaque case se colore à mesure que le résultat est acquis (gris, bronze, argent, or). C'est la récompense centrale et la carte de ce qui reste.
+- **L'album à tampons** (D-20, remplace la grille comme vue principale) : une carte par paire de 2 à 9, un tampon entier par jour où un fait de la paire sort juste et monte de boîte, l'or au quatrième tampon, à une révision prévue et dans les deux sens. Une page par famille, médaillée quand elle est toute dorée. Règles et données : `modules/tables/README.md`, section « L'album à tampons ».
+- **La grille** : la table de Pythagore 10 x 10, à un geste de l'album (« See as a grid »), sur les mêmes données que l'album : chaque case se colore avec les tampons de sa carte (Starting, Nearly there, or). C'est la carte de ce qui reste, celle qu'Eduscol fait entourer.
 - **Entraînement du jour** (environ 5 minutes) : rappels dus aujourd'hui, mélange des quatre types de questions, reprise des erreurs à la fin. Pavé numérique géant. Régularité affichée en jours faits dans la semaine (décision du 01/11/2026), pas en série qui retombe à zéro. « Rapide ! » reste, discret.
 - **Découvrir une famille** : on débloque les familles dans l'ordre de la section 2, chacune avec son astuce animée et sa représentation en rectangle (7 x 8, c'est 7 rangées de 8).
 - **Défi 1 minute** : le format de l'évaluation nationale, contre son propre record seulement, ouvert une fois la justesse installée.
@@ -52,7 +53,8 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 
 ### Moteur
 
-- **Un suivi par résultat** : juste ou faux, temps de réponse, dates. Un résultat passe au niveau suivant quand il sort juste et en moins de 3 secondes (seuil à ajuster) à des jours différents.
+- **Un suivi par résultat** : juste ou faux, temps de réponse, dates. Un résultat passe au niveau suivant quand il sort juste et en moins de 3 secondes (seuil à ajuster) à des jours différents ; **la boîte 4 (par cœur) ne se gagne qu'à une révision prévue** (D-20), jamais un jour où le fait n'était pas dû.
+- **Au plus quatre faits nouveaux par jour**, toutes séances comprises (D-20) : une deuxième séance le même jour ne révise que des faits déjà vus.
 - **Les résultats acquis reviennent de temps en temps**, à une semaine puis à un mois, pour vérifier qu'ils tiennent.
 - **Diagnostic au premier lancement** : une minute de questions place chaque enfant dans les boîtes, pour ne pas faire refaire la table de 2 à qui la sait ; le temps de réponse est mesuré en silence, **sans chrono visible** (décision du 01/11/2026, sur proposition du relecteur pédagogique).
 

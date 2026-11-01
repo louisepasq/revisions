@@ -16,7 +16,7 @@
 .coin-parent{position:absolute;right:max(24px,env(safe-area-inset-right));top:max(24px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;min-height:56px;padding:0 20px;border-radius:99px;background:var(--carte);border:3px solid var(--e-200);color:var(--encre-douce);font-weight:700;font-size:17px;z-index:2}
 .coin-parent .ico{font-size:22px}
 
-.modules{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));grid-auto-rows:minmax(300px,1fr);gap:28px;
+.modules{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));grid-auto-rows:minmax(300px,1fr);gap:24px;
   padding:40px max(34px,env(safe-area-inset-right)) max(34px,env(safe-area-inset-bottom)) max(34px,env(safe-area-inset-left))}
 .module{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--trait-fort);padding:26px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;color:var(--encre);transition:transform .08s,box-shadow .08s;min-width:0}
 a.module:active{transform:translateY(var(--relief));box-shadow:none}

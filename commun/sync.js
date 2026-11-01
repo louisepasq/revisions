@@ -47,6 +47,9 @@
       vu: !!(x.vu || y.vu),
       justesJours: unionTriee(x.justesJours, y.justesJours),
       erreurs: Math.max(x.erreurs || 0, y.erreurs || 0),
+      // Album à tampons (D-20) : jours de tampon réunis, premier jour vu le plus ancien.
+      ...(x.tampons || y.tampons ? { tampons: unionTriee(x.tampons, y.tampons) } : {}),
+      ...(x.debut || y.debut ? { debut: [x.debut, y.debut].filter(Boolean).sort()[0] } : {}),
     };
   }
 
@@ -77,8 +80,29 @@
     };
   }
 
+  /* Module du zoom : une carte de Leitner par lieu et par type de question, fusionnée comme un fait
+     des tables ; étapes ouvertes au maximum, jours réunis, grand voyage vu sur l'un ou l'autre. */
+  function fusionZoom(a, b) {
+    if (vide(a)) return vide(b) ? {} : b;
+    if (vide(b)) return a;
+    const ca = estObjet(a.cartes) ? a.cartes : {};
+    const cb = estObjet(b.cartes) ? b.cartes : {};
+    const cartes = {};
+    for (const k of new Set([...Object.keys(ca), ...Object.keys(cb)])) cartes[k] = fusionFait(ca[k], cb[k]);
+    return {
+      ...a,
+      ...b,
+      version: Math.max(a.version || 1, b.version || 1),
+      cartes,
+      etages: Math.max(a.etages || 1, b.etages || 1),
+      jours: unionTriee(a.jours, b.jours),
+      intro: !!(a.intro || b.intro),
+    };
+  }
+
   function fusionner(module, enregistre, recu) {
     if (module === 'tables') return fusionTables(enregistre, recu);
+    if (module === 'zoom') return fusionZoom(enregistre, recu);
     if (vide(recu)) return vide(enregistre) ? {} : enregistre;
     return recu;
   }

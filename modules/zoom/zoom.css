@@ -1,0 +1,312 @@
+/* Module « De l'univers à Éguilles » : les cartes et les écrans propres au module.
+   Les composants viennent de commun/kit.css. Les écrans de parole et de fin reprennent la forme
+   de ceux des tables (modules/tables/tables.css), recopiée ici tant qu'elle n'est pas dans le kit. */
+a.rond{text-decoration:none}
+
+/* ---------- Couleurs des cartes, jour et soir ---------- */
+:root{
+  --z-mer:#BFE0F0; --z-mer-trait:#8CC3DE; --z-terre:#E2DCCF; --z-france:#F2EAD6; --z-region:#FBEFC9; --z-bord:#B9A989;
+  --z-fleuve:#2F7FB5; --z-lac:#8CC6E6; --z-espace:#101433; --z-ligne:#5D86A6; --z-hachure:#9C7F55; --z-camargue:#CFE2B4;
+  --c-afrique:#F0A13A; --c-amerique-nord:#6DB86A; --c-amerique-sud:#E06A57; --c-asie:#EFCB45; --c-europe:#9B86D0; --c-oceanie:#E7829A; --c-antarctique:#F7FBFD;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --z-mer:#1F4B66; --z-mer-trait:#2A5E7E; --z-terre:#4A4538; --z-france:#5B5444; --z-region:#6E6346; --z-bord:#8C8064;
+    --z-fleuve:#7CC4F2; --z-lac:#3F7FA6; --z-espace:#090B1E; --z-ligne:#9CC6E6; --z-hachure:#D8BE8E; --z-camargue:#4E6A3A;
+    --c-afrique:#D98C2B; --c-amerique-nord:#4E9B4C; --c-amerique-sud:#C2533F; --c-asie:#C9A930; --c-europe:#7D6BB3; --c-oceanie:#C76680; --c-antarctique:#DDE7EC;
+  }
+}
+
+/* ---------- La carte ---------- */
+.carte-zoom{position:relative;flex:1 1 0;min-height:0;min-width:0;border-radius:var(--r-l);overflow:hidden;background:var(--z-mer);border:3px solid var(--trait);box-shadow:0 4px 0 var(--trait)}
+.carte-zoom.e-univers,.carte-zoom.e-solaire{background:var(--z-espace);border-color:#2A2F5A;box-shadow:0 4px 0 #2A2F5A}
+.carte-svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;touch-action:manipulation;-webkit-user-select:none;user-select:none;cursor:pointer}
+.carte-svg *{pointer-events:none}
+.z-arrive{animation:z-arrive .55s ease-out both}
+@keyframes z-arrive{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+.z-tag-etape{position:absolute;left:12px;top:12px;padding:4px 14px;border-radius:99px;background:var(--carte);color:var(--encre);font-family:var(--f-jeu);font-weight:700;font-size:18px;box-shadow:0 2px 0 var(--trait-fort);pointer-events:none}
+
+.f{vector-effect:non-scaling-stroke}
+.f.mer{fill:var(--z-mer)}
+.f.terre{fill:var(--z-terre);stroke:var(--z-bord);stroke-width:1}
+.f.terre-france{fill:var(--z-france)}
+.f.terre-region{fill:var(--z-region);stroke:var(--e-500);stroke-width:1.4}
+.f.c-afrique{fill:var(--c-afrique)} .f.c-amerique-nord{fill:var(--c-amerique-nord)} .f.c-amerique-sud{fill:var(--c-amerique-sud)}
+.f.c-asie{fill:var(--c-asie)} .f.c-europe{fill:var(--c-europe)} .f.c-oceanie{fill:var(--c-oceanie)} .f.c-antarctique{fill:var(--c-antarctique)}
+.e-terre .f.terre{stroke:rgba(0,0,0,.25);stroke-width:.8;fill-opacity:.82}
+.f.parallele{fill:none;stroke:var(--z-ligne);stroke-width:1.3;stroke-dasharray:5 5}
+.f.equateur-trait{stroke-width:2.2;stroke-dasharray:none}
+.f.meridien{fill:none;stroke:var(--z-ligne);stroke-width:1.3;stroke-dasharray:2 4}
+.f.lac{fill:var(--z-lac);stroke:var(--z-fleuve);stroke-width:1}
+.f.fleuve-fond{fill:none;stroke:var(--z-fleuve);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.f.frontiere-region{fill:none;stroke:var(--e-900);stroke-width:2.6;stroke-linejoin:round;stroke-dasharray:7 4}
+.f.commune-eguilles{fill:var(--e-200);fill-opacity:.65;stroke:var(--e-700);stroke-width:1.6;stroke-dasharray:4 3}
+
+/* L'espace, dessiné à la main */
+.f.espace{fill:var(--z-espace)}
+.f.etoile-fond{fill:#FFFFFF;opacity:.7}
+.f.bras-large{fill:none;stroke:#7E6FD8;stroke-width:46;stroke-linecap:round;opacity:.38;filter:url(#z-flou)}
+.f.bras{fill:none;stroke:#E4DDFF;stroke-width:6;stroke-linecap:round;opacity:.75}
+.f.bulbe{fill:url(#z-lueur)}
+.f.coeur{fill:#FFF6D8}
+.f.bras-loin{fill:none;stroke:#CDBFFF;stroke-width:5;stroke-linecap:round;opacity:.7}
+.f.bulbe-loin{fill:url(#z-lueur)}
+.f.orbite{fill:none;stroke:#8E95C8;stroke-width:1.4;opacity:.6}
+.f.orbite-naine{stroke-dasharray:3 5}
+.f.anneaux{fill:none;stroke:#D9C48A;stroke-width:6;opacity:.9}
+
+/* ---------- Les lieux : invisibles par défaut, dessinés quand ils ont une forme propre ---------- */
+.lieu path{fill:none;stroke:none;vector-effect:non-scaling-stroke}
+.lieu.d-massif path{fill:url(#z-hachures);stroke:var(--z-hachure);stroke-width:1.2;fill-opacity:.85}
+.hachure-fond{fill:transparent}
+.hachure-trait{stroke:var(--z-hachure);stroke-width:2.4}
+.lieu.d-camargue path{fill:var(--z-camargue);fill-opacity:.8;stroke:var(--z-bord);stroke-width:1}
+.lieu.d-etang path{fill:var(--z-lac);stroke:var(--z-fleuve);stroke-width:1}
+.lieu.d-fleuve path{stroke:var(--z-fleuve);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
+.lieu.d-crete path{stroke:#8A6E4B;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.lieu circle{fill:var(--encre);stroke:var(--carte);stroke-width:2;vector-effect:non-scaling-stroke}
+.lieu.d-village circle{fill:var(--e-700);stroke-width:3}
+.lieu.d-outremer circle,.lieu.d-petit-pays circle{fill:var(--e-700)}
+.lieu.d-sommet circle{fill:#8A6E4B}
+.lieu.d-lac-point circle{fill:var(--z-lac);stroke:var(--z-fleuve)}
+.lieu.d-soleil circle{fill:url(#z-soleil);stroke:none}
+.lieu.d-soleil-ici circle{fill:#FFE680;stroke:#FFFFFF;stroke-width:2}
+.lieu.d-planete-mercure circle{fill:#A8A39A} .lieu.d-planete-venus circle{fill:#E8C77E} .lieu.d-planete-terre-planete circle{fill:#3E8EC0;stroke:#7CD17A;stroke-width:3}
+.lieu.d-planete-mars circle{fill:#D0603F} .lieu.d-planete-jupiter circle{fill:#D9B48A} .lieu.d-planete-saturne circle{fill:#E8D49A}
+.lieu.d-planete-uranus circle{fill:#9DD7DC} .lieu.d-planete-neptune circle{fill:#4E7DD9} .lieu.d-planete-pluton circle{fill:#B8A99A}
+.lieu.d-lune circle{fill:#E2DED6}
+[class*="d-planete"] circle,.lieu.d-lune circle{stroke:none}
+
+/* La carte qui se colore, comme la grille des tables : bronze, argent, or */
+.z-explorer .lieu.f-z.m-bronze path{fill:var(--e-200);fill-opacity:.55}
+.z-explorer .lieu.f-z.m-argent path{fill:var(--e-300);fill-opacity:.7}
+.z-explorer .lieu.f-z.m-or path{fill:var(--or-vif);fill-opacity:.75}
+.z-explorer .lieu.f-l.m-argent path{stroke:var(--e-500)} .z-explorer .lieu.f-l.m-or path{stroke:var(--or-relief)}
+.z-explorer .lieu.f-p.m-or circle{fill:var(--or-vif);stroke:var(--or-relief)}
+
+/* Surbrillances : question (teinte de l'enfant), aide (surligneur), juste (vert), exploration */
+.hl{vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.hl-z{stroke-width:4}
+.hl-z.hl-question{fill:var(--e-300);fill-opacity:.55;stroke:var(--e-700);animation:z-pouls 1.4s ease-in-out infinite}
+.hl-z.hl-aide{fill:var(--surligneur);fill-opacity:.7;stroke:#9A7A00}
+.hl-z.hl-juste{fill:var(--juste-500);fill-opacity:.45;stroke:var(--juste-700)}
+.hl-z.hl-explore{fill:var(--e-500);fill-opacity:.35;stroke:var(--e-700)}
+.hl-l-fond{fill:none;stroke:var(--carte);stroke-width:14;opacity:.85}
+.hl-l{fill:none;stroke-width:7}
+.hl-l.hl-question{stroke:var(--e-700);animation:z-pouls 1.4s ease-in-out infinite}
+.hl-l.hl-aide{stroke:#C99A00}
+.hl-l.hl-juste{stroke:var(--juste-700)}
+.hl-l.hl-explore{stroke:var(--e-700)}
+.hl-p circle{fill:none;stroke-width:5;vector-effect:non-scaling-stroke}
+.hl-p.hl-question circle{stroke:var(--e-700);fill:var(--e-300);fill-opacity:.35;animation:z-pouls 1.4s ease-in-out infinite}
+.hl-p.hl-aide circle{stroke:#C99A00;fill:var(--surligneur);fill-opacity:.55}
+.hl-p.hl-juste circle{stroke:var(--juste-700);fill:var(--juste-500);fill-opacity:.3}
+.hl-p.hl-explore circle{stroke:var(--e-700);fill:var(--e-300);fill-opacity:.35}
+@keyframes z-pouls{50%{opacity:.55}}
+.epingle path{fill:var(--e-700);stroke:var(--carte);stroke-width:2.5}
+.epingle circle{fill:var(--carte)}
+.etiq-carte text{font-family:var(--f-texte);font-weight:700;font-size:18px;fill:var(--encre);stroke:var(--carte);stroke-width:5px;paint-order:stroke;stroke-linejoin:round}
+.e-univers .etiq-carte text,.e-solaire .etiq-carte text{fill:#FFFFFF;stroke:#101433}
+.repere rect{fill:var(--encre)}
+.repere text{font-family:var(--f-texte);font-weight:700;fill:var(--encre-douce);stroke:var(--carte);stroke-width:4px;paint-order:stroke;stroke-linejoin:round}
+
+/* ---------- Accueil du module ---------- */
+.z-accueil-grille{flex:1;display:grid;gap:24px;padding-top:20px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+.z-colonne{display:flex;flex-direction:column;gap:18px}
+.z-entrainement{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:20px;text-align:left;background:var(--e-700);color:var(--sur-e);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-relief);padding:28px;min-height:420px;transition:transform .08s,box-shadow .08s}
+.z-entrainement:active{transform:translateY(var(--relief));box-shadow:none}
+.ce-haut{display:flex;align-items:center;gap:22px;width:100%}
+.ce-masc{flex:none;width:170px;height:170px;border-radius:50%;background:var(--e-100);display:grid;place-items:center}
+.ce-masc .masc{width:134px;height:145px}
+.ce-infos{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ce-info{display:flex;align-items:center;gap:12px;font-weight:700;font-size:22px;line-height:1.2}
+.ce-info .ico{flex:none;font-size:28px}
+.ce-semaine{display:block;background:var(--carte);color:var(--encre);border-radius:var(--r-m);padding:12px 16px;margin-top:auto}
+.ce-texte{padding-right:100px}
+.ce-texte b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:46px;line-height:1}
+.ce-texte span{display:block;font-size:21px;margin-top:8px}
+.ce-go{position:absolute;right:26px;bottom:26px;width:80px;height:80px;border-radius:50%;background:var(--sur-e);color:var(--e-700);display:grid;place-items:center}
+.ce-go .ico{font-size:42px;margin-left:6px}
+.z-revoir{white-space:normal;text-align:left}
+.z-etapes{display:flex;flex-direction:column;gap:10px}
+.z-etapes h2{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1;color:var(--e-900);margin-bottom:2px}
+.z-etape{display:flex;align-items:center;gap:16px;min-height:72px;padding:8px 16px 8px 8px;text-align:left;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-m);box-shadow:0 4px 0 var(--e-200);transition:transform .08s,box-shadow .08s}
+.z-etape:active{transform:translateY(4px);box-shadow:none}
+.z-etape.fermee{background:transparent;border-style:dashed;border-color:var(--pointille);box-shadow:none}
+.z-vignette{flex:none;width:96px;height:58px;border-radius:12px;overflow:hidden;display:block;position:relative}
+.z-vignette .carte-zoom{position:absolute;inset:0;border:0;box-shadow:none;border-radius:12px}
+.z-etape.fermee .z-vignette{opacity:.55}
+.z-etape-texte{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.z-etape-texte b{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1;color:var(--encre)}
+.z-etape .mini-piste{margin:0;height:12px}
+.z-etape-n{font-size:16px;font-weight:700;color:var(--e-900)}
+.z-etape .pastille{align-self:flex-start;min-height:30px;font-size:15px}
+
+/* ---------- Écran de parole ---------- */
+.parole-corps{flex:1;display:flex;align-items:center;justify-content:center;gap:40px;padding:20px 0 40px}
+.parole-masc .masc{width:280px;height:302px}
+.parole-texte{max-width:500px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}
+.parole-texte .bulle{font-size:26px;padding:16px 22px 18px}
+.parole-texte .bulle.parle::before{top:30px}
+
+/* ---------- Voyage et exploration ---------- */
+.z-voyage .barre .titre{display:flex;align-items:center;min-height:70px}
+.z-voyage-titre{font-size:40px}
+.z-voyage-zone{position:relative}
+.z-voyage-fin{position:absolute;left:16px;right:16px;bottom:16px;display:flex;align-items:flex-end;gap:16px;justify-content:space-between;
+  background:color-mix(in srgb,var(--toile) 92%,transparent);border-radius:var(--r-l);padding:14px 18px;box-shadow:0 4px 0 var(--trait)}
+.z-voyage-fin .retour-masc{flex:1;min-width:0}
+.z-voyage-fin .retour-masc .masc{width:120px;height:130px}
+.z-adresse{font-size:19px}
+.z-panneau{align-items:stretch !important;min-height:0;overflow:auto}
+.z-zooms{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.z-zooms .btn{min-height:64px;font-size:20px;padding:0 12px;gap:8px}
+.z-choisi .z-vide{font-size:18px;color:var(--encre-douce)}
+.z-nom{display:block;font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1.15;margin-bottom:4px;color:var(--encre)}
+.z-puces{display:flex;flex-wrap:wrap;gap:8px}
+.z-puce{display:inline-flex;align-items:center;gap:8px;min-height:56px;padding:6px 16px;border-radius:99px;border:3px solid var(--e-200);background:var(--carte);color:var(--e-900);font-family:var(--f-texte);font-weight:700;font-size:17px;line-height:1.15;text-align:left}
+.z-puce.en-plus{border-style:dashed;border-color:var(--pointille);color:var(--encre-douce)}
+.z-puce.m-bronze{background:var(--e-50)} .z-puce.m-argent{background:var(--e-100)} .z-puce.m-or{background:var(--or-clair);border-color:var(--or-relief);color:var(--encre)}
+.z-puce[aria-pressed="true"]{background:var(--e-700);border-color:var(--e-700);color:var(--sur-e)}
+.z-tag{font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--neutre);color:var(--encre)}
+.z-credits{font-size:13px;line-height:1.35;color:var(--encre-douce);margin-top:auto}
+
+/* ---------- Séance ---------- */
+.z-seance .corps,.z-explorer .corps,.z-voyage .corps{gap:16px}
+.z-seance .zone,.z-explorer .zone,.z-voyage .zone{flex:1 1 0;min-height:200px}
+.z-consigne{flex:none;padding:16px 20px 18px;gap:4px;text-align:center}
+.z-petit{font-family:var(--f-texte);font-weight:700;font-size:20px;color:var(--encre-douce)}
+.z-grand{font-family:var(--f-jeu);font-weight:800;font-size:clamp(28px,9cqi,44px);line-height:1.08;color:var(--encre)}
+.z-moyen{font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1.15;color:var(--encre)}
+.z-nouveau{background:var(--or-clair);color:var(--encre);margin-bottom:6px}
+.z-nouveau .ico{color:var(--or-fonce)}
+.z-montre{align-self:center;min-height:60px;font-size:21px}
+.z-choix{display:grid;gap:12px;grid-template-columns:1fr}
+.z-choix .btn{min-height:64px;white-space:normal;line-height:1.15;font-size:22px;padding:8px 18px;text-align:center}
+.z-choix .btn.z-bon{background:var(--juste-700);color:var(--sur-juste);border-color:var(--juste-700);box-shadow:0 var(--relief) 0 var(--juste-900)}
+.z-choix .btn.z-a-toucher{background:var(--surligneur);color:#1E2147;border-color:#9A7A00;box-shadow:0 var(--relief) 0 #9A7A00}
+.z-choix .btn.z-ecarte{background:transparent;border:3px dashed var(--pointille);box-shadow:none;color:var(--encre-douce)}
+.z-panneau .consigne{font-size:21px}
+.z-suite{position:relative;overflow:hidden;align-self:stretch}
+.z-suite:disabled{opacity:.55}
+.z-jauge{position:absolute;left:18px;right:18px;bottom:9px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--sur-e) 30%,transparent);overflow:hidden}
+.z-jauge i{display:block;height:100%;width:0;border-radius:3px;background:var(--sur-e)}
+.feuille-arret{width:min(520px,100%);text-align:center}
+.feuille-arret h2{margin:6px 0 22px}
+.feuille-arret .boutons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.retour-masc .masc{width:120px;height:130px}
+.retour-masc .bulles{padding-left:10px}
+.retour-masc .bulle{font-size:19px}
+.retour-masc .bulle.parle{font-size:20px}
+
+/* ---------- Fin de séance ---------- */
+.fin-seance{flex-direction:row;align-items:center;gap:44px}
+.fin-masc{flex:none;width:290px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.fin-masc .masc{width:290px;height:314px}
+.fin-nb{font-family:var(--f-jeu);font-weight:700;font-size:28px;color:var(--e-900)}
+.fin-contenu{flex:1;min-width:0}
+.fin-contenu h1{margin:0 0 20px;font-family:var(--f-jeu);font-weight:700;font-size:52px;line-height:1;color:var(--e-900)}
+.z-nouvelle-etape{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px 18px;border-radius:var(--r-m);background:var(--or-clair);font-weight:700;font-size:21px}
+.z-nouvelle-etape .ico{color:var(--or-fonce);font-size:28px}
+.montee{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 4px 0 var(--trait);padding:18px 22px 22px}
+.montee .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1}
+.montee .titre .ico{color:var(--juste-700);font-size:32px}
+.jetons{display:flex;gap:14px;margin-top:16px}
+.jeton{flex:1;min-width:0;min-height:110px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;color:var(--encre);text-align:center}
+.z-jeton b{font-family:var(--f-jeu);font-weight:800;font-size:22px;line-height:1.1;white-space:normal}
+.jeton span{font-size:16px;font-weight:700}
+.z-jeton.m-bronze{background:var(--carte) repeating-linear-gradient(135deg,var(--e-200) 0 4px,transparent 4px 9px);border:2px solid var(--e-200)}
+.z-jeton.m-argent{background:var(--e-300);color:var(--e-900)}
+.z-jeton.m-or{background:var(--or-vif);color:#1E2147;box-shadow:0 4px 0 var(--or-relief)}
+.jeton-plus{background:var(--e-100);color:var(--e-900)}
+.jeton:nth-child(2){animation-delay:.12s}.jeton:nth-child(3){animation-delay:.24s}.jeton:nth-child(4){animation-delay:.36s}
+.ligne-fin{display:flex;align-items:center;gap:22px;margin-top:22px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:14px 20px}
+.jours-n{font-weight:700;font-size:19px;color:var(--e-900);line-height:1.25}
+.demain{display:flex;align-items:center;gap:12px;margin-top:22px;font-size:22px}
+.demain .ico{font-size:30px;color:var(--e-700);flex:none}
+.demain b{font-family:var(--f-jeu);font-weight:800;font-size:24px}
+.actions-fin{display:flex;gap:20px;justify-content:flex-end;flex-wrap:wrap;margin-top:30px}
+@media (prefers-color-scheme: dark){ .z-nouveau .ico,.z-nouvelle-etape .ico{color:var(--or-vif)} .z-nouvelle-etape{color:var(--encre)} }
+
+/* ===================================================================
+   iPad paysage : la carte à gauche, le panneau à droite
+   =================================================================== */
+@media (orientation: landscape) and (min-width: 900px){
+  .z-seance .action,.z-explorer .action{width:350px;flex:none}
+  .z-seance .corps,.z-explorer .corps{flex-direction:row}
+}
+/* iPad portrait et iPhone : la carte en haut, le panneau dessous */
+@media (orientation: portrait), (max-width: 899px){
+  .z-accueil-grille{grid-template-columns:1fr}
+  .z-entrainement{min-height:340px}
+  .z-seance .action,.z-explorer .action{width:100%;flex:none;max-height:46%}
+  .z-choix{grid-template-columns:1fr 1fr}
+  .fin-seance{flex-direction:column;align-items:stretch;gap:12px}
+  .fin-masc{width:auto;flex-direction:row;justify-content:center;gap:20px}
+  .fin-masc .masc{width:180px;height:194px}
+  .parole-corps{flex-direction:column;gap:24px}
+  .parole-texte{align-items:center}
+  .parole-texte .bulle.parle::before{left:50%;top:-13px;margin-left:-10px;border-width:3px 0 0 3px}
+}
+@media (orientation: portrait) and (min-width: 601px){
+  .fin-seance{justify-content:center;gap:24px}
+  .fin-contenu{flex:none}
+  .z-seance .action{max-height:40%}
+}
+
+/* iPhone */
+@media (max-width: 600px){
+  .z-accueil-grille{gap:16px;padding-top:12px}
+  .z-entrainement{min-height:0;padding:18px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px}
+  .ce-haut{gap:14px}
+  .ce-masc{width:92px;height:92px}
+  .ce-masc .masc{width:72px;height:78px}
+  .ce-info{font-size:17px;gap:8px}
+  .ce-info .ico{font-size:22px}
+  .ce-semaine{width:100%;padding:10px 12px;margin-top:0}
+  .ce-semaine .semaine{justify-content:space-between}
+  .ce-texte{flex:1;min-width:0;padding-right:0}
+  .ce-texte b{font-size:32px}
+  .ce-texte span{font-size:17px}
+  .ce-go{position:static;width:60px;height:60px;margin-left:auto;flex:none}
+  .ce-go .ico{font-size:30px}
+  .z-etape{min-height:64px;gap:12px}
+  .z-vignette{width:78px;height:48px}
+  .z-etape-texte b{font-size:19px}
+  .z-voyage-titre{font-size:28px}
+  .z-voyage-fin{left:8px;right:8px;bottom:8px;padding:10px;flex-direction:column;align-items:stretch;gap:10px}
+  .z-adresse{font-size:16px}
+  .z-tag-etape{font-size:15px;left:8px;top:8px;padding:2px 10px}
+  .z-seance .corps,.z-explorer .corps,.z-voyage .corps{gap:10px}
+  .z-seance .action,.z-explorer .action{max-height:52%}
+  .z-consigne{padding:10px 14px 12px}
+  .z-petit{font-size:17px}
+  .z-grand{font-size:28px}
+  .z-moyen{font-size:22px}
+  .z-choix{gap:8px}
+  .z-choix .btn{min-height:56px;font-size:18px;padding:6px 10px}
+  .z-montre{min-height:56px;font-size:19px}
+  .z-zooms .btn{min-height:56px;font-size:18px}
+  .z-puce{font-size:16px;padding:4px 12px}
+  .z-panneau .consigne{font-size:18px}
+  .retour-masc .bulle{font-size:16px}
+  .retour-masc .bulle.parle{font-size:17px}
+  .parole-masc .masc{width:170px;height:184px}
+  .parole-texte .bulle{font-size:21px}
+  .fin-masc .masc{width:110px;height:119px}
+  .fin-nb{font-size:22px}
+  .fin-contenu h1{font-size:34px;margin-bottom:14px;text-align:center}
+  .z-nouvelle-etape{font-size:17px}
+  .montee{padding:14px 14px 16px}
+  .montee .titre{font-size:22px}
+  .jetons{gap:8px;flex-wrap:wrap}
+  .jeton{min-height:84px;flex:1 1 40%}
+  .z-jeton b{font-size:18px}
+  .ligne-fin{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px;margin-top:14px}
+  .ligne-fin .semaine{gap:4px}
+  .demain{font-size:18px;margin-top:14px}
+  .demain b{font-size:20px}
+  .actions-fin{margin-top:18px;justify-content:stretch}
+  .actions-fin .btn{flex:1}
+  .etiq-carte text{font-size:16px}
+}

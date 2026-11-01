@@ -1,43 +1,80 @@
 /* Module des tables : écrans propres au module. Les composants viennent de commun/kit.css. */
 a.rond{text-decoration:none}
 
-/* ---------- Accueil du module ---------- */
-.accueil-grille{flex:1;display:grid;gap:24px;padding-top:24px;
-  grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto 1fr;grid-template-areas:"entr grille" "entr bientot"}
-.carte-entrainement{grid-area:entr;position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:22px;text-align:left;
-  background:var(--e-700);color:var(--sur-e);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-relief);padding:30px;min-height:300px;transition:transform .08s,box-shadow .08s}
+/* ---------- La carte d'une multiplication : quatre tampons, puis l'or (D-20) ---------- */
+.cf{--l:118px;--h:150px;width:var(--l);height:var(--h);flex:none;border-radius:18px;background:var(--carte);border:3px solid var(--e-200);box-shadow:0 4px 0 var(--e-200);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative;color:var(--encre)}
+.cf .op{font-family:var(--f-jeu);font-weight:700;font-size:32px;line-height:1;color:var(--encre);white-space:nowrap}
+.cf .rep{font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1;color:var(--or-fonce);margin-top:-6px;white-space:nowrap}
+.tps{display:flex;gap:5px}
+.tp{display:inline-grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;border:2px dashed var(--pointille);color:var(--pointille)}
+.tp .ico{font-size:13px}
+.tp.plein{border:2px solid var(--e-700);background:var(--e-700);color:var(--sur-e)}
+/* Un tampon gagné aujourd'hui est en or vif, la couleur du « monté aujourd'hui » */
+.tp.du-jour{background:var(--or-vif);border-color:var(--or-relief);color:var(--or-fonce)}
+.cf.neuf{background:transparent;border-style:dashed;border-color:var(--pointille);box-shadow:none}
+.cf.neuf .op{color:var(--encre-douce)}
+.cf.presque{background:var(--e-50);border-color:var(--e-300);box-shadow:0 4px 0 var(--e-300)}
+.cf.or{background:var(--or-clair);border-color:var(--or-relief);box-shadow:0 4px 0 var(--or-relief);gap:10px}
+.cf.or .tp.plein{background:var(--or-fonce);border-color:var(--or-fonce);color:var(--or-clair)}
+.cf.or-auj{background:var(--or-vif)}
+.cf.or-auj .tp.plein{color:var(--or-vif)}
+.badge-or{position:absolute;top:-14px;right:-14px;width:42px;height:42px;border-radius:50%;background:var(--or-vif);border:3px solid var(--carte);color:var(--or-fonce);display:grid;place-items:center;box-shadow:0 3px 0 var(--or-relief)}
+.badge-or .ico{font-size:24px}
+/* Carte dorée retombée : elle garde son or, et un signe calme dit qu'elle revient (pas de couleur d'alerte) */
+.cf.revoir{gap:5px}
+.cf .revient{display:block;max-width:calc(var(--l) - 14px);font-size:16px;font-weight:700;line-height:1.05;text-align:center;color:var(--e-900)}.cf.grand{--l:136px;--h:150px;gap:10px}
+.cf.grand .op{font-size:36px}
+.cf.grand .rep{font-size:30px;margin-top:-2px}
+.cf.grand .tp{width:24px;height:24px}
+.cf.petit{--l:90px;--h:118px;gap:12px;border-radius:16px}
+.cf.petit .op{font-size:25px}
+.cf.petit .tps{gap:4px}
+.cf.petit .tp{width:17px;height:17px}
+.cf.petit .tp .ico{font-size:10px}
+.cf.plus-n{background:var(--e-100);border-color:var(--e-100);box-shadow:none;font-family:var(--f-jeu);font-weight:700;font-size:30px;color:var(--e-900)}
+@media (prefers-color-scheme: dark){ .cf.or-auj .op,.cf.or-auj .rep{color:#2A1E00} .tp.du-jour{color:#4A3500} }
+
+/* ---------- Accueil du module : l'entraînement du jour et l'album ---------- */
+.accueil-album{flex:1;display:grid;gap:24px;padding-top:18px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:0}
+.carte-entrainement{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:22px;text-align:left;
+  background:var(--e-700);color:var(--sur-e);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-relief);padding:28px;min-height:300px;transition:transform .08s,box-shadow .08s}
 .carte-entrainement:active{transform:translateY(var(--relief));box-shadow:none}
-.ce-haut{display:flex;align-items:center;gap:24px;width:100%}
-.ce-masc{flex:none;width:190px;height:190px;border-radius:50%;background:var(--e-100);display:grid;place-items:center}
-.ce-masc .masc{width:150px;height:162px}
+.ce-haut{display:flex;align-items:center;gap:22px;width:100%}
+.ce-masc{flex:none;width:160px;height:160px;border-radius:50%;background:var(--e-100);display:grid;place-items:center}
+.ce-masc .masc{width:126px;height:136px}
 /* Ce qui attend l'enfant aujourd'hui, à la place de l'aplat vide (relecture du 01/11/2026, point 9) */
 .ce-infos{display:flex;flex-direction:column;gap:14px;min-width:0}
 .ce-info{display:flex;align-items:center;gap:12px;font-weight:700;font-size:22px;line-height:1.2}
 .ce-info .ico{flex:none;font-size:28px}
 .ce-info b{font-family:var(--f-jeu);font-weight:800;font-size:26px;white-space:nowrap}
-.ce-semaine{display:block;background:var(--carte);color:var(--encre);border-radius:var(--r-m);padding:12px 16px}
+.ce-semaine{display:block;background:var(--carte);color:var(--encre);border-radius:var(--r-m);padding:12px 16px;margin-top:auto}
 .ce-texte{margin-top:auto;padding-right:100px}
-/* La place libre de la carte se répartit au-dessus et au-dessous de la semaine */
-.ce-semaine{margin-top:auto}
-.ce-texte b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:52px;line-height:1}
+.ce-texte b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:46px;line-height:1}
 .ce-texte span{display:block;font-size:21px;margin-top:8px}
-.ce-go{position:absolute;right:28px;bottom:28px;width:84px;height:84px;border-radius:50%;background:var(--sur-e);color:var(--e-700);display:grid;place-items:center}
+.ce-go{position:absolute;right:26px;bottom:26px;width:84px;height:84px;border-radius:50%;background:var(--sur-e);color:var(--e-700);display:grid;place-items:center}
 .ce-go .ico{font-size:44px;margin-left:6px}
-.carte-grille{grid-area:grille;display:flex;align-items:center;gap:20px;text-align:left;background:var(--carte);color:var(--encre);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);padding:22px;transition:transform .08s,box-shadow .08s}
-.carte-grille:active{transform:translateY(var(--relief));box-shadow:none}
-.carte-grille .tuile{width:96px;height:96px}
-.carte-grille .tuile .ico{font-size:54px}
-.cg-texte{flex:1;min-width:0}
-.cg-texte b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:34px;line-height:1.05;margin-bottom:12px;color:var(--e-900)}
-.cg-texte .mini-piste{display:block}
-.cg-n{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
-.cg-n .ico{color:var(--or-fonce);font-size:22px}
-.bientots{grid-area:bientot;display:flex;flex-direction:column;gap:16px}
-.carte-bientot{display:flex;align-items:center;gap:16px;border:3px dashed var(--pointille);border-radius:var(--r-l);padding:16px 18px;color:var(--encre-douce)}
-.carte-bientot .tuile{width:72px;height:72px;border-radius:20px}
-.carte-bientot .tuile .ico{font-size:38px}
-.carte-bientot b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1.1;margin-bottom:6px}
-@media (prefers-color-scheme: dark){ .cg-n .ico{color:var(--or-vif)} }
+.panneau-album{display:flex;flex-direction:column;gap:16px;text-align:left;background:var(--carte);color:var(--encre);border:3px solid var(--e-200);border-radius:var(--r-l);
+  box-shadow:0 var(--relief) 0 var(--e-200);padding:22px 24px;min-width:0;transition:transform .08s,box-shadow .08s}
+.panneau-album:active{transform:translateY(var(--relief));box-shadow:none}
+.pa-tete{display:flex;align-items:center;gap:16px}
+.pa-tete .tuile{width:76px;height:76px;border-radius:22px}
+.pa-tete .tuile .ico{font-size:44px}
+.pa-tete b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:34px;line-height:1;color:var(--e-900)}
+.compteurs{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.compteur{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:99px;background:var(--e-50);border:2px solid var(--e-200);font-weight:700;font-size:18px;white-space:nowrap}
+.compteur .tp{width:20px;height:20px}
+.compteur.or{background:var(--or-clair);border-color:var(--or-relief)}
+.compteur.or .ico{color:var(--or-fonce);font-size:20px}
+.pa-sous{display:block;font-family:var(--f-jeu);font-weight:700;font-size:21px}
+.rang-cartes{display:flex;gap:14px;justify-content:space-between;padding-top:6px}
+.pa-note{display:block;font-size:18px;color:var(--encre-douce)}
+.pa-familles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:auto}
+.fam-mini{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:14px;background:var(--e-50);border:2px solid transparent;font-size:16px;font-weight:700;line-height:1.2}
+.fam-mini .n{display:flex;align-items:center;gap:5px;color:var(--encre-douce)}
+.fam-mini .n .ico{color:var(--or-fonce)}
+.fam-mini.ferme{background:transparent;border:2px dashed var(--pointille);color:var(--encre-douce)}
+.fam-mini.complet{background:var(--or-clair)}
 
 /* ---------- Écran de parole (diagnostic) ---------- */
 .parole-corps{flex:1;display:flex;align-items:center;justify-content:center;gap:40px;padding:20px 0 40px}
@@ -61,32 +98,66 @@ a.rond{text-decoration:none}
 .retour-masc.fete{align-items:flex-end}
 .retour-masc.fete .bulles{padding-bottom:70px}
 
-/* ---------- Fin de séance ---------- */
-.fin-seance{flex-direction:row;align-items:center;gap:44px}
-.fin-masc{flex:none;width:290px;display:flex;flex-direction:column;align-items:center;gap:8px}
-.fin-masc .masc{width:290px;height:314px}
-.fin-nb{font-family:var(--f-jeu);font-weight:700;font-size:28px;color:var(--e-900)}
-.fin-contenu{flex:1;min-width:0}
-.fin-contenu h1{margin:0 0 20px;font-family:var(--f-jeu);font-weight:700;font-size:52px;line-height:1;color:var(--e-900)}
-.montee{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 4px 0 var(--trait);padding:18px 22px 22px}
-.montee .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1}
-.montee .titre .ico{color:var(--juste-700);font-size:32px}
-.jetons{display:flex;gap:14px;margin-top:16px}
-.jeton{flex:1;min-width:0;height:124px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;color:var(--encre)}
-.jeton b{font-family:var(--f-jeu);font-weight:800;font-size:38px;line-height:1;white-space:nowrap}
-.jeton span{font-size:17px;font-weight:700;display:flex;align-items:center;gap:7px;text-align:center}
-.jeton.m-pre,.jeton.m-com{color:var(--e-900)}
-.jeton.m-auj{color:#1E2147}
-.jeton-plus{background:var(--e-100);color:var(--e-900)}
-.jeton:nth-child(2){animation-delay:.12s}.jeton:nth-child(3){animation-delay:.24s}.jeton:nth-child(4){animation-delay:.36s}
-.ligne-fin{display:flex;align-items:center;gap:22px;margin-top:22px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:14px 20px}
+/* ---------- Fin de séance : cartes dorées du jour, tampons du jour, la carte de demain ---------- */
+.fin-seance{flex-direction:row;align-items:center;gap:30px}
+.fin-masc{flex:none;width:250px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.fin-masc .masc{width:230px;height:248px}
+.fin-nb{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900)}
+.fin-contenu{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.fin-contenu h1{margin:0;font-family:var(--f-jeu);font-weight:700;font-size:42px;line-height:1;color:var(--e-900)}
+.bloc{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 20px 16px}
+.bloc .titre{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:25px;line-height:1.1;margin-bottom:14px}
+.bloc .titre:last-child{margin-bottom:0}
+.bloc .titre .ico{font-size:26px;color:var(--juste-700)}
+.bloc .titre .total{margin-left:auto;font-family:var(--f-texte);font-size:18px;color:var(--encre-douce);white-space:nowrap}
+.bloc-note{font-size:19px;color:var(--encre-douce)}
+.bloc-or{background:var(--astuce-fond);border-color:var(--astuce-trait)}
+.bloc-or .titre .ico{color:var(--or-fonce)}
+.bloc-or .contenu{display:flex;align-items:center;gap:24px;padding-top:6px}
+.rangee-or{display:flex;gap:18px;flex:none}
+.rangee-or .cf{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.rangee-or .cf:nth-child(2){animation-delay:.12s}.rangee-or .cf:nth-child(3){animation-delay:.24s}
+.bloc-or .phrase{font-size:20px;line-height:1.35}
+.rangee{display:flex;gap:9px;flex-wrap:wrap}
+.ligne-fin{display:flex;align-items:center;gap:18px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:10px 18px}
+.ligne-fin .semaine{gap:9px}
+.ligne-fin .jour .rd{width:40px;height:40px}
 .jours-n{font-weight:700;font-size:19px;color:var(--e-900);line-height:1.25}
-.demain{display:flex;align-items:center;gap:12px;margin-top:22px;font-size:22px}
-.demain .ico{font-size:30px;color:var(--e-700)}
-.demain b{font-family:var(--f-jeu);font-weight:800;font-size:26px}
-.actions-fin{display:flex;gap:20px;justify-content:flex-end;flex-wrap:wrap;margin-top:30px}
+.demain{display:flex;align-items:center;gap:10px;font-size:20px}
+.demain .ico{flex:none;font-size:26px;color:var(--e-700)}
+.demain b{font-family:var(--f-jeu);font-weight:800;font-size:23px;white-space:nowrap}
+.demain.retrouve .ico{color:var(--juste-700)}
+.actions-fin{display:flex;gap:16px;justify-content:flex-end;flex-wrap:wrap}
+.actions-fin .btn{min-height:64px;font-size:23px}
 
-/* ---------- Ma grille : cent cases, aucun produit sauf la case touchée ---------- */
+/* ---------- Mon album : une page par famille ---------- */
+.album-ecran .barre .nav .nom{max-width:110px;text-align:center}
+.onglets{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding-top:4px}
+.onglet{min-height:76px;border-radius:18px;background:var(--carte);color:var(--encre);border:3px solid var(--e-200);box-shadow:0 4px 0 var(--e-200);padding:8px 10px;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;text-align:left;position:relative;min-width:0}
+.onglet b{font-family:var(--f-jeu);font-weight:700;font-size:19px;line-height:1.05}
+.onglet span{display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--encre-douce)}
+.onglet span .ico{color:var(--or-fonce)}
+.onglet.actif{background:var(--e-700);border-color:var(--e-700);box-shadow:0 4px 0 var(--e-relief);color:var(--sur-e)}
+.onglet.actif span{color:var(--sur-e)}
+.onglet.actif span .ico{color:var(--or-vif)}
+.onglet.complet{background:var(--or-clair);border-color:var(--or-relief);box-shadow:0 4px 0 var(--or-relief)}
+.onglet .medaille{position:absolute;top:-10px;right:-8px;width:34px;height:34px;border-radius:50%;background:var(--or-vif);border:3px solid var(--carte);display:grid;place-items:center;color:var(--or-fonce)}
+.onglet .medaille .ico{color:var(--or-fonce)}
+.onglet.ferme{background:transparent;border:3px dashed var(--pointille);box-shadow:none;color:var(--encre-douce)}
+.onglet.ferme.actif{border-color:var(--e-500);color:var(--e-900)}
+.onglet.ferme.actif span{color:var(--encre-douce)}
+.page-album{flex:1;margin-top:18px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:18px 26px 20px;display:flex;flex-direction:column;gap:18px}
+.page-tete{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:16px;row-gap:4px}
+.page-tete h2{font-family:var(--f-jeu);font-weight:700;font-size:30px;line-height:1.1}
+.page-tete h2 span{color:var(--e-700);margin-left:6px;white-space:nowrap}
+.page-tete p{font-size:19px;color:var(--encre-douce);font-weight:700}
+.cartes-page{display:grid;grid-template-columns:repeat(6,var(--l-carte,118px));justify-content:space-between;row-gap:24px;padding-top:8px}
+.legende-tp{margin-top:auto;display:flex;flex-wrap:wrap;column-gap:26px;row-gap:8px;align-items:center;border-top:3px dashed var(--trait);padding-top:12px;font-size:17px;font-weight:700;color:var(--encre-douce)}
+.legende-tp div{display:flex;align-items:center;gap:8px}
+.legende-tp .tp.or-leg{background:var(--or-fonce);border-color:var(--or-fonce);color:var(--or-clair)}
+
+/* ---------- Ma grille (bascule de l'album) : cent cases, aucun produit sauf la case touchée ---------- */
 .grille-ecran{--case:56px;--ent:44px;--g:4px}
 .grille-corps{flex:1;display:flex;gap:28px;align-items:flex-start;padding-top:16px}
 .grille{flex:none;display:grid;grid-template-columns:var(--ent) repeat(10,var(--case));grid-template-rows:var(--ent) repeat(10,var(--case));gap:var(--g)}
@@ -111,6 +182,8 @@ a.rond{text-decoration:none}
 .detail .bulle.astuce::before{display:none}
 .detail-vide{font-size:19px;color:var(--encre-douce);font-weight:700}
 .detail .pastille .ico{color:var(--or-fonce)}
+.detail .pastille.revient-pastille{border:2px solid var(--trait-fort)}
+.detail .pastille.revient-pastille .ico{color:var(--e-700)}
 .legende-m{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:10px 18px}
 .legende-titre{display:flex;align-items:center;gap:8px;font-family:var(--f-jeu);font-weight:700;font-size:21px;color:var(--e-900);padding:6px 0 4px}
 .legende-titre .ico{color:var(--or-fonce);font-size:22px}
@@ -119,31 +192,26 @@ a.rond{text-decoration:none}
 .legende-m .ech .ico{font-size:16px}
 .legende-m .ech .pts i{width:6px;height:6px}
 .legende-m .n{margin-left:auto;font-family:var(--f-jeu);font-weight:700;font-size:22px}
-@media (prefers-color-scheme: dark){ .cell.m-auj .ico,.legende-m .m-auj .ico{color:#4A3500} .legende-titre .ico{color:var(--or-vif)} }
+@media (prefers-color-scheme: dark){ .cell.m-auj .ico,.legende-m .m-auj .ico{color:#4A3500} .legende-titre .ico{color:var(--or-vif)} .fam-mini .n .ico,.compteur.or .ico{color:var(--or-vif)} }
 
 /* ===================== Formats ===================== */
 /* iPad paysage */
 @media (orientation: landscape) and (min-width: 900px){
-  .ce-haut{flex-direction:column;align-items:flex-start;gap:20px}
-  .ce-masc{width:220px;height:220px}
-  .ce-masc .masc{width:176px;height:190px}
-  .ce-info{font-size:24px}
   .exo .zone{max-width:560px}
   .exo .corps{justify-content:space-between}
 }
 /* iPad portrait et iPhone : colonnes empilées */
 @media (orientation: portrait), (max-width: 899px){
-  .accueil-grille{grid-template-columns:1fr;grid-template-rows:1fr auto auto;grid-template-areas:"entr" "grille" "bientot"}
-  .bientots{flex-direction:row}
-  .carte-bientot{flex:1}
+  .accueil-album{grid-template-columns:1fr}
   .retour-masc .masc{width:120px;height:130px}
   .retour-masc.fete .bulles{padding-bottom:50px}
   .fin-seance{flex-direction:column;align-items:stretch;gap:12px}
   .fin-masc{width:auto;flex-direction:row;justify-content:center;gap:20px}
-  .fin-masc .masc{width:180px;height:194px}
+  .fin-masc .masc{width:170px;height:184px}
   .parole-corps{flex-direction:column;gap:24px}
   .parole-texte{align-items:center}
   .parole-texte .bulle.parle::before{left:50%;top:-13px;margin-left:-10px;border-width:3px 0 0 3px}
+  .cartes-page{grid-template-columns:repeat(5,var(--l-carte,118px))}
   .grille-ecran{--case:64px}
   .grille-corps{flex-direction:column;align-items:center}
   .panneau{width:100%;flex-direction:row;align-items:stretch}
@@ -151,7 +219,7 @@ a.rond{text-decoration:none}
 }
 /* iPhone */
 @media (max-width: 600px){
-  .accueil-grille{gap:16px;padding-top:12px}
+  .accueil-album{gap:16px;padding-top:12px}
   .carte-entrainement{min-height:0;padding:20px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px}
   .ce-haut{gap:14px}
   .ce-masc{width:96px;height:96px;margin:0;flex:none}
@@ -165,35 +233,53 @@ a.rond{text-decoration:none}
   .ce-texte span{font-size:18px}
   .ce-go{position:static;width:60px;height:60px;margin-left:auto;flex:none}
   .ce-go .ico{font-size:30px}
-  .carte-grille{padding:16px;gap:14px}
-  .carte-grille .tuile{width:68px;height:68px;border-radius:18px}
-  .carte-grille .tuile .ico{font-size:38px}
-  .cg-texte b{font-size:26px;margin-bottom:8px}
-  .cg-n{font-size:16px}
-  .bientots{flex-direction:column;gap:12px}
-  .carte-bientot{padding:12px 14px}
-  .carte-bientot .tuile{width:56px;height:56px;border-radius:16px}
-  .carte-bientot .tuile .ico{font-size:30px}
-  .carte-bientot b{font-size:20px}
+  .panneau-album{padding:16px;gap:12px}
+  .pa-tete .tuile{width:60px;height:60px;border-radius:18px}
+  .pa-tete .tuile .ico{font-size:34px}
+  .pa-tete b{font-size:28px}
+  .compteur{font-size:16px;min-height:36px;padding:0 10px}
+  .rang-cartes{gap:8px}
+  .rang-cartes .cf.grand{--l:auto;flex:1 1 0;min-width:0;--h:124px}
+  .cf.grand .op{font-size:28px}
+  .cf.grand .tp{width:19px;height:19px}
+  .cf.grand .tps{gap:4px}
+  .pa-familles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .parole-masc .masc{width:170px;height:184px}
   .parole-texte .bulle{font-size:21px}
   .retour-masc.fete{align-items:center}
   .retour-masc.fete .bulles{padding:0}
   .fin-masc .masc{width:110px;height:119px}
   .fin-nb{font-size:22px}
-  .fin-contenu h1{font-size:34px;margin-bottom:14px;text-align:center}
-  .montee{padding:14px 14px 16px}
-  .montee .titre{font-size:22px}
-  .jetons{gap:8px;flex-wrap:wrap}
-  .jeton{height:96px;flex:1 1 40%}
-  .jeton b{font-size:28px}
-  .jeton span{font-size:16px}
-  .ligne-fin{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px;margin-top:14px}
+  .fin-contenu h1{font-size:34px;text-align:center}
+  .bloc{padding:12px 14px 14px}
+  .bloc .titre{font-size:21px}
+  .bloc .titre .total{margin-left:0;font-size:16px}
+  .bloc-or .contenu{flex-direction:column;align-items:stretch;gap:12px}
+  .rangee-or{gap:10px;justify-content:center;flex-wrap:wrap}
+  .bloc-or .phrase{font-size:18px}
+  .rangee .cf.petit{--l:calc((100% - 27px) / 4)}
+  .ligne-fin{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px}
   .jours-n{font-size:17px}
-  .demain{font-size:18px;margin-top:14px}
-  .demain b{font-size:22px}
-  .actions-fin{margin-top:18px;justify-content:stretch}
+  .demain{font-size:18px}
+  .demain b{font-size:21px}
+  .actions-fin{justify-content:stretch}
   .actions-fin .btn{flex:1}
+  .onglets{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .onglet{min-height:64px;padding:6px 8px;border-radius:14px}
+  .onglet b{font-size:16px}
+  .onglet span{font-size:16px}
+  .onglet .medaille{width:28px;height:28px;top:-9px;right:-6px}
+  .page-album{margin-top:14px;padding:14px 12px 16px;gap:14px}
+  .page-tete h2{font-size:24px}
+  .page-tete p{font-size:17px}
+  .cartes-page{--l-carte:96px;grid-template-columns:repeat(3,var(--l-carte));row-gap:18px}
+  .cartes-page .cf{--l:96px;--h:126px;gap:10px}
+  .cartes-page .cf .op{font-size:26px}
+  .cartes-page .cf .tp{width:18px;height:18px}
+  .cartes-page .cf .tps{gap:4px}
+  .cartes-page .cf.revoir{gap:4px}
+  .cartes-page .cf .rep{font-size:21px}
+  .legende-tp{column-gap:16px;font-size:16px}
   .grille-ecran{--ent:26px;--g:3px;--case:calc((100vw - 32px - var(--ent) - 30px) / 10)}
   .ent{font-size:16px;border-radius:7px}
   .cell{border-radius:7px}
@@ -209,14 +295,12 @@ a.rond{text-decoration:none}
 }
 .retour-masc.fete .bulles{flex:0 1 auto}
 @media (orientation: portrait) and (min-width: 601px){
-  .carte-entrainement{min-height:400px}
-  .ce-masc{width:220px;height:220px}
-  .ce-masc .masc{width:176px;height:190px}
+  .carte-entrainement{min-height:340px}
+  .rang-cartes{justify-content:flex-start;gap:24px}
   .ce-info{font-size:26px}
   .ce-info b{font-size:30px}
-  /* Fin de séance au centre de l'écran, mascotte plus grande (point 9) */
-  .fin-seance{justify-content:center;gap:24px}
+  /* Fin de séance au centre de l'écran (point 9) */
+  .fin-seance{justify-content:center;gap:20px}
   .fin-contenu{flex:none} /* sinon flex:1 avale la place libre et tout reste collé en haut */
-  .fin-masc .masc{width:250px;height:270px}
   .grille-ecran{--case:58px}
 }

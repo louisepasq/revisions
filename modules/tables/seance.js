@@ -11,7 +11,10 @@
   function creer(etat, maintenant, taille, options) {
     const questions = T.seance(etat, maintenant, taille);
     const multiple = (options && options.multiple) || 'un multiple de';
-    return { questions, index: 0, aRetaper: null, justes: 0, reponses: 0, montees: [], revues: new Set(), multiple };
+    // Cartes dorées qui portaient « Comes back tomorrow » au départ : la fin dira lesquelles sont retrouvées.
+    const aRevoir = [];
+    for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) if (T.aRevoir(etat, a, b)) aRevoir.push([a, b]);
+    return { questions, index: 0, aRetaper: null, justes: 0, reponses: 0, montees: [], tampons: [], aRevoir, revues: new Set(), multiple };
   }
 
   function courante(s) {
@@ -33,7 +36,8 @@
     const premiereFois = !s.revues.has(T.cle(q.a, q.b) + q.type);
     s.revues.add(T.cle(q.a, q.b) + q.type);
     s.reponses++;
-    if (premiereFois) T.enregistrer(etat, f.a, f.b, juste, ms, maintenant);
+    const r = premiereFois ? T.enregistrer(etat, f.a, f.b, juste, ms, maintenant) : null;
+    if (r && r.tampon) { if (!s.tampons) s.tampons = []; s.tampons.push({ a: f.a, b: f.b, tampon: r.tampon }); }
     if (juste) {
       s.justes++;
       const apres = T.couleur(etat, f.a, f.b);
@@ -94,6 +98,8 @@
       reponses: s.reponses,
       montees: s.montees,
       demain,
+      tampons: s.tampons || [],
+      retrouvees: (s.aRevoir || []).filter(([a, b]) => !T.aRevoir(etat, a, b)),
       semaine: T.joursDeLaSemaine(etat, maintenant),
       or: T.compteOr(etat),
     };

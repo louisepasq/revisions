@@ -18,9 +18,15 @@
   const INTERVALLE_JOURS = [0, 1, 2, 4, 7, 21];
   const BOITE_MAX = 5;
   const RAPIDE_MS = 3000;
-  const NOUVEAUX_PAR_SEANCE = 4;
+  // Au plus quatre faits nouveaux par jour, et non par séance (D-20) : une deuxième séance le
+  // même jour ne révise que des faits déjà vus.
+  const NOUVEAUX_PAR_JOUR = 4;
   const TAILLE_SEANCE = 20;
   const SEUIL_DEBLOCAGE = 0.8;
+  const TAMPONS_OR = 4;
+  // Version 2 : l'album à tampons (D-20). Les jours de tampon d'une carte (paire de 2 à 9) sont
+  // rangés dans le fait écrit petit facteur d'abord : faits['7x8'].tampons pour 7 × 8 et 8 × 7.
+  const VERSION = 2;
 
   const cle = (a, b) => a + 'x' + b;
 
@@ -112,7 +118,7 @@
   }
 
   function etatNeuf() {
-    return { version: 1, faits: {}, familles: 1, diagnostic: false, jours: [], records: [] };
+    return { version: VERSION, faits: {}, familles: 1, diagnostic: false, jours: [], records: [] };
   }
 
   function fait(etat, a, b) {
@@ -178,9 +184,80 @@
     return { rates: rates.map(x => x.ecrit), lents: lents.map(x => x.ecrit) };
   }
 
+  /* ---------- L'album à tampons (D-20) ----------
+     Une carte par paire de 2 à 9 (7 × 8 et 8 × 7 sur la même carte), quatre tampons, un par jour.
+     - Tampons 1 à 3 : un jour où un fait de la paire sort juste et monte de boîte.
+     - Tampon 4, l'or : un autre jour, à une révision prévue (le fait était dû), réponse juste et
+       rapide, et les deux sens en boîte 4 ou plus.
+     - Un tampon ne redescend jamais ; une carte dorée reste dorée. Seul le coin parent montre
+       l'état réel (boîtes). Les familles s'ouvrent sur les boîtes réelles (majFamilles), jamais
+       sur les tampons. */
+  const estCarte = (a, b) => a >= 2 && a <= 9 && b >= 2 && b <= 9;
+  const cleCarte = (a, b) => cle(Math.min(a, b), Math.max(a, b));
+
+  function tampons(etat, a, b) {
+    const f = etat.faits[cleCarte(a, b)];
+    return f && Array.isArray(f.tampons) ? f.tampons.slice().sort().slice(0, TAMPONS_OR) : [];
+  }
+
+  function estOr(etat, a, b) {
+    return tampons(etat, a, b).length >= TAMPONS_OR;
+  }
+
+  function deuxSens(etat, a, b, boite) {
+    return [cle(a, b), cle(b, a)].every(k => ((etat.faits[k] || {}).boite || 0) >= boite);
+  }
+
+  /* Une carte dorée qui retombe (erreur) reste dorée et affiche « Comes back tomorrow » ;
+     le signe part dès que le fait est de nouveau retrouvé juste. */
+  function aRevoir(etat, a, b) {
+    if (!estOr(etat, a, b)) return false;
+    return [cle(a, b), cle(b, a)].some(k => { const f = etat.faits[k]; return f && f.vu && f.dernierJuste === false; });
+  }
+
+  /* o : { monte, du, rapide }. Rend 'tampon', 'or' ou null. */
+  function tamponner(etat, a, b, j, o) {
+    if (!estCarte(a, b)) return null;
+    const actuels = tampons(etat, a, b);
+    if (actuels.length >= TAMPONS_OR || actuels.includes(j)) return null;
+    let gain = null;
+    if (actuels.length < TAMPONS_OR - 1) gain = o.monte ? 'tampon' : null;
+    else if (o.du && o.rapide && deuxSens(etat, a, b, 4)) gain = 'or';
+    if (!gain) return null;
+    const c = fait(etat, Math.min(a, b), Math.max(a, b));
+    c.tampons = actuels.concat(j);
+    return gain;
+  }
+
+  /* Progression enregistrée avant l'album : les tampons se déduisent des jours justes
+     (justesJours) des deux sens, trois au plus, et le quatrième seulement si les deux sens sont
+     aujourd'hui en boîte 4 ou plus. Rien n'est perdu : boîtes et jours restent tels quels. */
+  function migrer(etat) {
+    if (!etat || typeof etat !== 'object') return etat;
+    if (!etat.faits || typeof etat.faits !== 'object') etat.faits = {};
+    if ((etat.version || 1) >= VERSION) return etat;
+    for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) {
+      const jours = new Set();
+      [cle(a, b), cle(b, a)].forEach(k => ((etat.faits[k] || {}).justesJours || []).forEach(x => jours.add(x)));
+      const deja = (etat.faits[cle(a, b)] || {}).tampons || [];
+      deja.forEach(x => jours.add(x));
+      const l = [...jours].sort();
+      if (!l.length) continue;
+      const t = l.slice(0, TAMPONS_OR - 1);
+      if (l.length >= TAMPONS_OR && deuxSens(etat, a, b, 4)) t.push(l[TAMPONS_OR - 1]);
+      fait(etat, a, b).tampons = t;
+    }
+    etat.version = VERSION;
+    return etat;
+  }
+
+  /* Rend { monte, rapide, tampon } ; tampon vaut 'tampon', 'or' ou null (D-20). */
   function enregistrer(etat, a, b, juste, ms, maintenant) {
     const f = fait(etat, a, b);
     const j = jour(maintenant);
+    // Révision prévue : le fait était déjà vu et dû ce jour-là.
+    const du = !!(f.vu && f.prochain && f.prochain <= j);
+    if (!f.vu) f.debut = j;
     f.vu = true;
     f.dernierTemps = ms;
     f.dernierJuste = !!juste;
@@ -189,21 +266,25 @@
       f.erreurs++;
       f.boite = 1;
       f.prochain = j;
-      return { monte: false };
+      return { monte: false, rapide: false, tampon: null };
     }
     const rapide = ms != null && ms <= RAPIDE_MS;
     const dejaMonteAujourdhui = f.justesJours.includes(j);
     let monte = false;
     if (rapide && !dejaMonteAujourdhui) {
       f.justesJours.push(j);
-      if (f.boite < BOITE_MAX) { f.boite++; monte = true; }
+      // La boîte 4 (par cœur) ne se gagne qu'à une révision prévue (D-20, D-09) : jamais un jour
+      // hors programme, où la séance complète avec des faits non dus.
+      if (f.boite < BOITE_MAX && (f.boite !== 3 || du)) { f.boite++; monte = true; }
     } else if (f.boite < 3 && !dejaMonteAujourdhui) {
       f.boite++;
       monte = true;
       f.justesJours.push(j);
     }
-    f.prochain = ajouterJours(j, INTERVALLE_JOURS[f.boite]);
-    return { monte, rapide };
+    // Une réponse hors programme qui ne fait rien monter ne repousse pas la révision prévue.
+    if (monte || du || !f.prochain) f.prochain = ajouterJours(j, INTERVALLE_JOURS[f.boite]);
+    const tampon = tamponner(etat, a, b, j, { monte, du, rapide });
+    return { monte, rapide, tampon };
   }
 
   function majFamilles(etat) {
@@ -222,6 +303,10 @@
     return cycle[index % cycle.length];
   }
 
+  function nouveauxDuJour(etat, j) {
+    return Object.values(etat.faits).filter(f => f && f.debut === j).length;
+  }
+
   function seance(etat, maintenant, taille) {
     taille = taille || TAILLE_SEANCE;
     const j = jour(maintenant);
@@ -229,17 +314,19 @@
     const dus = ouverts
       .filter(([a, b]) => { const f = etat.faits[cle(a, b)]; return f && f.vu && f.prochain && f.prochain <= j; })
       .sort((x, y) => etat.faits[cle(...x)].prochain.localeCompare(etat.faits[cle(...y)].prochain) || etat.faits[cle(...x)].boite - etat.faits[cle(...y)].boite);
+    // Quatre faits nouveaux par jour, toutes séances du jour comprises (D-20).
+    const quota = Math.max(0, NOUVEAUX_PAR_JOUR - nouveauxDuJour(etat, j));
     const nouveaux = melanger(ouverts.filter(([a, b]) => !(etat.faits[cle(a, b)] || {}).vu), 'n' + j)
       .sort((x, y) => familleDuFait(...x) - familleDuFait(...y))
-      .slice(0, NOUVEAUX_PAR_SEANCE);
+      .slice(0, quota);
     const acquis = ouverts.filter(([a, b]) => { const f = etat.faits[cle(a, b)]; return f && f.boite >= 4 && f.prochain > j; });
     const choix = [];
     const prendre = (liste, n) => { for (const x of liste) { if (choix.length >= n) break; if (!choix.some(c => c[0] === x[0] && c[1] === x[1])) choix.push(x); } };
-    prendre(nouveaux, Math.min(taille, NOUVEAUX_PAR_SEANCE));
+    prendre(nouveaux, Math.min(taille, quota));
     prendre(dus, taille - 2);
     prendre(acquis.filter((_, i) => i % 3 === 0), taille);
     prendre(ouverts
-      .filter(([a, b]) => a !== 1 && b !== 1 && (etat.faits[cle(a, b)] || {}).boite < 4)
+      .filter(([a, b]) => { const f = etat.faits[cle(a, b)]; return a !== 1 && b !== 1 && f && f.vu && f.boite < 4; })
       .sort((x, y) => etat.faits[cle(...x)].boite - etat.faits[cle(...y)].boite), taille);
     return melanger(choix, j).map(([a, b], i) => question(etat, a, b, i));
   }
@@ -327,6 +414,8 @@
         f.prochain = ajouterJours(j, r.juste ? 1 : 0);
         if (r.juste && !f.justesJours.includes(j)) f.justesJours.push(j);
       });
+      // Juste au diagnostic : les deux sens montent de boîte, la carte prend son tampon du jour.
+      if (r.juste) tamponner(etat, r.a, r.b, j, { monte: true, du: false, rapide: false });
     });
     let familles = 1;
     for (let i = 0; i < FAMILLES.length - 1; i++) {
@@ -361,7 +450,7 @@
   function charger(enfant) {
     try {
       const brut = localStorage.getItem(enfant + '.tables');
-      return brut ? JSON.parse(brut) : etatNeuf();
+      return brut ? migrer(JSON.parse(brut)) : etatNeuf();
     } catch (e) {
       return etatNeuf();
     }
@@ -372,7 +461,8 @@
   }
 
   racine.Tables = {
-    FAMILLES, RAPIDE_MS, TAILLE_SEANCE,
+    FAMILLES, RAPIDE_MS, TAILLE_SEANCE, NOUVEAUX_PAR_JOUR, TAMPONS_OR, VERSION,
+    tampons, estOr, aRevoir, estCarte, cleCarte, migrer, nouveauxDuJour, ajouterJours,
     cle, jour, astuce, enLettres, faitDit, questionDite, etatNeuf, couleur, compteOr, etatsDesPaires, fragiles, enregistrer, majFamilles,
     seance, question, verifier, relanceDecomposition, questionsDiagnostic, appliquerDiagnostic,
     joursDeLaSemaine, familleDuFait, faitsDeFamille, charger, sauver,

@@ -27,6 +27,7 @@ Provenance : **[source]** vérifié à la source ; **[appréciation]** choix de 
 |---|---|---|
 | Planisphère | Henri | En ligne, fait par Louise (`henri/planisphere.html`) |
 | Tables de multiplication | Henri et Clara | Plan et maquette faits ([`tables/`](tables/PLAN.md)), pas encore codé |
+| De l'univers à Éguilles (« My journey ») | Henri et Clara | Construit le 01/11/2026, pas encore essayé sur l'iPad : sept étapes de zoom, un contenu par enfant, boîtes de Leitner sur les cartes ([`zoom/`](zoom/PLAN.md), D-17) |
 | Dictée | Henri et Clara | Idée de Louis du 01/11/2026, décrite en section 4 |
 | Retour de Claude sur une photo | Henri et Clara | Idée de Louis du 01/11/2026, décrite en section 5 |
 

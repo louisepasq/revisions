@@ -57,6 +57,16 @@ Format : numéro, date, qui, la décision, la raison, la source.
 
   Les familles s'ouvrent toujours selon ce que l'enfant sait (boîtes réelles), jamais selon les tampons. La grille de Pythagore reste accessible depuis l'album. Sources : `design-system/archive/2026-11-01_progression/README.md` et `revues/2026-11-01_relecture-progression.md`.
 
+## Géographie : le grand zoom
+
+- **D-17, 01/11/2026, Louis : un module « De l'univers à Éguilles », du zoom jusqu'au village ; l'école et la maison exclues.**
+  - Sept étapes : la Voie lactée, le système solaire, la Terre, l'Europe, la France, Provence-Alpes-Côte d'Azur, les Bouches-du-Rhône avec Éguilles (Aix-en-Provence et Marseille en repères).
+  - Le contenu de chaque étape suit la table « par enfant » de la relecture : Henri le nouveau programme de CM1, Clara l'ancien de CM2 ; tropiques et Greenwich pour Clara.
+  - Même mécanique que les tables : boîtes de Leitner par lieu et par type de question (toucher, nommer), séances de cinq minutes, erreur sans punition puis retouche, voix qui lit la question et dit le nom juste sur une réponse hésitante.
+  - Le village est dans le code (le site est derrière les codes depuis D-03) ; **ni l'école ni la maison**, ni géolocalisation, ni fond de carte en ligne.
+
+  Raison : faire voir l'emboîtement des échelles, au programme du cycle 3, en partant de chez soi. Sources : `revues/2026-11-01_relecture-zoom-geographie.md`, `zoom/PLAN.md`.
+
 ## Jeu du nombre cible (façon Mathador)
 
 - **D-18, 01/11/2026, Henri et Louis : les règles du jeu du nombre cible**, tel qu'Henri le pratique en classe.

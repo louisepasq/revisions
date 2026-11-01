@@ -4,6 +4,8 @@
   'use strict';
   const KR = window.KR;
   const T = window.Tables;
+  const Z = window.Zoom;
+  const ZC = window.ZoomContenu;
   const t = KR.t;
   const enfant = KR.enfant();
   const main = document.getElementById('portail');
@@ -26,6 +28,14 @@
         <div class="bas"><div class="mini-piste"><i style="width:${(or / 36 * 100).toFixed(1)}%"></i></div>
           <div class="progres">${KR.icone('etoile')}${t('tables_par_coeur', { n: or, total: 36 })}</div></div></a>`;
     }
+    if (nom === 'zoom' && Z && ZC) {
+      const c = Z.compte(Z.charger(enfant), ZC.programme(enfant));
+      return `<a class="module" href="zoom.html">
+        <div class="tuile">${KR.icone('planete')}</div>
+        <div class="module-texte"><b>${t('module_zoom')}</b><span class="sous">${t('module_zoom_sous')}</span></div>
+        <div class="bas"><div class="mini-piste"><i style="width:${(c.decouverts / c.total * 100).toFixed(1)}%"></i></div>
+          <div class="progres">${KR.icone('etoile')}${t('zoom_lieux', { n: c.decouverts, total: c.total })}</div></div></a>`;
+    }
     if (nom === 'dictee') {
       return `<div class="module bientot" aria-disabled="true">
         <div class="tuile bientot">${KR.icone('crayon')}</div>
@@ -36,8 +46,9 @@
   }
 
   function rendre() {
-    const etat = T.charger(enfant);
-    const jours = T.joursDeLaSemaine(etat, new Date());
+    // La semaine compte un jour dès qu'un module a été joué ce jour-là.
+    const joues = [...T.charger(enfant).jours, ...(Z ? Z.charger(enfant).jours : [])];
+    const jours = T.joursDeLaSemaine({ jours: joues }, new Date());
     const fini = jours.some(j => j.aujourdhui && j.fait);
     document.title = KR.prenom();
     main.innerHTML = `
@@ -74,6 +85,19 @@
       <p>${etat.jours.length === 1 ? tp('parent_jour_un') : tp('parent_jours', { n: etat.jours.length })}</p>`;
   }
 
+  function resumeZoom() {
+    if (!Z || !ZC) return '';
+    const etat = Z.charger(enfant);
+    const prog = ZC.programme(enfant);
+    if (!etat.jours.length) return `<section class="reglage"><h3>${tp('parent_zoom')}</h3><p>${tp('parent_zoom_pas')}</p><p class="note">${tp('parent_cartes')}</p></section>`;
+    const c = Z.compte(etat, prog);
+    const fragiles = Z.fragiles(etat, prog).map(id => ZC.lieu(id).nom);
+    return `<section class="reglage"><h3>${tp('parent_zoom')}</h3>
+      <p>${tp('parent_zoom_resume', { n: c.decouverts, total: c.total, or: c.parCoeur, etape: KR.echapper(ZC.ETAGES.find(e => e.id === c.etape).nom) })}</p>
+      ${fragiles.length ? `<p>${tp('parent_zoom_fragiles', { liste: KR.echapper(liste8(fragiles)) })}</p>` : ''}
+      <p class="note">${tp('parent_cartes')}</p></section>`;
+  }
+
   function segment(cle, options, valeur) {
     return '<div class="segment">' + options.map(([v, libelle]) =>
       `<button type="button" data-reglage="${cle}" data-valeur="${v}" aria-pressed="${String(v) === String(valeur)}">${libelle}</button>`).join('') + '</div>';
@@ -99,6 +123,7 @@
     voile.innerHTML = `<div class="feuille" role="dialog" aria-modal="true" aria-labelledby="cp-titre">
       <div class="feuille-tete"><h2 id="cp-titre">${tp('parent_titre')}</h2><button type="button" class="btn btn-calme" data-a="fermer">${tp('fermer')}</button></div>
       <section class="reglage"><h3>${tp('parent_tables')}</h3>${resume(T.charger(enfant))}</section>
+      ${resumeZoom()}
       <section class="reglage"><h3>${tp('parent_langue')}</h3>${segment('langue', [['en', 'English'], ['fr', 'Français']], r.langue)}<p class="note">${tp('parent_langue_note')}</p></section>
       <section class="reglage">
         <div class="ligne-reglage"><span>${tp('parent_voix')}</span>${segment('voix', [[true, tp('active')], [false, tp('coupee')]], r.voix)}</div>
@@ -146,7 +171,8 @@
         voile.querySelector('[data-zone="raz"]').classList.remove('cache');
         voile.querySelector('[data-zone="confirmer"]').classList.add('cache');
       } else if (a === 'raz-oui') {
-        if (window.Sync) window.Sync.effacer(enfant, 'tables');
+        const modules = (window.SynchroPage && window.SynchroPage.MODULES) || ['tables'];
+        if (window.Sync) modules.forEach(m => window.Sync.effacer(enfant, m));
         KR.effacerTout();
         rendre();
         ouvrirCoinParent();

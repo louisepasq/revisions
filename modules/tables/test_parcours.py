@@ -7,7 +7,9 @@
 Usage : uv run modules/tables/test_parcours.py
 Sert le dépôt en local, puis vérifie aux trois formats (iPad paysage, iPad portrait, iPhone) :
 portails d'Henri et de Clara, et module des tables de Clara de bout en bout
-(diagnostic, séance avec une erreur retapée, fin, grille). Captures dans modules/tables/captures/.
+(diagnostic, séance avec une erreur retapée, fin, album à tampons, bascule vers la grille), puis
+un album avancé (carte qui dore en fin de séance, carte dorée retombée qui « revient »).
+Captures dans modules/tables/captures/.
 La voix est espionnée (speechSynthesis.speak remplacé) : chaque question doit être lue en
 toutes lettres, et chaque réponse juste doit faire dire le fait complet.
 """
@@ -265,9 +267,16 @@ def seance(page, err, fmt):
         PROBLEMES.append(f"{fmt} : aucune erreur volontaire n'a pu être faite")
     page.wait_for_timeout(900)
     capture(page, f"clara_{fmt}_12-fin-seance", err)
+    if not page.locator(".fin-seance .bloc").count():
+        PROBLEMES.append(f"{fmt} : la fin de séance ne montre ni tampons ni réponses")
+    # « See my cards » ouvre l'album ; la grille est à un geste, en bascule.
+    page.click("[data-a='album']")
+    page.wait_for_selector(".album-ecran")
+    capture(page, f"clara_{fmt}_13-album", err)
+    verifier_album(page, fmt)
     page.click("[data-a='grille']")
     page.wait_for_selector(".grille-ecran")
-    capture(page, f"clara_{fmt}_13-grille", err)
+    capture(page, f"clara_{fmt}_13b-grille", err)
     page.click(".cell[data-x='6'][data-y='7']")
     capture(page, f"clara_{fmt}_14-grille-case", err)
     produits = page.evaluate("[...document.querySelectorAll('.cell:not(.touchee) b')].length")
@@ -276,6 +285,8 @@ def seance(page, err, fmt):
     legende = page.evaluate("[...document.querySelectorAll('.legende-m .n')].reduce((s, n) => s + Number(n.textContent), 0)")
     if legende != 36:
         PROBLEMES.append(f"{fmt} : la légende de la grille compte {legende} cases au lieu de 36")
+    page.click("[data-a='retour']")
+    page.wait_for_selector(".album-ecran")
     page.click("[data-a='retour']")
     page.wait_for_selector(".accueil-tables")
     capture(page, f"clara_{fmt}_05-accueil-module", err)
@@ -286,6 +297,24 @@ def seance(page, err, fmt):
         PROBLEMES.append(f"{fmt} : la progression n'est pas sauvée")
     if fmt == "ipad-paysage":
         coin_parent(page, err, fmt)
+
+
+def verifier_album(page, fmt):
+    """Six onglets, les familles fermées en pointillé (jamais de cadenas), la page de la bonne taille."""
+    onglets = page.locator(".onglet").count()
+    if onglets != 6:
+        PROBLEMES.append(f"{fmt} : l'album a {onglets} onglets au lieu de 6")
+    familles = page.evaluate("JSON.parse(localStorage.getItem('clara.tables')).familles")
+    fermes = page.locator(".onglet.ferme").count()
+    if fermes != 6 - familles:
+        PROBLEMES.append(f"{fmt} : {fermes} onglets en pointillé pour {familles} familles ouvertes")
+    if "i-cadenas" in page.inner_html(".album-ecran"):
+        PROBLEMES.append(f"{fmt} : un cadenas dans l'album")
+    total = sum(page.evaluate("Album.pages(Tables.charger('clara'), Tables.jour(new Date())).map(p => p.cartes.length)"))
+    if total != 36:
+        PROBLEMES.append(f"{fmt} : l'album compte {total} cartes au lieu de 36")
+    if "gold today" in page.inner_text("body").lower():
+        PROBLEMES.append(f"{fmt} : l'album annonce une carte qui peut dorer aujourd'hui")
 
 
 def coin_parent(page, err, fmt):
@@ -409,8 +438,97 @@ def dix_fois_dix(navigateur, base, fmt):
     ctx.close()
 
 
+# Un album avancé : 5 × 2 a trois tampons et ses deux sens en boîte 4, et revient aujourd'hui à sa
+# date (il dore en fin de séance) ; 2 × 2 est dorée mais ratée hier (« Comes back today ») ;
+# quelques faits en boîte 1 ou 2 qui reviennent aujourd'hui (tampons du jour) ; trois familles ouvertes.
+ETAT_ALBUM = """() => {
+  const e = Object.assign(Tables.etatNeuf(), {diagnostic: true, familles: 3});
+  const j = Tables.jour(new Date());
+  const d = n => Tables.ajouterJours(j, n);
+  const loin = '2099-01-01';
+  for (let i = 0; i < 3; i++) Tables.faitsDeFamille(i).forEach(([a, b]) => {
+    e.faits[Tables.cle(a, b)] = {boite: 3, vu: true, prochain: loin, justesJours: [d(-9)], erreurs: 0, dernierTemps: 2000, dernierJuste: true};
+  });
+  const f = (k, o) => Object.assign(e.faits[k], o);
+  f('2x5', {boite: 4, prochain: j, tampons: [d(-12), d(-10), d(-6)]});
+  f('5x2', {boite: 4, prochain: loin});
+  f('2x2', {boite: 1, prochain: d(-1), dernierJuste: false, erreurs: 1, tampons: [d(-20), d(-18), d(-14), d(-7)]});
+  f('4x4', {boite: 5, prochain: loin, tampons: [d(-20), d(-18), d(-14), d(-7)]});
+  f('3x4', {tampons: [d(-6), d(-3)]});
+  f('4x3', {boite: 2, prochain: j});
+  f('2x7', {boite: 1, prochain: j, tampons: [d(-2)]});
+  f('8x3', {boite: 2, prochain: j, tampons: [d(-5), d(-2)]});
+  f('6x2', {boite: 1, prochain: j});
+  f('5x7', {tampons: [d(-8), d(-4), d(-1)]});
+  localStorage.setItem('clara.tables', JSON.stringify(e));
+}"""
+
+
+def album_avance(navigateur, base, fmt):
+    """Accueil, album et fin de séance d'un album déjà rempli, et l'or qui tombe à sa date."""
+    ctx, page, err = contexte(navigateur, fmt)
+    page.goto(f"{base}/clara/tables.html")
+    page.evaluate(ETAT_ALBUM)
+    page.reload()
+    page.wait_for_selector(".panneau-album")
+    capture(page, f"clara_{fmt}_20-album-accueil", err)
+    if "can turn gold" in page.inner_text("body"):
+        PROBLEMES.append(f"{fmt} : l'accueil annonce une carte qui peut dorer aujourd'hui")
+    if page.locator(".panneau-album .rang-cartes .cf").count() != 3:
+        PROBLEMES.append(f"{fmt} : l'accueil ne montre pas les trois cartes les plus proches de l'or")
+    page.click("[data-a='album']")
+    page.wait_for_selector(".album-ecran")
+    page.click(".onglet[data-page='1']")
+    page.wait_for_selector(".onglet.actif[data-page='1']")
+    capture(page, f"clara_{fmt}_21-album-doubles", err)
+    if not page.locator(".cf.or.revoir .revient").count():
+        PROBLEMES.append(f"{fmt} : la carte dorée retombée n'affiche pas qu'elle revient")
+    page.click(".onglet[data-page='0']")
+    page.wait_for_selector(".onglet.actif[data-page='0']")
+    page.click(".onglet[data-page='4']")
+    page.wait_for_selector(".page-fermee")
+    capture(page, f"clara_{fmt}_22-album-ferme", err)
+    page.click("[data-a='retour']")
+    page.wait_for_selector(".accueil-tables")
+    page.click("[data-a='seance']")
+    for _ in range(40):
+        page.wait_for_function(ATTENTE_QUESTION)
+        if page.locator(".fin-seance").count():
+            break
+        repondre_juste(page, page.locator(".carte-pleine[data-type]"))
+        page.wait_for_selector(".carte-juste")
+        page.evaluate("document.querySelector('.touche.suite') && document.querySelector('.touche.suite').click()")
+    page.wait_for_selector(".fin-seance")
+    page.wait_for_timeout(900)
+    capture(page, f"clara_{fmt}_23-fin-or", err)
+    if not page.locator(".bloc-or .cf.or").count():
+        PROBLEMES.append(f"{fmt} : 5 × 2, revu à sa date dans les deux sens, ne dore pas en fin de séance")
+    if not page.locator(".rangee .cf .tp.du-jour").count():
+        PROBLEMES.append(f"{fmt} : la fin de séance ne montre pas les tampons du jour")
+    if not page.locator(".demain.retrouve").count():
+        PROBLEMES.append(f"{fmt} : la carte dorée retrouvée n'est pas signalée")
+    texte = page.inner_text(".fin-seance")
+    if "comes back for a stamp" not in texte and "comes back to see you" not in texte and "See you tomorrow" not in texte:
+        PROBLEMES.append(f"{fmt} : la fin de séance ne dit pas ce qui revient demain")
+    page.click("[data-a='album']")
+    page.wait_for_selector(".album-ecran")
+    page.click(".onglet[data-page='0']")
+    page.wait_for_selector(".onglet.actif[data-page='0']")
+    capture(page, f"clara_{fmt}_24-album-apres", err)
+    if not page.locator(".cf.or-auj").count():
+        PROBLEMES.append(f"{fmt} : la carte dorée du jour n'est pas en or vif dans l'album")
+    page.click("[data-a='grille']")
+    page.wait_for_selector(".grille-ecran")
+    capture(page, f"clara_{fmt}_25-grille-album", err)
+    etats = page.evaluate("[document.querySelector('.cell[data-x=\"5\"][data-y=\"2\"]').dataset.etat, document.querySelector('.cell[data-x=\"2\"][data-y=\"5\"]').dataset.etat]")
+    if etats != ["auj", "auj"]:
+        PROBLEMES.append(f"{fmt} : la grille ne montre pas la carte dorée du jour dans ses deux cases ({etats})")
+    ctx.close()
+
+
 def tables_clara(navigateur, base):
     for fmt in FORMATS:
+        album_avance(navigateur, base, fmt)
         ctx, page, err = contexte(navigateur, fmt)
         page.goto(f"{base}/clara/tables.html")
         diagnostic(page, err, fmt)
@@ -425,6 +543,16 @@ def tables_clara(navigateur, base):
     page.click("[data-a='seance']")
     page.wait_for_selector(".carte-pleine[data-type]")
     capture(page, "clara_ipad-paysage_soir-question", err)
+    ctx.close()
+    ctx, page, err = contexte(navigateur, "ipad-paysage", "dark")
+    page.goto(f"{base}/clara/tables.html")
+    page.evaluate(ETAT_ALBUM)
+    page.reload()
+    page.click("[data-a='album']")
+    page.wait_for_selector(".album-ecran")
+    page.click(".onglet[data-page='1']")
+    page.wait_for_selector(".onglet.actif[data-page='1']")
+    capture(page, "clara_ipad-paysage_soir-album", err)
     ctx.close()
 
 

@@ -15,7 +15,7 @@ Mis à jour le 01/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 ## À décider (parents)
 
 - **Les trois ajouts audio proposés par le spécialiste** (`revues/2026-11-01_relecture-audio.md`) : le mode « écoute et réponds », l'enfant qui dit le fait à voix haute après une erreur, et le diagnostic et le défi silencieux. Ce dernier point s'écarte de D-11 : c'est aux parents de trancher.
-- **Le zoom de géographie, de l'univers à la région** (idée de Louis du 01/11) : périmètre recommandé dans `revues/2026-11-01_relecture-zoom-geographie.md`. Deux corrections à la liste de départ : la Durance est une rivière, et Cannes n'est ni préfecture ni sous-préfecture (dans les Alpes-Maritimes, c'est Grasse). Le village peut être posé sur la carte ; l'école et la maison sont à laisser de côté.
+- **Le zoom de géographie « De l'univers à Éguilles »** : décidé (D-17) et construit le 01/11 (`docs/zoom/PLAN.md`). Reste à Louis : fabriquer ses voix (`uv run commun/outils/voix.py tables`), le déployer, puis le faire essayer aux enfants sur l'iPad et noter ici leurs retours. À trancher ensuite : les questions qui relient deux étapes et la réponse sans proposition (PLAN, section 5).
 - **Une petite API d'IA dans l'app** (question de Louis du 01/11) : analyse et reco dans le bilan de la session du 01/11 ; à reprendre ici une fois tranché.
 
 ## Retours des enfants

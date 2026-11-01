@@ -41,6 +41,7 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 | `commun/polices/` | Baloo 2 et Andika, hébergées (licences OFL à côté) |
 | `commun/outils/` | Outils de fabrication : `voix.py` et `phrases.js` (voix), générateur d'icônes |
 | `modules/tables/` | Module des tables : `moteur.js` (logique pure, testée), `seance.js` (déroulé), `tables.js` et `tables.css` (interface), `README.md` |
+| `modules/zoom/` | Module « De l'univers à Éguilles » : `contenu.js`, `cartes.js` (fabriqué par `outils/cartes.py`), `geometrie.js`, `moteur.js` (logique pure, testée), `zoom.js` et `zoom.css`, `README.md` |
 | `middleware.js`, `lib/acces.js` | Contrôle d'accès (section 4) |
 | `api/`, `lib/serveur.js`, `lib/fusion.js` | Fonctions serveur (sections 4 et 5) |
 | `test/` | Tests node du serveur, de la fusion et des accès |
@@ -69,8 +70,8 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 ## 5. Sauvegarde en ligne : le local fait foi, la base suit et réconcilie
 
 - **Le local d'abord** : chaque module garde son état dans `localStorage`, clé `<enfant>.<module>` (par exemple `henri.tables`), sous try/catch. Les réglages : `<enfant>.reglages`.
-- `commun/synchro-page.js` enveloppe `Tables.sauver` : chaque sauvegarde locale part aussi au service (`PUT /api/progression?enfant=&module=`). Au chargement, il tire l'état distant, **fusionne**, renvoie le résultat, et recharge la page une fois si l'état distant apportait du progrès (nouvel appareil, icône refaite), sauf pendant un exercice.
-- **La fusion** (`lib/fusion.js`, recopiée à l'identique dans `commun/sync.js`) : pour chaque fait, la version la plus avancée (`prochain` le plus récent, sinon la boîte la plus haute) ; union des jours joués et des jours de réussite ; maximum des familles ouvertes ; union des records. Deux appareils joués hors ligne se réconcilient sans rien perdre. **Toute modification de la fusion se fait dans les deux fichiers**, et `test/fusion.test.js` vérifie qu'ils donnent le même résultat.
+- `commun/synchro-page.js` enveloppe le `sauver` de chaque module présent sur la page (`Tables`, `Zoom` : liste `MODULES` en tête du fichier) : chaque sauvegarde locale part aussi au service (`PUT /api/progression?enfant=&module=`). Au chargement, il tire l'état distant, **fusionne**, renvoie le résultat, et recharge la page une fois si l'état distant apportait du progrès (nouvel appareil, icône refaite), sauf pendant un exercice.
+- **La fusion** (`lib/fusion.js`, recopiée à l'identique dans `commun/sync.js`) : pour chaque fait, la version la plus avancée (`prochain` le plus récent, sinon la boîte la plus haute) ; union des jours joués et des jours de réussite ; maximum des familles ouvertes ; union des records. Pour le zoom (`fusionZoom`) : chaque carte de Leitner comme un fait, maximum des étapes ouvertes, union des jours, grand voyage vu sur l'un ou l'autre. Deux appareils joués hors ligne se réconcilient sans rien perdre. **Toute modification de la fusion se fait dans les deux fichiers**, et `test/fusion.test.js` vérifie qu'ils donnent le même résultat.
 - **Hors ligne** : rien ne bloque ; l'envoi est retenté plus tard (événement `online`, ou toutes les minutes).
 - **Remise à zéro** (coin parent) : efface le local et l'état en ligne (`DELETE`) ; un autre appareil qui garde l'ancien état local le renverra, donc remettre à zéro sur chaque appareil.
 

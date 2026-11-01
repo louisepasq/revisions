@@ -1,5 +1,7 @@
 .claude
 modules/tables/captures
+modules/zoom/captures
+modules/zoom/outils
 henri/outils/captures
 docs/design-system/archive/**/*.png
 test

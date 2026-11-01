@@ -33,6 +33,12 @@ test('chaque enfant n ouvre que son app et les ressources communes', () => {
   assert.ok(autorise('henri', '/commun/voix/fr/abc.mp3', ''));
   assert.ok(autorise('henri', '/modules/tables/tables.js', ''));
   assert.ok(autorise('henri', '/api/progression', '?enfant=henri&module=tables'));
+  assert.ok(autorise('henri', '/henri/zoom.html', ''));
+  assert.ok(autorise('clara', '/clara/zoom.html', ''));
+  assert.ok(autorise('clara', '/modules/zoom/cartes.js', ''), 'le dossier du zoom est commun aux deux');
+  assert.ok(autorise('clara', '/api/progression', '?enfant=clara&module=zoom'));
+  assert.ok(!autorise('clara', '/henri/zoom.html', ''));
+  assert.ok(!autorise('henri', '/api/progression', '?enfant=clara&module=zoom'));
   assert.ok(!autorise('henri', '/clara/', ''));
   assert.ok(!autorise('henri', '/api/progression', '?enfant=clara&module=tables'));
   assert.ok(!autorise('henri', '/api/progression', '?module=tables'));

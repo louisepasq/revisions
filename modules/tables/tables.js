@@ -6,6 +6,7 @@
   const KR = window.KR;
   const T = window.Tables;
   const S = window.Seance;
+  const A = window.Album;
   const t = KR.t;
   const enfant = KR.enfant();
   const app = document.getElementById('app');
@@ -13,13 +14,15 @@
   const DUREE_SUITE = 1600;
   const MAX_CHIFFRES = 3;
   const ETAT_CASE = { gris: 'pas', bronze: 'com', argent: 'pre', or: 'or' };
-  const NOM_CASE = { pas: 'etat_gris', com: 'etat_bronze', pre: 'etat_argent', or: 'etat_or', auj: 'etat_auj' };
+  const NOM_CASE = { pas: 'etat_gris', com: 'etat_bronze', pre: 'etat_argent', or: 'etat_or', auj: 'etat_or_auj' };
   const RANG_CASE = { pas: 0, com: 1, pre: 2, or: 3, auj: 3 };
   /* « 48 est-il un multiple de 6 ? » en CM2, le vocabulaire d'Eduscol ; « dans la table de »
      en CM1, tant que la maîtresse d'Henri n'emploie pas « multiple » (à lui demander). */
   const MULTIPLE = KR.infos().classe === 'CM2' ? 'un multiple de' : 'dans la table de';
   const RELANCE = { sans1: 'Essaie sans le 1 !', jusqua10: "Essaie avec des nombres jusqu'à 10 !" };
-  const JETONS_MAX = 4;
+  // Fin de séance : trois cartes dorées en grand, sept petites cartes tamponnées par rangée.
+  const DOREES_MAX = 3;
+  const PETITES_MAX = 7;
 
   KR.demarrer();
   let etat = T.charger(enfant);
@@ -63,11 +66,10 @@
   const aLire = q => T.questionDite(q, MULTIPLE);
   function direQuestion(q) { if (voixActive()) KR.lire(aLire(q), 'fr'); }
   function direFait(a, b) { return voixActive() ? KR.lire(T.faitDit(a, b), 'fr', SECOURS_VOIX) : Promise.resolve(false); }
+  /* La grille montre les mêmes données que l'album (relecture de la progression, proposition 8) :
+     une case par carte, selon ses tampons. Les lignes 1 et 10, hors album, gardent leurs boîtes. */
   function etatCase(a, b) {
-    const f = etat.faits[T.cle(a, b)];
-    const c = T.couleur(etat, a, b);
-    if (c === 'or' && f && f.boite === 4 && (f.justesJours || []).indexOf(T.jour(new Date())) >= 0) return 'auj';
-    return ETAT_CASE[c];
+    return A.etatCase(etat, a, b, T.jour(new Date())) || ETAT_CASE[T.couleur(etat, a, b)];
   }
   function marque(e) {
     if (e === 'or' || e === 'auj') return KR.icone('etoile');
@@ -89,41 +91,76 @@
     return dus.length ? `${dus[0][0]} × ${dus[0][1]}` : null;
   }
 
+  /* =================== L'album à tampons (D-20) : la carte d'une multiplication ===================
+     Quatre emplacements de tampon ; un tampon gagné aujourd'hui est en or vif ; au quatrième, la
+     carte est dorée et montre enfin son résultat. Une carte dorée qui retombe garde son or et dit
+     « Comes back tomorrow ». Rien n'annonce qu'une carte peut dorer aujourd'hui. */
+  function carteAlbum(c, taille) {
+    const j = T.jour(new Date());
+    let tps = '';
+    for (let i = 0; i < T.TAMPONS_OR; i++) {
+      const d = c.jours[i];
+      const cl = d ? 'plein' + (d === j ? ' du-jour' : '') : '';
+      tps += `<span class="tp ${cl}">${i === T.TAMPONS_OR - 1 ? KR.icone('etoile') : ''}</span>`;
+    }
+    const etatCarte = c.or ? (c.orAuj ? 'or or-auj' : 'or') : c.n === 0 ? 'neuf' : c.presque ? 'presque' : '';
+    const ecrit = `${c.a} × ${c.b}`;
+    const aria = c.or ? t('carte_or_aria', { fait: ecrit }) : t(c.n === 1 ? 'carte_aria_un' : 'carte_aria', { fait: ecrit, n: c.n });
+    const texteRevient = c.revoir ? t(c.revient === 'auj' ? 'revient_aujourdhui' : 'revient_demain') : '';
+    const revient = c.revoir ? `<span class="revient">${texteRevient}</span>` : '';
+    return `<span class="cf ${etatCarte}${c.revoir ? ' revoir' : ''} ${taille || ''}" role="img" aria-label="${KR.echapper(aria + (c.revoir ? '. ' + texteRevient : ''))}">
+      ${c.or ? `<span class="badge-or">${KR.icone('etoile')}</span>` : ''}
+      <span class="op" lang="fr">${ecrit}</span>${c.or ? `<span class="rep" lang="fr">= ${c.a * c.b}</span>` : ''}
+      <span class="tps">${tps}</span>${revient}</span>`;
+  }
+  const nomFamille = p => t('fam_' + p.id);
+  const tablesFamille = p => `<span lang="fr">${p.tables.map(n => '×' + n).join(' · ')}</span>`;
+  /* « 5 × 6 et 2 × 9 », « 5 × 6, 2 × 9 and 3 × 3 » : liste dans la langue du cadre. */
+  function liste(l) {
+    if (l.length < 2) return l.join('');
+    return `${l.slice(0, -1).join(', ')} ${t('et')} ${l[l.length - 1]}`;
+  }
+
   /* =================== Accueil du module =================== */
   function accueil() {
     etat = T.charger(enfant);
     if (!etat.diagnostic) return introDiagnostic();
-    const or = T.compteOr(etat);
     // Ce qui attend l'enfant aujourd'hui : la carte le montre au lieu d'un aplat vide (point 9).
     const maintenant = new Date();
+    const j = T.jour(maintenant);
     const nbQuestions = T.seance(etat, maintenant).length;
     const revient = revientAujourdhui(maintenant);
     const infos = `<span class="ce-info">${KR.icone('ok')}<span>${t('questions_auj', { n: nbQuestions })}</span></span>`
       + (revient ? `<span class="ce-info">${KR.icone('cal')}<span>${t('revient_auj', { fait: `<b lang="fr">${revient}</b>` })}</span></span>` : '');
+    const total = A.total(etat);
+    const or = A.nbOr(etat);
+    const proches = A.proches(etat, j, 3);
+    const familles = A.pages(etat, j).map(p => `<span class="fam-mini${p.ouverte ? '' : ' ferme'}${p.complet ? ' complet' : ''}">
+        <span>${nomFamille(p)}</span><span class="n">${p.ouverte ? `${KR.icone('etoile')}${t('avancement', { n: p.or, total: p.cartes.length })}` : t('pas_ouverte')}</span></span>`).join('');
     changerEcran(`<div class="ecran accueil-tables">
       <header class="barre">${nav('', 'retour', 'retour', './')}
-        <div class="titre"><h1 class="titre-ecran">${t('module_tables')}</h1><p class="indice">${t('tables_par_coeur', { n: or, total: 36 })}</p></div>
+        <div class="titre"><h1 class="titre-ecran">${t('module_tables')}</h1><p class="indice">${t('indice_album')}</p></div>
       </header>
-      <div class="accueil-grille">
+      <div class="accueil-album">
         <button type="button" class="carte-entrainement" data-a="seance">
           <span class="ce-haut"><span class="ce-masc">${KR.mascotte('attend')}</span><span class="ce-infos">${infos}</span></span>
           <span class="ce-semaine">${KR.semaine(T.joursDeLaSemaine(etat, maintenant))}</span>
           <span class="ce-texte"><b>${t('entrainement')}</b><span>${t('entrainement_sous')}</span></span>
           <span class="ce-go">${KR.icone('jouer')}</span>
         </button>
-        <button type="button" class="carte-grille" data-a="grille">
-          <span class="tuile">${KR.icone('grille')}</span>
-          <span class="cg-texte"><b>${t('ma_grille')}</b>
-            <span class="mini-piste"><i style="width:${(or / 36 * 100).toFixed(1)}%"></i></span>
-            <span class="cg-n">${KR.icone('etoile')}${t('tables_par_coeur', { n: or, total: 36 })}</span></span>
+        <button type="button" class="panneau-album" data-a="album">
+          <span class="pa-tete"><span class="tuile">${KR.icone('grille')}</span>
+            <span><b>${t('mes_cartes')}</b><span class="compteurs">
+              <span class="compteur"><span class="tp plein"></span>${t(total === 1 ? 'tampon_un' : 'tampons_n', { n: total })}</span>
+              <span class="compteur or">${KR.icone('etoile')}${t('or_n', { n: or })}</span></span></span></span>
+          ${proches.length
+            ? `<span class="pa-sous">${t('presque_or')}</span><span class="rang-cartes">${proches.map(c => carteAlbum(c, 'grand')).join('')}</span><span class="pa-note">${t('presque_note')}</span>`
+            : `<span class="pa-note">${t('album_vide')}</span>`}
+          <span class="pa-familles">${familles}</span>
         </button>
-        <div class="bientots">
-          <div class="carte-bientot" aria-disabled="true"><span class="tuile bientot">${KR.icone('chrono')}</span><span><b>${t('defi')}</b><span class="pastille bientot">${t('bientot')}</span></span></div>
-          <div class="carte-bientot" aria-disabled="true"><span class="tuile bientot">${KR.icone('cle')}</span><span><b>${t('decouvrir')}</b><span class="pastille bientot">${t('bientot')}</span></span></div>
-        </div>
       </div>
     </div>`);
-    brancher({ seance: demarrerSeance, grille: () => grille(accueil) });
+    brancher({ seance: demarrerSeance, album: () => album(accueil) });
   }
 
   /* =================== Écran de parole : la mascotte annonce =================== */
@@ -485,44 +522,100 @@
   }
 
   /* =================== Fin de séance =================== */
+  /* Fin de séance (D-20) : les cartes dorées du jour en grand, les cartes tamponnées aujourd'hui
+     (tampon du jour en or vif), et la carte qui revient demain pour un tampon. Les phrases parlent
+     du fait retrouvé, pas du butin (relecture de la progression, proposition 4). */
   function fin(s) {
-    const b = S.bilan(s, etat, new Date());
+    const maintenant = new Date();
+    const j = T.jour(maintenant);
+    const b = S.bilan(s, etat, maintenant);
     sauver();
     KR.son('fete');
-    const vues = new Set();
-    const montees = b.montees.filter(m => { const k = T.cle(m.a, m.b); if (vues.has(k)) return false; vues.add(k); return true; });
-    // Au-delà de quatre cases montées, un jeton « +N » : l'enfant compte autant de jetons que le titre en annonce (point 12).
-    const montrees = montees.length > JETONS_MAX ? montees.slice(0, JETONS_MAX - 1) : montees;
-    const jetons = montrees.map(m => {
-      const e = m.couleur === 'or' ? 'auj' : ETAT_CASE[m.couleur];
-      const cle = m.couleur === 'or' ? 'etat_or_court' : NOM_CASE[e];
-      return `<div class="jeton m-${e}"><b lang="fr">${m.a} × ${m.b}</b><span>${marque(e)}${t(cle)}</span></div>`;
-    }).join('') + (montees.length > montrees.length ? `<div class="jeton jeton-plus"><b>+${montees.length - montrees.length}</b></div>` : '');
-    const titreMontee = montees.length === 1 ? t('case_monte') : t('cases_montent', { n: montees.length });
-    const demain = b.demain ? t('demain_revient', { fait: `<b lang="fr">${b.demain}</b>` }) : t('demain_simple');
+    const dj = A.duJour(etat, j);
+    const total = A.total(etat);
+    const nom = c => `<b lang="fr">${c.a} × ${c.b}</b>`;
+    const dorees = dj.dorees.slice(0, DOREES_MAX);
+    const blocOr = dj.dorees.length ? `<div class="bloc bloc-or">
+        <p class="titre">${KR.icone('etoile')}${t(dj.dorees.length === 1 ? 'carte_doree' : 'cartes_dorees', { n: dj.dorees.length })}</p>
+        <div class="contenu"><span class="rangee-or">${dorees.map(c => carteAlbum(c, 'grand')).join('')}</span>
+          <p class="phrase">${t(dj.dorees.length === 1 ? 'or_phrase_un' : 'or_phrase', { faits: liste(dj.dorees.map(nom)) })}</p></div></div>` : '';
+    // Au-delà de la rangée, une pastille « +N » : l'enfant compte autant de cartes que le titre en annonce.
+    const n = dj.tamponnees.length;
+    const montrees = n > PETITES_MAX ? dj.tamponnees.slice(0, PETITES_MAX - 1) : dj.tamponnees;
+    const blocTampons = n ? `<div class="bloc">
+        <p class="titre">${KR.icone('monte')}${t(n === 1 ? 'un_pas_un' : 'un_pas', { n })}<span class="total">${t('tampons_total', { n: total })}</span></p>
+        <div class="rangee">${montrees.map(c => carteAlbum(c, 'petit')).join('')}${n > montrees.length ? `<span class="cf petit plus-n">+${n - montrees.length}</span>` : ''}</div></div>`
+      : dj.dorees.length ? '' : `<div class="bloc"><p class="titre">${KR.icone('ok')}${t('reponses_n', { n: b.reponses })}</p><p class="bloc-note">${t('un_par_jour')}</p></div>`;
+    const retrouvees = b.retrouvees.map(([x, y]) => A.carte(etat, x, y, j));
+    const lignesRetrouvees = retrouvees.length ? `<p class="demain retrouve">${KR.icone('ok')}<span>${t(retrouvees.length === 1 ? 'retrouve_un' : 'retrouve', { faits: liste(retrouvees.map(nom)) })}</span></p>` : '';
+    const prochain = A.prochainTampon(etat, maintenant);
+    const demain = prochain ? t('demain_tampon', { fait: `<b lang="fr">${prochain[0]} × ${prochain[1]}</b>` })
+      : b.demain ? t('demain_revient', { fait: `<b lang="fr">${b.demain}</b>` }) : t('demain_simple');
     changerEcran(`<div class="ecran fin-seance">
       <div class="fin-masc">${KR.mascotte('fete', 'rebondit')}<p class="fin-nb">${t('questions_n', { n: b.reponses })}</p></div>
       <div class="fin-contenu">
         <h1>${KR.echapper(t('bravo_prenom', { prenom: KR.prenom() }))}</h1>
-        ${montees.length ? `<div class="montee"><p class="titre">${KR.icone('monte')}${titreMontee}</p><div class="jetons">${jetons}</div></div>`
-          : `<div class="montee"><p class="titre">${KR.icone('ok')}${t('reponses_n', { n: b.reponses })}</p></div>`}
+        ${blocOr}${blocTampons}${lignesRetrouvees}
         <div class="ligne-fin">${KR.semaine(b.semaine)}<p class="jours-n">${KR.joursFaits(b.semaine)}</p></div>
         <p class="demain">${KR.icone('cal')}<span>${demain}</span></p>
         <div class="actions-fin">
-          <button type="button" class="btn btn-secondaire" data-a="grille">${t('voir_grille')}</button>
+          <button type="button" class="btn btn-secondaire" data-a="album">${t('voir_cartes')}</button>
           <a class="btn btn-primaire" href="./">${t('fini')}</a>
         </div>
       </div>
     </div>`);
-    brancher({ grille: () => grille(accueil) });
+    brancher({ album: () => album(accueil) });
   }
 
-  /* =================== Ma grille =================== */
+  /* =================== Mon album : une page par famille, dans l'ordre d'Eduscol ===================
+     Onglet médaillé quand toute la page est dorée ; familles pas encore ouvertes en pointillé,
+     jamais cadenassées (elles s'ouvrent sur les boîtes réelles). La grille de Pythagore est à un
+     geste, en bascule « See as a grid ». */
+  function album(retour, pageDemandee) {
+    etat = T.charger(enfant);
+    const j = T.jour(new Date());
+    const pages = A.pages(etat, j);
+    const ouvertes = pages.filter(p => p.ouverte).length;
+    const ici = pageDemandee != null ? pageDemandee : Math.max(0, ouvertes - 1);
+    const p = pages[ici];
+    const onglets = pages.map(q => {
+      const cl = (q.index === ici ? ' actif' : '') + (q.ouverte ? '' : ' ferme') + (q.complet && q.index !== ici ? ' complet' : '');
+      return `<button type="button" class="onglet${cl}" data-a="onglet" data-page="${q.index}" aria-pressed="${q.index === ici}">
+        ${q.complet ? `<span class="medaille">${KR.icone('etoile')}</span>` : ''}<b>${nomFamille(q)}</b>
+        <span>${q.ouverte ? `${KR.icone('etoile')}${t('avancement', { n: q.or, total: q.cartes.length })}` : t('pas_ouverte')}</span></button>`;
+    }).join('');
+    const sous = p.ouverte ? t('page_bilan', { or: p.or, presque: p.presque })
+      : t('ouvre_quand', { famille: nomFamille(pages[Math.max(0, ici - 1)]) });
+    const total = A.total(etat);
+    changerEcran(`<div class="ecran album-ecran">
+      <header class="barre">${nav('retour', 'retour', 'retour')}
+        <div class="titre"><h1 class="titre-ecran">${t('mes_cartes')}</h1><p class="indice">${t('album_indice', { n: total, or: A.nbOr(etat) })}</p></div>
+        ${nav('grille', 'grille', 'voir_grille_album')}</header>
+      <nav class="onglets" aria-label="${t('mes_cartes')}">${onglets}</nav>
+      <section class="page-album${p.ouverte ? '' : ' page-fermee'}">
+        <div class="page-tete"><h2>${nomFamille(p)} ${tablesFamille(p)}</h2><p>${sous}</p></div>
+        <div class="cartes-page">${p.cartes.map(c => carteAlbum(c)).join('')}</div>
+        <div class="legende-tp">
+          <div><span class="tp"></span>${t('leg_vide')}</div>
+          <div><span class="tp plein"></span>${t('leg_tampon')}</div>
+          <div><span class="tp plein du-jour"></span>${t('leg_auj')}</div>
+          <div><span class="tp plein or-leg">${KR.icone('etoile')}</span>${t('leg_or')}</div>
+        </div>
+      </section>
+    </div>`);
+    brancher({
+      retour,
+      onglet: b => album(retour, Number(b.dataset.page)),
+      grille: () => grille(() => album(retour, ici)),
+    });
+  }
+
+  /* =================== Ma grille (bascule de l'album) =================== */
   function grille(retour) {
     etat = T.charger(enfant);
-    /* Un seul dénominateur partout (point 10) : la légende compte les 36 paires de 2 à 9, chacune
-       dans l'état le plus faible de ses deux cases, comme l'accueil (« 2 of 36 by heart »).
-       Les lignes et colonnes 1 et 10, faciles, restent visibles mais atténuées, hors du compte. */
+    /* Un seul dénominateur partout (point 10) : la légende compte les 36 cartes de l'album, les deux
+       cases d'une carte dans le même état (ses tampons). Les lignes et colonnes 1 et 10, faciles,
+       restent visibles mais atténuées, hors du compte. */
     const compte = { auj: 0, or: 0, pre: 0, com: 0, pas: 0 };
     for (let a = 2; a <= 9; a++) for (let b = a; b <= 9; b++) {
       const e1 = etatCase(a, b);
@@ -566,9 +659,10 @@
         b.classList.add('touchee');
         b.innerHTML = `<b>${a * c}</b>${marque(e)}`;
         touchee = b;
+        const revoir = T.estCarte(a, c) && T.aRevoir(etat, a, c);
         app.querySelector('.detail').innerHTML = `
           <div class="fait" lang="fr">${a}${x}${c}${eg}${a * c}</div>
-          <span class="pastille m-${e}">${marque(e)}${t(NOM_CASE[e])}</span>
+          <span class="pastille m-${e}">${marque(e)}${t(NOM_CASE[e])}</span>${revoir ? `<span class="pastille revient-pastille">${KR.icone('cal')}${t('revient_demain')}</span>` : ''}
           <div class="bulle astuce" lang="fr"><div class="etiq">${KR.icone('ampoule')}L'astuce de ${KR.nomMascotte()}</div>${KR.echapper(T.astuce(a, c, etat))}</div>`;
       },
     });
