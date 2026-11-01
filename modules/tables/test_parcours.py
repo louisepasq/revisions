@@ -237,12 +237,21 @@ def seance(page, err, fmt):
             page.wait_for_selector(".carte-retape.carte-juste")
             capture(page, f"clara_{fmt}_10-retape-juste", err)
         else:
+            # Décision du 01/11/2026 : rapide, le fait n'est pas redit ; hésitante (ici la troisième
+            # question, après 3,5 s), il est dit en entier avant de pouvoir avancer.
+            lente = n == 2
+            if lente:
+                page.wait_for_timeout(3500)
             repondre_juste(page, carte)
             page.wait_for_selector(".carte-juste")
             if t in ("produit", "manquant"):
                 fait = page.evaluate("([a, b]) => Tables.faitDit(a, b)", [a, b])
-                if derniere_parole(page) != fait:
-                    PROBLEMES.append(f"{fmt} : réponse juste à {a} × {b} sans le fait dit ({derniere_parole(page)!r})")
+                if lente:
+                    page.wait_for_timeout(300)
+                    if fait not in paroles(page):
+                        PROBLEMES.append(f"{fmt} : réponse hésitante à {a} × {b} sans le fait dit ({derniere_parole(page)!r})")
+                elif derniere_parole(page) == fait:
+                    PROBLEMES.append(f"{fmt} : réponse rapide à {a} × {b}, le fait est redit alors qu'il est su")
             if not juste_capture:
                 juste_capture = True
                 capture(page, f"clara_{fmt}_11-juste", err)

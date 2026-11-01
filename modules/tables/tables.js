@@ -360,14 +360,21 @@
       montrerRevoir(r);
     }
 
-    /* Après une réponse juste : la voix dit le fait complet (« neuf fois cinq, quarante-cinq »),
-       et la question suivante attend la fin de la phrase (onend, au plus SECOURS_VOIX) et la jauge. */
+    /* Après une réponse juste (décision de Louis et d'Henri du 01/11/2026) : rapide, le fait est su, on
+       enchaîne sans le redire ; hésitante, ou après une erreur, la voix dit le fait complet (« sept fois
+       sept, quarante-neuf ») et rien ne permet d'avancer avant la fin de la phrase. */
     let numeroQ = 0;
-    function enchainer(a, b) {
+    function enchainer(a, b, redire) {
       const ici = numeroQ;
-      pave.etat('suite', DUREE_SUITE);
-      const jauge = new Promise(r => plusTard(r, DUREE_SUITE));
-      Promise.all([direFait(a, b), jauge]).then(() => { if (ici === numeroQ && phase === 'juste') suivante(); });
+      const lancerSuite = () => {
+        if (ici !== numeroQ || phase !== 'juste') return;
+        pave.etat('suite', DUREE_SUITE);
+        plusTard(() => { if (ici === numeroQ && phase === 'juste') suivante(); }, DUREE_SUITE);
+      };
+      if (!redire || !voixActive()) return lancerSuite();
+      pave.etat('vide');
+      pave.bloquer(true);
+      direFait(a, b).then(lancerSuite);
     }
 
     function montrerJuste(rapide, valeur) {
@@ -387,8 +394,8 @@
         </div>
         <div class="retour-masc fete">${KR.medaillon('fete')}${KR.mascotte('fete', 'rebondit')}<div class="bulles"><div class="bulle parle">${t('bravo')}</div></div></div>`;
       montrerPave();
-      if (q.type === 'decomposition') enchainer(valeur[0], valeur[1]);
-      else enchainer(q.a, q.b);
+      if (q.type === 'decomposition') enchainer(valeur[0], valeur[1], !rapide);
+      else enchainer(q.a, q.b, !rapide);
     }
 
     function montrerRevoir(r) {
@@ -408,7 +415,12 @@
           <div class="fait" data-case>${q.a}${x}${q.b}${eg}${caseRep('', true)}</div></div>`;
       montrerPave();
       pave.etat('vide');
-      direFait(q.a, q.b); // le fait juste, sur un ton neutre
+      // Le fait juste se dit en entier, sur un ton neutre, avant que l'enfant puisse le retaper.
+      if (voixActive()) {
+        pave.bloquer(true);
+        const ici = numeroQ;
+        direFait(q.a, q.b).then(() => { if (ici === numeroQ && phase === 'revoir') pave.bloquer(false); });
+      }
     }
 
     function retaper() {
@@ -425,7 +437,7 @@
       carte.classList.add('carte-juste');
       carte.querySelector('[data-case]').innerHTML = `${q.a}${x}${q.b}${eg}<span class="rep-verte">${q.a * q.b}</span>`;
       majAvance();
-      enchainer(q.a, q.b);
+      enchainer(q.a, q.b, false); // le fait vient d'être dit avant la retape
     }
 
     function suivante() {
