@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="fr" data-enfant="henri" data-module="vitrine">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vitrine du kit Nos révisions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="../../commun/kit.css">
+<style>
+/* Styles propres à la vitrine (préfixe v-), pas au kit */
+.v-entete{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding:12px 24px;background:var(--kr-papier);border-bottom:2px solid var(--kr-trait)}
+.v-entete h1{font-size:26px;flex:1;min-width:260px}
+.v-entete h1 span{color:var(--kr-accent-fort)}
+.v-contenu{max-width:1240px;margin:0 auto;padding:24px 24px 120px;display:flex;flex-direction:column;gap:56px}
+.v-section{display:flex;flex-direction:column;gap:20px}
+.v-section > h2{font-size:32px}
+.v-section > p.v-intro{color:var(--kr-encre-douce);max-width:900px;font-size:19px}
+.v-bloc{display:flex;flex-direction:column;gap:14px;padding:24px;background:var(--kr-papier);border:2px solid var(--kr-trait);border-radius:var(--kr-r-grand)}
+.v-bloc > h3{font-size:24px}
+.v-bloc > p.v-note{color:var(--kr-encre-douce);font-size:17px}
+.v-etats{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end}
+.v-etat{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.v-etat > small{font-size:16px;color:var(--kr-encre-douce);font-weight:700}
+.v-grille-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px}
+.v-grille-2 > *{min-width:0}
+.v-nuancier{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.v-nuance{border:2px solid var(--kr-trait);border-radius:14px;overflow:hidden;background:var(--kr-papier)}
+.v-nuance i{display:block;height:64px}
+.v-nuance span{display:block;padding:6px 10px;font-size:16px;line-height:1.25}
+.v-nuance code{font-size:14px;color:var(--kr-encre-douce);font-weight:600}
+.v-echelle{display:flex;flex-direction:column;gap:10px}
+.v-echelle div{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.v-echelle code{flex:none;width:170px;font-size:15px;color:var(--kr-encre-douce)}
+.v-espaces{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.v-espaces div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:15px;color:var(--kr-encre-douce)}
+.v-espaces i{display:block;background:var(--kr-enfant);border-radius:3px}
+.v-quatre{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.v-theme{background:var(--kr-fond);color:var(--kr-encre);border:2px solid var(--kr-trait);border-radius:var(--kr-r-grand);padding:22px;display:flex;flex-direction:column;gap:18px}
+.v-theme > h3{font-size:22px}
+.v-theme > h3 small{font-family:var(--kr-police-texte);font-size:16px;color:var(--kr-encre-douce);font-weight:700}
+.v-cadre{position:relative;width:100%;overflow:hidden}
+.v-cadre > .v-ipad{position:absolute;top:0;left:0;transform-origin:0 0}
+.v-ipad{box-sizing:content-box;position:relative;width:1080px;height:810px;border:16px solid #1B1F24;border-radius:36px;overflow:hidden;background:var(--kr-fond);color:var(--kr-encre);box-shadow:0 18px 40px rgba(0,0,0,.18);display:flex;flex-direction:column}
+.v-ipad{--kr-zone-haut:0px;--kr-zone-bas:0px;--kr-zone-gauche:0px;--kr-zone-droite:0px}
+.v-ipad.v-portrait{width:810px;height:1080px}
+.v-ipad.v-telephone{width:402px;height:874px;border-width:12px;border-radius:64px;--kr-zone-haut:62px;--kr-zone-bas:34px}
+.v-telephone::before{content:"";position:absolute;z-index:5;top:11px;left:50%;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}
+.v-telephone::after{content:"";position:absolute;z-index:5;bottom:8px;left:50%;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:var(--kr-encre);opacity:.6}
+.v-telephones{display:flex;flex-wrap:wrap;gap:24px}
+.v-telephones > div{flex:1 1 300px;max-width:440px}
+.v-ipad > .kr-page{min-height:0;height:100%}
+.v-legende{font-size:17px;color:var(--kr-encre-douce);max-width:1000px}
+@media (max-width:900px){.v-quatre{grid-template-columns:1fr}.v-grille-2{grid-template-columns:1fr}}
+@media (max-width:600px){.v-entete{position:static;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px}.v-entete h1{min-width:0;font-size:22px}.v-contenu{padding:16px 16px 80px;gap:40px}.v-bloc,.v-theme{padding:16px}.v-section > h2{font-size:26px}.v-grille-2{gap:16px}}
+</style>
+</head>
+<body class="kr">
+
+<header class="v-entete">
+  <h1>Kit <span>Nos révisions</span> : vitrine des composants</h1>
+  <div class="kr-segments" role="tablist" aria-label="Thème de l'enfant" id="choix-enfant">
+    <button type="button" role="tab" data-v="henri" aria-selected="true">Henri</button>
+    <button type="button" role="tab" data-v="clara" aria-selected="false">Clara</button>
+    <button type="button" role="tab" data-v="" aria-selected="false">Famille</button>
+  </div>
+  <div class="kr-segments" role="tablist" aria-label="Mode" id="choix-mode">
+    <button type="button" role="tab" data-v="" aria-selected="true">Auto</button>
+    <button type="button" role="tab" data-v="light" aria-selected="false">Clair</button>
+    <button type="button" role="tab" data-v="dark" aria-selected="false">Sombre</button>
+  </div>
+</header>
+
+<main class="v-contenu">
+
+<!-- ====================================================== 1. TOKENS -->
+<section class="v-section">
+  <h2>Tokens : la palette de la maman, plus une teinte forte par enfant pour le texte et les boutons</h2>
+  <p class="v-intro">Les couleurs suivent le thème choisi en haut. La couleur de l'enfant colore l'identité ; sa version forte porte le texte et le bouton principal avec un contraste d'au moins 4,5. Juste en vert, « à revoir » en miel, jamais de rouge.</p>
+  <div class="v-bloc">
+    <h3>Couleurs</h3>
+    <div class="v-nuancier" id="nuancier"></div>
+  </div>
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Typographie : Baloo 2 pour les titres et les nombres, Nunito pour lire</h3>
+      <div class="v-echelle">
+        <div><code>--kr-t-geant 72</code><span style="font-family:var(--kr-police-titre);font-size:72px;font-weight:800;line-height:1">7 × 8</span></div>
+        <div><code>--kr-t-titre-1 40</code><span style="font-family:var(--kr-police-titre);font-size:40px;font-weight:800;line-height:1.1">Ma grille</span></div>
+        <div><code>--kr-t-titre-2 30</code><span style="font-family:var(--kr-police-titre);font-size:30px;font-weight:800">Bravo, 3 cases montent</span></div>
+        <div><code>--kr-t-titre-3 24</code><span style="font-family:var(--kr-police-titre);font-size:24px;font-weight:800">Entraînement du jour</span></div>
+        <div><code>--kr-t-corps 20</code><span style="font-size:20px">Réponds à tout ce que tu peux.</span></div>
+        <div><code>--kr-t-petit 17</code><span style="font-size:17px">Toucher pour voir ma grille</span></div>
+        <div><code>--kr-t-mini 16</code><span style="font-size:16px">Plancher : rien en dessous</span></div>
+      </div>
+    </div>
+    <div class="v-bloc">
+      <h3>Espacements base 4, rayons, cibles</h3>
+      <div class="v-espaces">
+        <div><i style="width:4px;height:4px"></i>4</div>
+        <div><i style="width:8px;height:8px"></i>8</div>
+        <div><i style="width:12px;height:12px"></i>12</div>
+        <div><i style="width:16px;height:16px"></i>16</div>
+        <div><i style="width:24px;height:24px"></i>24</div>
+        <div><i style="width:32px;height:32px"></i>32</div>
+        <div><i style="width:48px;height:48px"></i>48</div>
+        <div><i style="width:64px;height:64px"></i>64</div>
+      </div>
+      <div class="v-espaces">
+        <div><i style="width:64px;height:64px;border-radius:12px;background:var(--kr-enfant-doux);border:2px solid var(--kr-enfant)"></i>rayon 12</div>
+        <div><i style="width:64px;height:64px;border-radius:18px;background:var(--kr-enfant-doux);border:2px solid var(--kr-enfant)"></i>rayon 18</div>
+        <div><i style="width:64px;height:64px;border-radius:26px;background:var(--kr-enfant-doux);border:2px solid var(--kr-enfant)"></i>rayon 26</div>
+        <div><i style="width:56px;height:56px;border-radius:18px;background:var(--kr-accent-doux);outline:2px dashed var(--kr-accent-fort)"></i>cible 56</div>
+        <div><i style="width:72px;height:72px;border-radius:18px;background:var(--kr-accent-doux);outline:2px dashed var(--kr-accent-fort)"></i>cible 72</div>
+        <div><i style="width:88px;height:88px;border-radius:26px;background:var(--kr-accent-doux);outline:2px dashed var(--kr-accent-fort)"></i>touche 88</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 2. QUATRE THEMES -->
+<section class="v-section">
+  <h2>Quatre thèmes côte à côte : la même interface, seule la couleur de l'enfant change</h2>
+  <p class="v-intro">Chaque panneau pose data-enfant et data-theme sur lui-même. En production, les deux attributs vont sur &lt;html&gt;.</p>
+  <div class="v-quatre" id="quatre"></div>
+  <template id="modele-theme">
+    <h3 class="v-titre-theme"></h3>
+    <div class="kr-dialogue">
+      <div class="kr-mascotte" data-taille="m" data-humeur="accueil"></div>
+      <div class="kr-bulle" style="font-size:20px">On révise <b>la table de 9</b> ?
+        <button type="button" class="kr-btn-icone kr-bulle__ecouter" aria-label="Écouter">🔊</button></div>
+    </div>
+    <div class="kr-rang">
+      <button type="button" class="kr-btn">C'est parti !</button>
+      <button type="button" class="kr-btn kr-btn--secondaire">Plus tard</button>
+    </div>
+    <div class="kr-rang">
+      <button type="button" class="kr-puce" aria-pressed="true">Continents</button>
+      <button type="button" class="kr-puce" aria-pressed="false">Océans</button>
+    </div>
+    <div class="kr-rang">
+      <span class="kr-reponse kr-reponse--petite" data-etat="juste">56</span>
+      <span class="kr-reponse kr-reponse--petite" data-etat="revoir">54</span>
+    </div>
+    <div class="kr-rang">
+      <span class="kr-niveau" data-niveau="0">Pas encore</span>
+      <span class="kr-niveau" data-niveau="1">Je commence</span>
+      <span class="kr-niveau" data-niveau="2">Presque</span>
+      <span class="kr-niveau" data-niveau="3">Je sais</span>
+    </div>
+    <div class="kr-jauge" style="--kr-valeur:62%"><i></i></div>
+  </template>
+</section>
+
+<!-- ====================================================== 3. COMPOSANTS -->
+<section class="v-section">
+  <h2>Composants : chacun dans ses états, tactiles à 56 px au moins</h2>
+  <p class="v-intro">Ce qui s'appuie a un relief en dessous et s'enfonce au toucher ; ce qui se lit est à plat. Les composants marqués « vivant » réagissent.</p>
+
+  <div class="v-bloc">
+    <h3>Boutons : un seul bouton principal par écran, en couleur forte de l'enfant</h3>
+    <div class="v-etats">
+      <div class="v-etat"><small>Principal</small><button type="button" class="kr-btn">C'est parti !</button></div>
+      <div class="v-etat"><small>Principal appuyé</small><button type="button" class="kr-btn est-appuye">C'est parti !</button></div>
+      <div class="v-etat"><small>Secondaire</small><button type="button" class="kr-btn kr-btn--secondaire">Rejouer</button></div>
+      <div class="v-etat"><small>Discret</small><button type="button" class="kr-btn kr-btn--discret">Je passe</button></div>
+      <div class="v-etat"><small>Désactivé</small><button type="button" class="kr-btn" disabled>Bientôt</button></div>
+      <div class="v-etat"><small>Grand</small><button type="button" class="kr-btn kr-btn--grand">Je suis prête !</button></div>
+    </div>
+    <div class="v-grille-2">
+      <div class="v-etat" style="align-items:stretch"><small>Tuile d'action principale</small>
+        <button type="button" class="kr-btn kr-btn--tuile">▶︎ Entraînement du jour<span class="kr-btn__sous">5 minutes · 9 × 7 et 8 × 6 reviennent aujourd'hui</span></button></div>
+      <div class="v-etat" style="align-items:stretch"><small>Tuile d'action secondaire</small>
+        <button type="button" class="kr-btn kr-btn--secondaire kr-btn--tuile">⏱️ Défi 1 minute<span class="kr-btn__sous">Ton record : 23</span></button></div>
+    </div>
+    <div class="v-etats">
+      <div class="v-etat"><small>Icône : retour</small><a class="kr-btn-icone" href="#" aria-label="Retour">‹</a></div>
+      <div class="v-etat"><small>Icône : écouter</small><button type="button" class="kr-btn-icone" aria-label="Écouter la question">🔊</button></div>
+      <div class="v-etat"><small>Icône activée</small><button type="button" class="kr-btn-icone" aria-pressed="true" aria-label="Zoom Europe">🔍</button></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Sélecteur de mode (vivant)</h3>
+      <p class="v-note">Remplace les onglets du planisphère, trop bas pour un doigt (37 px).</p>
+      <div class="kr-segments" role="tablist" data-vivant="segments">
+        <button type="button" role="tab" aria-selected="true">Apprendre</button>
+        <button type="button" role="tab" aria-selected="false">Glisser</button>
+        <button type="button" role="tab" aria-selected="false">Toucher</button>
+      </div>
+    </div>
+    <div class="v-bloc">
+      <h3>Puces de filtre (vivant)</h3>
+      <p class="v-note">L'état choisi se voit par la couleur et par la coche.</p>
+      <div class="kr-puces" data-vivant="puces">
+        <button type="button" class="kr-puce" aria-pressed="true">Tout</button>
+        <button type="button" class="kr-puce" aria-pressed="false">Continents</button>
+        <button type="button" class="kr-puce" aria-pressed="false">Océans</button>
+        <button type="button" class="kr-puce" aria-pressed="false">Mers</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-bloc">
+    <h3>Mascotte : quatre tailles, six humeurs, un emplacement réservé en attendant les dessins des doudous</h3>
+    <p class="v-note">S 48 px dans la barre, M 120 px à côté d'une bulle, L 220 px en accueil ou fin de séance, XL 300 px pour l'icône et la fête. Humeurs : accueil, écoute, bravo, encourage, fête, repos.</p>
+    <div class="v-etats">
+      <div class="v-etat"><small>S</small><div class="kr-mascotte" data-taille="s" data-humeur="accueil"></div></div>
+      <div class="v-etat"><small>M · écoute</small><div class="kr-mascotte" data-taille="m" data-humeur="ecoute"></div></div>
+      <div class="v-etat"><small>M · encourage</small><div class="kr-mascotte" data-taille="m" data-humeur="encourage"></div></div>
+      <div class="v-etat"><small>L · bravo (toucher)</small><div class="kr-mascotte" data-taille="l" data-humeur="bravo" data-vivant="saut"></div></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Bulle de dialogue, avec son bouton pour l'entendre (vivant)</h3>
+      <p class="v-note">Deux phrases au plus. Le haut-parleur lit la bulle : un lecteur fragile n'est jamais bloqué.</p>
+      <div class="kr-dialogue">
+        <div class="kr-mascotte" data-taille="m" data-humeur="accueil"></div>
+        <div class="kr-bulle">Salut ! On fait un petit défi d'<b>une minute</b> ?
+          <button type="button" class="kr-btn-icone kr-bulle__ecouter" aria-label="Écouter" data-lire="Salut ! On fait un petit défi d'une minute ?">🔊</button></div>
+      </div>
+    </div>
+    <div class="v-bloc">
+      <h3>Bulle au-dessus, pour un écran étroit ou en portrait</h3>
+      <div class="kr-dialogue kr-dialogue--haut">
+        <div class="kr-bulle">Tu as tout trouvé !
+          <button type="button" class="kr-btn-icone kr-bulle__ecouter" aria-label="Écouter" data-lire="Tu as tout trouvé !">🔊</button></div>
+        <div class="kr-mascotte" data-taille="m" data-humeur="fete"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-bloc">
+    <h3>Question et réponse : la question en très grand, la réponse dans un cadre à la couleur de l'enfant</h3>
+    <div class="v-etats">
+      <div class="v-etat"><small>Produit</small><div class="kr-question kr-question--moyenne">7 × 8</div></div>
+      <div class="v-etat"><small>Nombre caché</small><div class="kr-question kr-question--moyenne">7 × <span class="kr-trou"></span> = 56</div></div>
+      <div class="v-etat"><small>Trou rempli</small><div class="kr-question kr-question--moyenne">7 × <span class="kr-trou est-rempli">8</span> = 56</div></div>
+    </div>
+    <div class="v-etats">
+      <div class="v-etat"><small>Vide</small><span class="kr-reponse" data-etat="vide">?</span></div>
+      <div class="v-etat"><small>Saisie</small><span class="kr-reponse" data-etat="saisie">5</span></div>
+      <div class="v-etat"><small>Juste</small><span class="kr-reponse" data-etat="juste">56 ✓</span></div>
+      <div class="v-etat"><small>À revoir</small><span class="kr-reponse" data-etat="revoir">54</span></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Pavé numérique (vivant, clavier physique compris)</h3>
+      <p class="v-note">Touches de 88 px, valider en couleur de l'enfant, effacer à gauche du zéro. Pas de champ natif : le clavier de l'iPad ne s'ouvre pas.</p>
+      <div class="kr-rang" style="justify-content:center"><span class="kr-reponse kr-reponse--petite" id="affiche-pave" data-etat="vide">?</span></div>
+      <div id="pave-demo"></div>
+    </div>
+    <div class="v-bloc">
+      <h3>Pavé éteint pendant le retour</h3>
+      <p class="v-note">Il reste visible pour ne pas faire sauter la mise en page, mais ne réagit plus.</p>
+      <div id="pave-eteint"></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Choix : oui ou non, et plusieurs propositions</h3>
+      <div class="kr-choix">
+        <button type="button" class="kr-choix__option">Oui</button>
+        <button type="button" class="kr-choix__option" aria-pressed="true">Non</button>
+      </div>
+      <div class="kr-choix">
+        <button type="button" class="kr-choix__option" data-etat="juste">Asie</button>
+        <button type="button" class="kr-choix__option" data-etat="revoir">Afrique</button>
+        <button type="button" class="kr-choix__option" data-etat="attenue">Europe</button>
+      </div>
+      <p class="v-note">Repos, choisi, puis après correction : juste (coche), à revoir (miel), les autres atténuées.</p>
+    </div>
+    <div class="v-bloc">
+      <h3>Retours et astuce : le message dit quoi faire, pas ce qui est raté</h3>
+      <div class="kr-rang">
+        <span class="kr-retour" data-etat="juste">✓ Bravo !</span>
+        <span class="kr-retour" data-etat="rapide">⚡ Rapide !</span>
+        <span class="kr-retour" data-etat="revoir">Presque ! Regarde bien.</span>
+      </div>
+      <div class="kr-astuce"><span><b>7 × 4 = 28</b>, et le double de 28, c'est <b>56</b>.</span></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Avancement de la séance et jauge</h3>
+      <div class="kr-points">
+        <i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="revu"></i><i data-etat="fait"></i><i data-etat="courant"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <p class="v-note">Fait, revu après une erreur (miel, pas rouge), question en cours, à venir.</p>
+      <div class="kr-jauge" style="--kr-valeur:40%"><i></i></div>
+    </div>
+    <div class="v-bloc">
+      <h3>Semaine de régularité : les jours faits s'allument, un jour manqué ne casse rien</h3>
+      <div class="kr-semaine" id="semaine-demo">
+        <span data-fait><b>L</b></span><span data-fait><b>M</b></span><span><b>M</b></span><span data-fait><b>J</b></span><span data-fait data-aujourdhui><b>V</b></span><span><b>S</b></span><span><b>D</b></span>
+      </div>
+      <p class="v-note">4 jours cette semaine. Pas de « série de 12 jours » qui retombe à zéro.</p>
+    </div>
+  </div>
+
+  <div class="v-bloc">
+    <h3>Maîtrise : quatre niveaux, chacun avec sa couleur, son symbole et son mot</h3>
+    <div class="kr-rang">
+      <span class="kr-niveau" data-niveau="0">Pas encore</span>
+      <span class="kr-niveau" data-niveau="1">Je commence</span>
+      <span class="kr-niveau" data-niveau="2">Presque</span>
+      <span class="kr-niveau" data-niveau="3">Je sais par cœur</span>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Grille de maîtrise (vivant : toucher une case)</h3>
+      <div class="kr-grille" id="grille-demo" style="max-width:520px"></div>
+    </div>
+    <div class="v-bloc">
+      <h3>Chemin des notions</h3>
+      <div class="kr-chemin">
+        <button type="button" class="kr-etape" data-etat="fait"><span class="kr-etape__rond">×2</span><span class="kr-etape__nom">Doubles</span></button>
+        <button type="button" class="kr-etape" data-etat="encours"><span class="kr-etape__rond">×4<br>×8</span><span class="kr-etape__nom">Doubles des doubles</span></button>
+        <button type="button" class="kr-etape" data-etat="ferme" aria-disabled="true"><span class="kr-etape__rond">🔒</span><span class="kr-etape__nom">×3 ×6</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Défi : chrono qui se vide, et records de l'enfant seul</h3>
+      <div class="kr-rang" style="gap:40px">
+        <div class="kr-chrono" style="--kr-avance:.63"><span>0:38</span></div>
+        <div class="kr-records">
+          <div style="--kr-h:62%">16</div><div style="--kr-h:72%">18</div><div style="--kr-h:80%">20</div><div style="--kr-h:88%">23</div><div class="est-dernier" style="--kr-h:100%">26</div>
+        </div>
+      </div>
+    </div>
+    <div class="v-bloc">
+      <h3>Étiquettes à glisser, reprises du planisphère</h3>
+      <div class="kr-rang">
+        <span class="kr-etiquette">Afrique</span>
+        <span class="kr-etiquette est-choisie">Océan Indien</span>
+        <span class="kr-etiquette est-source">Asie</span>
+        <span class="kr-etiquette est-posee">Europe ✓</span>
+        <span class="kr-etiquette est-a-revoir">Manche</span>
+      </div>
+      <p class="v-note">Repos, choisie (toucher puis toucher la carte), source pendant le glisser, posée, à revoir (elle hésite, sans secousse).</p>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div class="v-bloc">
+      <h3>Interrupteur du son, mémorisé par enfant (vivant)</h3>
+      <button type="button" class="kr-interrupteur" role="switch" aria-checked="true" id="inter-son"><i></i>Son</button>
+      <div class="kr-rang">
+        <button type="button" class="kr-btn kr-btn--secondaire" data-son="juste">🔔 Juste</button>
+        <button type="button" class="kr-btn kr-btn--secondaire" data-son="revoir">🫧 À revoir</button>
+        <button type="button" class="kr-btn kr-btn--secondaire" data-son="monte">✨ Case qui monte</button>
+        <button type="button" class="kr-btn kr-btn--secondaire" data-son="debloque">🔓 Notion ouverte</button>
+        <button type="button" class="kr-btn kr-btn--secondaire" data-son="record">🎉 Record</button>
+      </div>
+    </div>
+    <div class="v-bloc">
+      <h3>Appui long pour le coin parent, et annonce (vivant)</h3>
+      <p class="v-note">Une seconde et demie d'appui : la barre se remplit, puis l'annonce s'affiche.</p>
+      <div class="kr-rang">
+        <button type="button" class="kr-appui-long" id="appui-demo">🔒 Coin parent (appui long)</button>
+        <button type="button" class="kr-btn kr-btn--secondaire" id="annonce-demo">Montrer une annonce</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-bloc">
+    <h3>Tuiles de module du portail : nouveau, en cours, bientôt</h3>
+    <div class="v-grille-2">
+      <a class="kr-tuile-module" href="#"><span class="kr-tuile-module__icone">🗺️</span><span class="kr-tuile-module__titre">Mon planisphère</span><span class="kr-tuile-module__matiere">Géographie · 12 sur 20 trouvés du premier coup</span><span class="kr-jauge" style="--kr-valeur:60%"><i></i></span></a>
+      <a class="kr-tuile-module" href="#"><span class="kr-marque kr-marque--accent">Nouveau</span><span class="kr-tuile-module__icone">✖️</span><span class="kr-tuile-module__titre">Mes tables</span><span class="kr-tuile-module__matiere">Calcul · 14 en or sur 36</span><span class="kr-jauge" style="--kr-valeur:39%"><i></i></span></a>
+      <a class="kr-tuile-module" aria-disabled="true"><span class="kr-tuile-module__icone">📖</span><span class="kr-tuile-module__titre">Conjugaison</span><span class="kr-tuile-module__matiere">Bientôt</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== 4. MODELES -->
+<section class="v-section">
+  <h2>Modèles d'écran à la taille de l'iPad 9e génération (1080 × 810 points) et d'un iPhone (402 × 874)</h2>
+  <p class="v-intro">Chaque modèle se réutilise d'un module à l'autre : seuls la question et l'astuce changent. Les écrans sont réduits pour tenir dans la page.</p>
+
+  <p class="v-legende"><b>Portail d'Henri</b> : sa mascotte, sa semaine, ses modules, rien d'autre. Le coin parent se cache derrière un appui long.</p>
+  <div class="v-cadre"><div class="v-ipad" data-enfant="henri">
+    <div class="kr-page">
+      <div class="kr-page__corps" style="flex-direction:row;align-items:center;gap:56px;padding:48px 56px">
+        <div class="kr-pile" style="align-items:center;width:320px">
+          <div class="kr-mascotte" data-taille="l" data-humeur="accueil"></div>
+          <h1 style="font-size:40px;text-align:center">Les révisions<br>d'<span style="color:var(--kr-enfant-fort)">Henri</span></h1>
+          <div class="kr-semaine"><span data-fait><b>L</b></span><span data-fait><b>M</b></span><span><b>M</b></span><span data-fait data-aujourdhui><b>J</b></span><span><b>V</b></span><span><b>S</b></span><span><b>D</b></span></div>
+          <p class="kr-texte-doux" style="font-size:17px">3 jours cette semaine</p>
+        </div>
+        <div class="kr-pile" style="flex:1;gap:20px">
+          <a class="kr-tuile-module" href="#"><span class="kr-tuile-module__icone">🗺️</span><span class="kr-tuile-module__titre">Mon planisphère</span><span class="kr-tuile-module__matiere">Géographie · continents et océans</span><span class="kr-jauge" style="--kr-valeur:60%"><i></i></span></a>
+          <a class="kr-tuile-module" href="#"><span class="kr-marque kr-marque--accent">Nouveau</span><span class="kr-tuile-module__icone">✖️</span><span class="kr-tuile-module__titre">Mes tables</span><span class="kr-tuile-module__matiere">Calcul · 7 en or sur 36</span><span class="kr-jauge" style="--kr-valeur:19%"><i></i></span></a>
+          <a class="kr-tuile-module" aria-disabled="true"><span class="kr-tuile-module__icone">📖</span><span class="kr-tuile-module__titre">Conjugaison</span><span class="kr-tuile-module__matiere">Bientôt</span></a>
+          <div style="align-self:flex-end"><button type="button" class="kr-appui-long">🔒 Coin parent</button></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <p class="v-legende"><b>Accueil d'un module</b> : la barre commune (retour, mascotte, titre, son), une action principale évidente, la récompense visible.</p>
+  <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+    <div class="kr-page">
+      <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Retour au portail">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="accueil"></div><div class="kr-barre__titre">Mes <span>tables</span></div><span class="kr-marque">⭐ 4 jours cette semaine</span><button type="button" class="kr-btn-icone" aria-label="Son">🔊</button></div>
+      <div class="kr-page__corps" style="flex-direction:row;gap:48px;padding:40px 48px">
+        <div class="kr-pile" style="width:360px;align-items:center">
+          <div class="kr-mascotte" data-taille="l" data-humeur="accueil"></div>
+          <div class="kr-grille" id="mini-grille" style="--kr-g-colonnes:10;gap:3px;width:260px"></div>
+          <p style="text-align:center"><b>14</b> en or sur 36</p>
+        </div>
+        <div class="kr-pile" style="flex:1;justify-content:center;gap:20px">
+          <button type="button" class="kr-btn kr-btn--tuile kr-btn--grand">▶︎ Entraînement du jour<span class="kr-btn__sous">5 minutes · 9 × 7 et 8 × 6 reviennent aujourd'hui</span></button>
+          <button type="button" class="kr-btn kr-btn--secondaire kr-btn--tuile">🧭 Découvrir une famille<span class="kr-btn__sous">En cours : la table de 9</span></button>
+          <button type="button" class="kr-btn kr-btn--secondaire kr-btn--tuile">⏱️ Défi 1 minute<span class="kr-btn__sous">Ton record : 23</span></button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <p class="v-legende"><b>Écran de question</b> : la question au centre, le pavé à droite, l'avancement en haut. Rien d'autre ne bouge.</p>
+  <div class="v-cadre"><div class="v-ipad" data-enfant="henri">
+    <div class="kr-page">
+      <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="ecoute"></div><div class="kr-barre__titre">Entraînement du jour</div><button type="button" class="kr-btn-icone" aria-label="Lire la question">🔊</button></div>
+      <div class="kr-ecran-question" data-orientation="paysage">
+        <div class="kr-ecran-question__zone">
+          <div class="kr-points"><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="revu"></i><i data-etat="fait"></i><i data-etat="courant"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="kr-question">7 × 8</div>
+          <span class="kr-reponse" data-etat="saisie">5</span>
+        </div>
+        <div class="kr-ecran-question__pave"><div class="v-pave-statique"></div></div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="v-grille-2">
+    <div>
+      <p class="v-legende"><b>Retour juste</b> : fond vert léger, tintement, une demi-seconde, puis la suite seule.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+        <div class="kr-page">
+          <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="bravo"></div><div class="kr-barre__titre">Entraînement du jour</div><button type="button" class="kr-btn-icone" aria-label="Lire">🔊</button></div>
+          <div class="kr-ecran-question" data-orientation="paysage">
+            <div class="kr-ecran-question__zone kr-zone-retour" data-etat="juste" style="border-radius:0">
+              <div class="kr-points"><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="revu"></i><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="courant"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="kr-question">7 × 8</div>
+              <span class="kr-reponse" data-etat="juste">56 ✓</span>
+              <div class="kr-rang"><span class="kr-retour" data-etat="juste">✓ Bravo !</span><span class="kr-retour" data-etat="rapide">⚡ Rapide !</span></div>
+            </div>
+            <div class="kr-ecran-question__pave"><div class="v-pave-statique" aria-disabled="true"></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div>
+      <p class="v-legende"><b>Retour à revoir</b> : son doux, la bonne réponse, l'astuce, puis l'enfant la retape.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+        <div class="kr-page">
+          <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="encourage"></div><div class="kr-barre__titre">Entraînement du jour</div><button type="button" class="kr-btn-icone" aria-label="Lire">🔊</button></div>
+          <div class="kr-ecran-question" data-orientation="paysage">
+            <div class="kr-ecran-question__zone kr-zone-retour" data-etat="revoir" style="border-radius:0;gap:20px">
+              <span class="kr-retour" data-etat="revoir">Presque ! Regarde bien :</span>
+              <div class="kr-question" style="font-size:88px">7 × 8 = <span style="color:var(--kr-revoir-fort)">56</span></div>
+              <div class="kr-astuce"><span><b>7 × 4 = 28</b>, et le double de 28, c'est <b>56</b>.</span></div>
+              <div class="kr-rang"><span>À toi de le retaper :</span><span class="kr-reponse kr-reponse--petite" data-etat="vide">?</span></div>
+            </div>
+            <div class="kr-ecran-question__pave"><div class="v-pave-statique"></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div>
+      <p class="v-legende"><b>Fin de séance</b> : ce qui a progressé, la semaine, ce qui revient demain. Pas de note sur 20.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="henri">
+        <div class="kr-page">
+          <div class="kr-ecran-centre" data-orientation="paysage">
+            <div class="kr-mascotte" data-taille="xl" data-humeur="fete"></div>
+            <div class="kr-pile" style="width:520px">
+              <h1 style="font-size:52px">Bravo Henri ! 🎉</h1>
+              <div class="kr-carte kr-carte--compacte"><b>3 cases montent en argent</b><div class="kr-rang" style="margin-top:8px;gap:8px"><span class="kr-niveau" data-niveau="2">6 × 7</span><span class="kr-niveau" data-niveau="2">7 × 6</span><span class="kr-niveau" data-niveau="2">8 × 4</span></div></div>
+              <div class="kr-carte kr-carte--compacte"><div class="kr-semaine"><span data-fait><b>L</b></span><span data-fait><b>M</b></span><span><b>M</b></span><span data-fait data-aujourdhui><b>J</b></span><span><b>V</b></span><span><b>S</b></span><span><b>D</b></span></div></div>
+              <div class="kr-carte kr-carte--compacte">Demain, <b>9 × 7</b> revient te voir.</div>
+              <div class="kr-rang"><button type="button" class="kr-btn">Voir ma grille</button><button type="button" class="kr-btn kr-btn--secondaire">Fini pour aujourd'hui</button></div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div>
+      <p class="v-legende"><b>Carte de progression</b> : la grille se colore du gris à l'or ; toucher une case montre son astuce.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="henri">
+        <div class="kr-page">
+          <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Retour">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="accueil"></div><div class="kr-barre__titre">Ma grille</div><span class="kr-marque">7 en or sur 36</span></div>
+          <div class="kr-page__corps" style="flex-direction:row;gap:32px;padding:24px 32px">
+            <div style="width:666px;flex:none"><div class="kr-grille v-grille-modele"></div></div>
+            <div class="kr-pile" style="flex:1;justify-content:center">
+              <div class="kr-pile" style="gap:10px">
+                <span class="kr-niveau" data-niveau="0">Pas encore</span>
+                <span class="kr-niveau" data-niveau="1">Je commence</span>
+                <span class="kr-niveau" data-niveau="2">Presque</span>
+                <span class="kr-niveau" data-niveau="3">Je sais par cœur</span>
+              </div>
+              <div class="kr-carte kr-carte--enfant">
+                <div class="kr-question" style="font-size:44px;text-align:left">6 × 7 = 42</div>
+                <div class="kr-astuce" style="border:0;padding:8px 0;background:none;font-size:20px"><span>6 × 6 = 36, et encore 6 : 42.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="v-grille-2">
+    <div>
+      <p class="v-legende"><b>Découverte d'une notion</b> : la mascotte présente, le visuel montre, trois écrans au plus.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+        <div class="kr-page">
+          <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Retour">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="accueil"></div><div class="kr-barre__titre">La table de 9 : dix moins un</div><span class="kr-marque">2 sur 3</span></div>
+          <div class="kr-ecran-centre" data-orientation="paysage" style="gap:56px">
+            <div class="v-points-rect" style="display:grid;grid-template-columns:repeat(10,34px);gap:8px"></div>
+            <div class="kr-pile" style="width:420px">
+              <div class="kr-dialogue"><div class="kr-mascotte" data-taille="m" data-humeur="ecoute"></div><div class="kr-bulle" style="font-size:22px">4 rangées de 10, ça fait <b>40</b>. On enlève une colonne !<button type="button" class="kr-btn-icone kr-bulle__ecouter" aria-label="Écouter">🔊</button></div></div>
+              <div class="kr-astuce" style="font-size:30px"><span>4 × 9 = 40 − 4 = <b>36</b></span></div>
+              <button type="button" class="kr-btn kr-btn--grand" style="align-self:flex-start">Suivant ›</button>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div>
+      <p class="v-legende"><b>Défi</b> : contre son propre record seulement, le bouton « Je passe » toujours là.</p>
+      <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+        <div class="kr-page">
+          <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="ecoute"></div><div class="kr-barre__titre">Défi 1 minute</div><span class="kr-marque">Ton record : 23</span></div>
+          <div class="kr-ecran-question" data-orientation="paysage">
+            <div class="kr-ecran-question__zone" style="flex-direction:row;gap:56px">
+              <div class="kr-pile" style="align-items:center"><div class="kr-chrono" style="--kr-avance:.63"><span>0:38</span></div><p><b style="font-size:44px;color:var(--kr-enfant-fort)">12</b> réponses</p></div>
+              <div class="kr-pile" style="align-items:center"><div class="kr-question" style="font-size:96px">6 × 9</div><span class="kr-reponse" data-etat="vide">?</span><button type="button" class="kr-btn kr-btn--discret">Je passe ›</button></div>
+            </div>
+            <div class="kr-ecran-question__pave"><div class="v-pave-statique"></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <p class="v-legende"><b>Coin parent</b> : des phrases, ce qui est su, ce qui reste fragile, quoi poser à l'oral. Un enfant par app : jamais de comparaison.</p>
+  <div class="v-cadre"><div class="v-ipad" data-enfant="clara">
+    <div class="kr-page">
+      <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Retour">‹</a><div class="kr-barre__titre">🔒 Coin parent · Clara</div><span class="kr-marque">Semaine du 26 octobre</span></div>
+      <div class="kr-page__corps" style="flex-direction:row;gap:32px;padding:32px 40px">
+        <div class="kr-pile" style="flex:1">
+          <div class="kr-carte kr-carte--compacte"><b>5 séances sur 7</b> cette semaine.</div>
+          <div class="kr-carte kr-carte--compacte"><b>12 multiplications</b> sont devenues automatiques. 14 sur 36 sont en or.</div>
+          <div class="kr-carte kr-carte--compacte"><b>Encore fragiles, à poser en voiture</b><div class="kr-rang" style="margin-top:8px;gap:8px"><span class="kr-marque kr-marque--revoir">7 × 8</span><span class="kr-marque kr-marque--revoir">9 × 7</span><span class="kr-marque kr-marque--revoir">6 × 7</span><span class="kr-marque kr-marque--revoir">8 × 4</span></div></div>
+          <div class="kr-carte kr-carte--compacte">Planisphère : <b>les océans sont sus</b>, les mers d'Europe restent à revoir.</div>
+        </div>
+        <div class="kr-pile" style="width:380px">
+          <div class="kr-carte kr-carte--compacte kr-pile">
+            <b>Réglages</b>
+            <button type="button" class="kr-interrupteur" role="switch" aria-checked="true"><i></i>Son</button>
+            <button type="button" class="kr-interrupteur" role="switch" aria-checked="false"><i></i>Lire les questions à voix haute</button>
+          </div>
+          <div class="kr-carte kr-carte--compacte kr-pile">
+            <b>Sauvegarde de la progression</b>
+            <p class="kr-texte-doux" style="font-size:17px">Supprimer l'icône efface tout : exporte avant.</p>
+            <div class="kr-rang"><button type="button" class="kr-btn kr-btn--secondaire">Exporter</button><button type="button" class="kr-btn kr-btn--secondaire">Importer</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <p class="v-legende"><b>Écran de question, iPad en portrait</b> (810 × 1080) : la question en haut, le pavé en bas.</p>
+  <div class="v-cadre" style="max-width:560px"><div class="v-ipad v-portrait" data-enfant="henri">
+    <div class="kr-page">
+      <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="ecoute"></div><div class="kr-barre__titre">Entraînement du jour</div><button type="button" class="kr-btn-icone" aria-label="Lire">🔊</button></div>
+      <div class="kr-ecran-question" data-orientation="portrait">
+        <div class="kr-ecran-question__zone">
+          <div class="kr-points"><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="courant"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="kr-question">48 = 6 × <span class="kr-trou"></span></div>
+          <span class="kr-reponse" data-etat="vide">?</span>
+        </div>
+        <div class="kr-ecran-question__pave"><div class="v-pave-statique"></div></div>
+      </div>
+    </div>
+  </div></div>
+
+  <p class="v-legende"><b>Sur l'iPhone d'un parent</b> (402 × 874, portrait) : mêmes composants, tailles resserrées, la barre passe sous la Dynamic Island et le pavé au-dessus de la barre d'accueil.</p>
+  <div class="v-telephones">
+    <div><div class="v-cadre"><div class="v-ipad v-telephone" data-enfant="henri" data-format="telephone">
+      <div class="kr-page">
+        <div class="kr-barre"><a class="kr-btn-icone" href="#" aria-label="Arrêter">‹</a><div class="kr-mascotte" data-taille="s" data-humeur="ecoute"></div><div class="kr-barre__titre">Entraînement</div><button type="button" class="kr-btn-icone" aria-label="Lire la question">🔊</button></div>
+        <div class="kr-ecran-question">
+          <div class="kr-ecran-question__zone">
+            <div class="kr-points"><i data-etat="fait"></i><i data-etat="fait"></i><i data-etat="revu"></i><i data-etat="courant"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="kr-question">7 × 8</div>
+            <span class="kr-reponse" data-etat="saisie">5</span>
+          </div>
+          <div class="kr-ecran-question__pave"><div class="v-pave-statique"></div></div>
+        </div>
+      </div>
+    </div></div></div>
+    <div><div class="v-cadre"><div class="v-ipad v-telephone" data-enfant="clara" data-format="telephone">
+      <div class="kr-page">
+        <div class="kr-page__corps" style="align-items:stretch">
+          <div class="kr-rang" style="flex-wrap:nowrap"><div class="kr-mascotte" data-taille="m" data-humeur="accueil" style="--kr-m-taille:96px"></div><h1>Les révisions de <span style="color:var(--kr-enfant-fort)">Clara</span></h1></div>
+          <div class="kr-semaine"><span data-fait><b>L</b></span><span data-fait><b>M</b></span><span data-fait><b>M</b></span><span data-fait data-aujourdhui><b>J</b></span><span><b>V</b></span><span><b>S</b></span><span><b>D</b></span></div>
+          <a class="kr-tuile-module" href="#"><span class="kr-marque kr-marque--accent">Nouveau</span><span class="kr-tuile-module__icone">✖️</span><span class="kr-tuile-module__titre">Mes tables</span><span class="kr-tuile-module__matiere">14 en or sur 36</span><span class="kr-jauge" style="--kr-valeur:39%"><i></i></span></a>
+          <a class="kr-tuile-module" href="#"><span class="kr-tuile-module__icone">🗺️</span><span class="kr-tuile-module__titre">Mon planisphère</span><span class="kr-tuile-module__matiere">Les océans</span><span class="kr-jauge" style="--kr-valeur:70%"><i></i></span></a>
+          <a class="kr-tuile-module" aria-disabled="true"><span class="kr-tuile-module__icone">📖</span><span class="kr-tuile-module__titre">Conjugaison</span><span class="kr-tuile-module__matiere">Bientôt</span></a>
+          <div style="align-self:flex-end"><button type="button" class="kr-appui-long">🔒 Coin parent</button></div>
+        </div>
+      </div>
+    </div></div></div>
+    <div><div class="v-cadre"><div class="v-ipad v-telephone" data-enfant="clara" data-format="telephone">
+      <div class="kr-page">
+        <div class="kr-ecran-centre" style="padding-top:calc(16px + var(--kr-zs-haut))">
+          <div class="kr-mascotte" data-taille="xl" data-humeur="fete"></div>
+          <h1 style="text-align:center">Bravo Clara ! 🎉</h1>
+          <div class="kr-carte kr-carte--compacte" style="width:100%"><b>3 cases montent en argent</b><div class="kr-rang" style="margin-top:8px;gap:8px"><span class="kr-niveau" data-niveau="2">6 × 7</span><span class="kr-niveau" data-niveau="2">7 × 6</span><span class="kr-niveau" data-niveau="2">8 × 4</span></div></div>
+          <div class="kr-carte kr-carte--compacte" style="width:100%">Demain, <b>9 × 7</b> revient te voir.</div>
+          <div class="kr-pile" style="width:100%"><button type="button" class="kr-btn">Voir ma grille</button><button type="button" class="kr-btn kr-btn--secondaire">Fini pour aujourd'hui</button></div>
+        </div>
+      </div>
+    </div></div></div>
+  </div>
+</section>
+
+</main>
+
+<script src="../../commun/kit.js"></script>
+<script>
+(function () {
+  var racine = document.documentElement;
+  var NOMS = { henri: 'Moussi', clara: 'Pooh Bear', '': 'Mascotte' };
+  var HUMEURS = { accueil: 'accueil', ecoute: 'écoute', bravo: 'bravo', encourage: 'encourage', fete: 'fête', repos: 'repos' };
+
+  /* Emplacements de mascotte : nom et humeur selon l'enfant du bloc */
+  function nommerMascottes() {
+    document.querySelectorAll('div.kr-mascotte').forEach(function (m) {
+      var hote = m.closest('[data-enfant]');
+      var e = hote ? hote.getAttribute('data-enfant') : '';
+      if (m.closest('.v-ipad') === null && hote === racine) e = racine.getAttribute('data-enfant') || '';
+      var nom = NOMS[e] || NOMS[''];
+      m.textContent = m.getAttribute('data-taille') === 's' ? '' : nom + '\n' + (HUMEURS[m.dataset.humeur] || '');
+      m.setAttribute('aria-label', nom);
+    });
+  }
+
+  /* Bascules de la vitrine */
+  function segments(id, fn) {
+    var g = document.getElementById(id);
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button');
+      if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+      fn(b.dataset.v);
+    });
+  }
+  segments('choix-enfant', function (v) {
+    if (v) racine.setAttribute('data-enfant', v); else racine.removeAttribute('data-enfant');
+    nommerMascottes(); dessinerNuancier();
+  });
+  segments('choix-mode', function (v) {
+    if (v) racine.setAttribute('data-theme', v); else racine.removeAttribute('data-theme');
+    dessinerNuancier();
+  });
+
+  /* Nuancier lu dans les variables calculées */
+  var TOKENS = [
+    ['--kr-enfant', 'Enfant'], ['--kr-enfant-fort', 'Enfant fort'], ['--kr-enfant-doux', 'Enfant doux'],
+    ['--kr-accent', 'Accent familial'], ['--kr-accent-fort', 'Accent fort'],
+    ['--kr-fond', 'Fond'], ['--kr-papier', 'Papier'], ['--kr-encre', 'Encre'], ['--kr-encre-douce', 'Encre douce'], ['--kr-trait', 'Trait'],
+    ['--kr-juste', 'Juste'], ['--kr-juste-doux', 'Juste doux'], ['--kr-revoir', 'À revoir'], ['--kr-revoir-doux', 'À revoir doux'],
+    ['--kr-niv-0', 'Pas encore'], ['--kr-niv-1', 'Bronze'], ['--kr-niv-2', 'Argent'], ['--kr-niv-3', 'Or']
+  ];
+  function dessinerNuancier() {
+    var cs = getComputedStyle(document.body);
+    document.getElementById('nuancier').innerHTML = TOKENS.map(function (t) {
+      var v = cs.getPropertyValue(t[0]).trim();
+      return '<div class="v-nuance"><i style="background:' + v + '"></i><span>' + t[1] + '<br><code>' + t[0] + '</code><br><code>' + v + '</code></span></div>';
+    }).join('');
+  }
+
+  /* Quatre thèmes côte à côte */
+  var modele = document.getElementById('modele-theme');
+  [['henri', 'light', 'Henri · Moussi', 'clair'], ['henri', 'dark', 'Henri · Moussi', 'sombre'],
+   ['clara', 'light', 'Clara · Pooh Bear', 'clair'], ['clara', 'dark', 'Clara · Pooh Bear', 'sombre']].forEach(function (c) {
+    var p = document.createElement('div');
+    p.className = 'v-theme';
+    p.setAttribute('data-enfant', c[0]);
+    p.setAttribute('data-theme', c[1]);
+    p.appendChild(modele.content.cloneNode(true));
+    p.querySelector('.v-titre-theme').innerHTML = c[2] + ' <small>mode ' + c[3] + '</small>';
+    document.getElementById('quatre').appendChild(p);
+  });
+
+  /* Composants vivants */
+  document.querySelectorAll('[data-vivant="segments"]').forEach(function (g) {
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+    });
+  });
+  document.querySelectorAll('[data-vivant="puces"]').forEach(function (g) {
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    });
+  });
+  document.querySelectorAll('[data-vivant="saut"]').forEach(function (m) {
+    m.addEventListener('click', function () { KR.mascotte(m, 'bravo'); KR.son('juste'); nommerMascottes(); });
+  });
+  document.querySelectorAll('[data-lire]').forEach(function (b) {
+    b.addEventListener('click', function () { KR.lire(b.dataset.lire); });
+  });
+
+  var affiche = document.getElementById('affiche-pave');
+  var pave = KR.pave(document.getElementById('pave-demo'), {
+    afficheur: affiche, max: 3,
+    onValider: function (v) {
+      var juste = v === '56';
+      affiche.setAttribute('data-etat', juste ? 'juste' : 'revoir');
+      KR.son(juste ? 'juste' : 'revoir');
+      KR.annoncer(juste ? '7 × 8 = 56, bravo !' : 'Presque ! 7 × 8 = 56.');
+      pave.activer(false);
+      setTimeout(function () { pave.vider(); pave.activer(true); }, 1400);
+    }
+  });
+  KR.pave(document.getElementById('pave-eteint'), {}).activer(false);
+
+  /* Pavés statiques des modèles d'écran : même balisage, sans écoute du clavier */
+  document.querySelectorAll('.v-pave-statique').forEach(function (p) {
+    p.className = 'kr-pave' + (p.getAttribute('aria-disabled') === 'true' ? '' : '');
+    ['7', '8', '9', '4', '5', '6', '1', '2', '3', '⌫', '0', '✓'].forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'kr-touche' + (t === '⌫' ? ' kr-touche--effacer' : t === '✓' ? ' kr-touche--valider' : '');
+      b.textContent = t;
+      p.appendChild(b);
+    });
+  });
+
+  var inter = document.getElementById('inter-son');
+  inter.setAttribute('aria-checked', KR.sonActif() ? 'true' : 'false');
+  inter.addEventListener('click', function () {
+    var v = inter.getAttribute('aria-checked') !== 'true';
+    inter.setAttribute('aria-checked', v ? 'true' : 'false');
+    KR.sonActif(v);
+  });
+  document.querySelectorAll('[data-son]').forEach(function (b) {
+    b.addEventListener('click', function () { KR.son(b.dataset.son); });
+  });
+  KR.appuiLong(document.getElementById('appui-demo'), 1500, function () { KR.annoncer('Coin parent ouvert'); });
+  document.getElementById('annonce-demo').addEventListener('click', function () { KR.annoncer('3 cases montent en argent !'); });
+
+  /* Grilles de maîtrise */
+  function niveau(a, b) {
+    var faciles = [1, 2, 5, 10];
+    if (faciles.indexOf(a) >= 0 || faciles.indexOf(b) >= 0) return 3;
+    if ((a === 7 || b === 7) && (a > 5 || b > 5)) return (a + b) % 3 ? 0 : 1;
+    if (a === 9 || b === 9) return 1;
+    if (a === 3 || b === 3 || a === 4 || b === 4) return (a * b) % 2 ? 2 : 3;
+    return 2;
+  }
+  function grille(el, entetes, vivant) {
+    if (entetes) {
+      el.insertAdjacentHTML('beforeend', '<span class="kr-case kr-case--entete">×</span>');
+      for (var b = 1; b <= 10; b++) el.insertAdjacentHTML('beforeend', '<span class="kr-case kr-case--entete">' + b + '</span>');
+    } else {
+      el.style.setProperty('--kr-g-colonnes', 10);
+    }
+    for (var a = 1; a <= 10; a++) {
+      if (entetes) el.insertAdjacentHTML('beforeend', '<span class="kr-case kr-case--entete">' + a + '</span>');
+      for (var c = 1; c <= 10; c++) {
+        var n = niveau(a, c);
+        var sel = (a === 6 && c === 7) ? ' aria-pressed="true"' : '';
+        var monte = (a === 8 && c === 4) ? ' vient-de-monter' : '';
+        el.insertAdjacentHTML('beforeend', entetes
+          ? '<button type="button" class="kr-case' + monte + '" data-niveau="' + n + '"' + sel + ' aria-label="' + a + ' fois ' + c + '">' + a * c + '</button>'
+          : '<span class="kr-case" data-niveau="' + n + '" style="border-radius:3px"></span>');
+      }
+    }
+    if (vivant) el.addEventListener('click', function (ev) {
+      var k = ev.target.closest('button.kr-case'); if (!k) return;
+      el.querySelectorAll('[aria-pressed]').forEach(function (x) { x.removeAttribute('aria-pressed'); });
+      k.setAttribute('aria-pressed', 'true');
+      KR.annoncer(k.getAttribute('aria-label') + ' = ' + k.textContent);
+    });
+  }
+  grille(document.getElementById('grille-demo'), true, true);
+  grille(document.getElementById('mini-grille'), false, false);
+  document.querySelectorAll('.v-grille-modele').forEach(function (g) { grille(g, true, false); });
+
+  /* Rectangle de points de la découverte */
+  document.querySelectorAll('.v-points-rect').forEach(function (r) {
+    for (var i = 0; i < 40; i++) {
+      var barre = i % 10 === 9;
+      r.insertAdjacentHTML('beforeend', '<i style="display:block;width:34px;height:34px;border-radius:50%;background:' + (barre ? 'var(--kr-niv-0);outline:3px dashed var(--kr-encre-douce);outline-offset:-3px' : 'var(--kr-enfant)') + '"></i>');
+    }
+  });
+
+  /* Les écrans iPad sont réduits à la largeur disponible */
+  function ajuster() {
+    document.querySelectorAll('.v-cadre').forEach(function (c) {
+      var ip = c.firstElementChild;
+      var e = Math.min(1, c.clientWidth / ip.offsetWidth);
+      ip.style.transform = 'scale(' + e + ')';
+      c.style.height = (ip.offsetHeight * e) + 'px';
+    });
+  }
+  window.addEventListener('resize', ajuster);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajuster);
+
+  nommerMascottes();
+  dessinerNuancier();
+  ajuster();
+})();
+</script>
+</body>
+</html>

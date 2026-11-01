@@ -1,0 +1,1153 @@
+/* ==========================================================================
+   Kit « Nos révisions » : tokens et composants communs aux modules.
+   Préfixe : kr- (kit révisions), pour les classes comme pour les variables.
+   Thème de l'enfant : <html data-enfant="henri"> (Moussi, CM1, vert)
+                       <html data-enfant="clara"> (Pooh Bear, CM2, violet)
+   Sans data-enfant : thème familial (accent orange), pour la page des parents.
+   Mode : clair ou sombre selon l'iPad ; data-theme="light" ou "dark" le force.
+   Les deux attributs marchent aussi sur un bloc (la vitrine s'en sert).
+   Appareils visés : iPad 9e génération (1080 x 810 points, sans encoche),
+   paysage et portrait ; iPhone en portrait (402 x 874, Dynamic Island).
+   Le format téléphone s'active seul sous 600 px de large, ou par
+   data-format="telephone" sur un bloc.
+   ========================================================================== */
+
+/* ---------- 1. Tokens de base, mode clair ---------- */
+:root,
+[data-theme="light"] {
+  --kr-fond: #F3F6F2;
+  --kr-papier: #FFFFFF;
+  --kr-papier-2: #F8FAF9;
+  --kr-encre: #1F3340;
+  --kr-encre-douce: #5E7380;
+  --kr-trait: #D5DEE2;
+  --kr-relief: #C5D0D5;
+
+  --kr-accent: #E8643A;
+  --kr-accent-fort: #B5441B;
+  --kr-accent-doux: #FCE6DD;
+
+  --kr-juste: #2E9E5B;
+  --kr-juste-fort: #1E7A43;
+  --kr-juste-doux: #DDF3E6;
+
+  --kr-revoir: #F2B23A;
+  --kr-revoir-fort: #8A4B08;
+  --kr-revoir-doux: #FDF0D5;
+
+  --kr-niv-0: #E4E9EC;
+  --kr-niv-1: #D99A5B;
+  --kr-niv-2: #B8C4CF;
+  --kr-niv-3: #F2C230;
+  --kr-niv-encre: #1F3340;
+
+  --kr-focus: #1D5F86;
+  --kr-ombre-carte: 0 2px 0 rgba(31, 51, 64, .06), 0 8px 24px rgba(31, 51, 64, .06);
+  --kr-voile: rgba(19, 33, 43, .45);
+  color-scheme: light;
+}
+
+/* ---------- 1 bis. Tokens de base, mode sombre ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --kr-fond: #13212B;
+    --kr-papier: #1A2C38;
+    --kr-papier-2: #203441;
+    --kr-encre: #EAF2F6;
+    --kr-encre-douce: #A5B8C3;
+    --kr-trait: #2E4554;
+    --kr-relief: #0D1820;
+    --kr-accent: #F27A50;
+    --kr-accent-fort: #FF9A72;
+    --kr-accent-doux: #3A2A24;
+    --kr-juste: #4CC17D;
+    --kr-juste-fort: #7FD9A3;
+    --kr-juste-doux: #1D3B2C;
+    --kr-revoir: #E0A030;
+    --kr-revoir-fort: #F6C66A;
+    --kr-revoir-doux: #3A3020;
+    --kr-niv-0: #2A3F4C;
+    --kr-niv-1: #C98A4B;
+    --kr-niv-2: #9FAEBB;
+    --kr-niv-3: #E8B820;
+    --kr-niv-encre: #13212B;
+    --kr-focus: #BFE6FA;
+    --kr-ombre-carte: 0 2px 0 rgba(0, 0, 0, .25);
+    --kr-voile: rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+[data-theme="dark"] {
+  --kr-fond: #13212B;
+  --kr-papier: #1A2C38;
+  --kr-papier-2: #203441;
+  --kr-encre: #EAF2F6;
+  --kr-encre-douce: #A5B8C3;
+  --kr-trait: #2E4554;
+  --kr-relief: #0D1820;
+  --kr-accent: #F27A50;
+  --kr-accent-fort: #FF9A72;
+  --kr-accent-doux: #3A2A24;
+  --kr-juste: #4CC17D;
+  --kr-juste-fort: #7FD9A3;
+  --kr-juste-doux: #1D3B2C;
+  --kr-revoir: #E0A030;
+  --kr-revoir-fort: #F6C66A;
+  --kr-revoir-doux: #3A3020;
+  --kr-niv-0: #2A3F4C;
+  --kr-niv-1: #C98A4B;
+  --kr-niv-2: #9FAEBB;
+  --kr-niv-3: #E8B820;
+  --kr-niv-encre: #13212B;
+  --kr-focus: #BFE6FA;
+  --kr-ombre-carte: 0 2px 0 rgba(0, 0, 0, .25);
+  --kr-voile: rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+/* ---------- 2. Couleur de l'enfant ----------
+   --kr-enfant       : la couleur d'identité (pastilles, bordures, jauges)
+   --kr-enfant-fort  : texte coloré et fond du bouton principal (contraste >= 4,5)
+   --kr-enfant-sur   : texte posé sur --kr-enfant-fort
+   --kr-enfant-doux  : fond teinté (zones, puces choisies)                     */
+:root,
+[data-theme="light"] {
+  --kr-enfant: #E8643A;
+  --kr-enfant-fort: #B5441B;
+  --kr-enfant-sur: #FFFFFF;
+  --kr-enfant-doux: #FCE6DD;
+}
+[data-enfant="henri"] {
+  --kr-enfant: #6DB86A;
+  --kr-enfant-fort: #2A7327;
+  --kr-enfant-sur: #FFFFFF;
+  --kr-enfant-doux: #E3F2E2;
+}
+[data-enfant="clara"] {
+  --kr-enfant: #9B86D0;
+  --kr-enfant-fort: #6548A8;
+  --kr-enfant-sur: #FFFFFF;
+  --kr-enfant-doux: #EDE8F8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --kr-enfant: #F27A50; --kr-enfant-fort: #FF9A72; --kr-enfant-sur: #13212B; --kr-enfant-doux: #3A2A24;
+  }
+  :root:not([data-theme="light"])[data-enfant="henri"],
+  :root:not([data-theme="light"]) [data-enfant="henri"]:not([data-theme="light"]) {
+    --kr-enfant: #4E9B4C; --kr-enfant-fort: #8FD18C; --kr-enfant-sur: #13212B; --kr-enfant-doux: #1F3A27;
+  }
+  :root:not([data-theme="light"])[data-enfant="clara"],
+  :root:not([data-theme="light"]) [data-enfant="clara"]:not([data-theme="light"]) {
+    --kr-enfant: #7D6BB3; --kr-enfant-fort: #B9A8EE; --kr-enfant-sur: #13212B; --kr-enfant-doux: #2C2742;
+  }
+}
+[data-theme="dark"] {
+  --kr-enfant: #F27A50; --kr-enfant-fort: #FF9A72; --kr-enfant-sur: #13212B; --kr-enfant-doux: #3A2A24;
+}
+[data-theme="dark"][data-enfant="henri"],
+[data-theme="dark"] [data-enfant="henri"] {
+  --kr-enfant: #4E9B4C; --kr-enfant-fort: #8FD18C; --kr-enfant-sur: #13212B; --kr-enfant-doux: #1F3A27;
+}
+[data-theme="dark"][data-enfant="clara"],
+[data-theme="dark"] [data-enfant="clara"] {
+  --kr-enfant: #7D6BB3; --kr-enfant-fort: #B9A8EE; --kr-enfant-sur: #13212B; --kr-enfant-doux: #2C2742;
+}
+
+/* ---------- 3. Tokens qui ne changent pas avec le mode ---------- */
+:root {
+  --kr-police-titre: "Baloo 2", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
+  --kr-police-texte: "Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+
+  /* Échelle typographique (px) : rien sous 16 px, 20 px pour lire */
+  --kr-t-question: clamp(56px, 14vw, 112px);
+  --kr-t-geant: 72px;
+  --kr-t-titre-1: 40px;
+  --kr-t-titre-2: 30px;
+  --kr-t-titre-3: 24px;
+  --kr-t-corps: 20px;
+  --kr-t-petit: 17px;
+  --kr-t-mini: 16px;
+  --kr-interligne: 1.4;
+
+  /* Espacements, base 4 */
+  --kr-e-1: 4px;
+  --kr-e-2: 8px;
+  --kr-e-3: 12px;
+  --kr-e-4: 16px;
+  --kr-e-5: 24px;
+  --kr-e-6: 32px;
+  --kr-e-7: 48px;
+  --kr-e-8: 64px;
+
+  /* Cibles tactiles */
+  --kr-cible: 56px;
+  --kr-cible-grande: 72px;
+  --kr-touche: 88px;
+
+  /* Rayons */
+  --kr-r-petit: 12px;
+  --kr-r-moyen: 18px;
+  --kr-r-grand: 26px;
+  --kr-r-pilule: 999px;
+
+  /* Relief : ce qui s'appuie a un bord épais en dessous */
+  --kr-relief-haut: 6px;
+
+  /* Mouvement */
+  --kr-d-appui: 90ms;
+  --kr-d-retour: 220ms;
+  --kr-d-fete: 600ms;
+  --kr-courbe: cubic-bezier(.2, .8, .3, 1.2);
+  --kr-courbe-douce: cubic-bezier(.25, .1, .25, 1);
+}
+
+/* Zones sûres (encoche, Dynamic Island, barre d'accueil) : env() par défaut.
+   --kr-zone-haut et consorts les remplacent (la vitrine simule ainsi un iPhone). */
+:root, .kr-page {
+  --kr-zs-haut: var(--kr-zone-haut, env(safe-area-inset-top, 0px));
+  --kr-zs-bas: var(--kr-zone-bas, env(safe-area-inset-bottom, 0px));
+  --kr-zs-gauche: var(--kr-zone-gauche, env(safe-area-inset-left, 0px));
+  --kr-zs-droite: var(--kr-zone-droite, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- 4. Socle ---------- */
+.kr, .kr *, .kr *::before, .kr *::after { box-sizing: border-box; }
+.kr {
+  margin: 0;
+  background: var(--kr-fond);
+  color: var(--kr-encre);
+  font-family: var(--kr-police-texte);
+  font-size: var(--kr-t-corps);
+  font-weight: 600;
+  line-height: var(--kr-interligne);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.kr) :where(button, input, select, textarea) { font: inherit; color: inherit; }
+:where(.kr) button { touch-action: manipulation; }
+:where(.kr) :where(input, select, textarea) { font-size: max(16px, 1em); }
+.kr :focus-visible { outline: 4px solid var(--kr-focus); outline-offset: 3px; }
+:where(.kr) :where(h1, h2, h3) { font-family: var(--kr-police-titre); line-height: 1.1; margin: 0; font-weight: 800; }
+:where(.kr) h1 { font-size: var(--kr-t-titre-1); }
+:where(.kr) h2 { font-size: var(--kr-t-titre-2); }
+:where(.kr) h3 { font-size: var(--kr-t-titre-3); }
+:where(.kr) p { margin: 0; }
+.kr-texte-doux { color: var(--kr-encre-douce); }
+.kr-chiffres { font-variant-numeric: tabular-nums; }
+.kr-visuel-seul { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.kr-jeu { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* ---------- 5. Ossature de page ---------- */
+.kr-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--kr-zs-gauche);
+  padding-right: var(--kr-zs-droite);
+}
+/* Sans barre, le corps descend lui-même sous l'encoche */
+.kr-page > .kr-page__corps:first-child { padding-top: calc(var(--kr-e-5) + var(--kr-zs-haut)); }
+.kr-page > .kr-page__corps:last-child { padding-bottom: calc(var(--kr-e-5) + var(--kr-zs-bas)); }
+.kr-page__corps {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kr-e-5);
+  padding: var(--kr-e-5);
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: 0;
+}
+
+/* Barre du haut d'un module */
+.kr-barre {
+  display: flex;
+  align-items: center;
+  gap: var(--kr-e-3);
+  min-height: calc(80px + var(--kr-zs-haut));
+  padding: calc(var(--kr-e-3) + var(--kr-zs-haut)) var(--kr-e-5) var(--kr-e-3);
+  background: var(--kr-papier);
+  border-bottom: 2px solid var(--kr-trait);
+}
+.kr-barre__titre {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-titre-3);
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kr-barre__titre span { color: var(--kr-enfant-fort); }
+
+/* ---------- 6. Boutons ---------- */
+.kr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kr-e-3);
+  min-height: var(--kr-cible);
+  min-width: var(--kr-cible);
+  padding: var(--kr-e-3) var(--kr-e-5);
+  border: 0;
+  border-radius: var(--kr-r-moyen);
+  background: var(--kr-enfant-fort);
+  color: var(--kr-enfant-sur);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-titre-3);
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 var(--kr-relief-haut) 0 color-mix(in srgb, var(--kr-enfant-fort) 60%, #000);
+  transform: translateY(0);
+  transition: transform var(--kr-d-appui) ease-out, box-shadow var(--kr-d-appui) ease-out;
+  margin-bottom: var(--kr-relief-haut);
+}
+.kr-btn:active, .kr-btn.est-appuye {
+  transform: translateY(var(--kr-relief-haut));
+  box-shadow: 0 0 0 transparent;
+}
+.kr-btn--secondaire {
+  background: var(--kr-papier);
+  color: var(--kr-encre);
+  box-shadow: 0 0 0 2px var(--kr-trait) inset, 0 var(--kr-relief-haut) 0 var(--kr-relief);
+}
+.kr-btn--secondaire:active, .kr-btn--secondaire.est-appuye { box-shadow: 0 0 0 2px var(--kr-trait) inset; }
+.kr-btn--discret {
+  background: transparent;
+  color: var(--kr-enfant-fort);
+  box-shadow: none;
+  margin-bottom: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: var(--kr-t-corps);
+}
+.kr-btn--discret:active { transform: none; opacity: .7; }
+.kr-btn--grand { min-height: var(--kr-cible-grande); font-size: var(--kr-t-titre-2); padding: var(--kr-e-4) var(--kr-e-6); border-radius: var(--kr-r-grand); }
+.kr-btn--tuile {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--kr-e-1);
+  width: 100%;
+  min-height: 96px;
+  padding: var(--kr-e-4) var(--kr-e-5);
+  border-radius: var(--kr-r-grand);
+  text-align: left;
+}
+.kr-btn__sous {
+  font-family: var(--kr-police-texte);
+  font-size: var(--kr-t-petit);
+  font-weight: 600;
+  opacity: .9;
+}
+.kr-btn:disabled, .kr-btn[aria-disabled="true"] {
+  background: var(--kr-niv-0);
+  color: var(--kr-encre-douce);
+  box-shadow: 0 var(--kr-relief-haut) 0 var(--kr-trait);
+  cursor: default;
+}
+.kr-btn:disabled:active, .kr-btn[aria-disabled="true"]:active { transform: none; }
+
+/* Bouton rond à icône (retour, son, haut-parleur) */
+.kr-btn-icone {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--kr-cible);
+  height: var(--kr-cible);
+  border: 0;
+  border-radius: var(--kr-r-moyen);
+  background: var(--kr-papier-2);
+  color: var(--kr-encre);
+  box-shadow: 0 0 0 2px var(--kr-trait) inset;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+}
+.kr-btn-icone:active { background: var(--kr-enfant-doux); }
+.kr-btn-icone[aria-pressed="true"] { background: var(--kr-enfant-doux); box-shadow: 0 0 0 2px var(--kr-enfant) inset; }
+.kr-btn-icone svg { width: 28px; height: 28px; }
+
+/* ---------- 7. Sélecteur de mode (onglets) et puces de filtre ---------- */
+.kr-segments {
+  display: inline-flex;
+  gap: var(--kr-e-1);
+  padding: var(--kr-e-1);
+  background: var(--kr-papier);
+  border: 2px solid var(--kr-trait);
+  border-radius: var(--kr-r-pilule);
+}
+.kr-segments > button {
+  min-height: var(--kr-cible);
+  padding: 0 var(--kr-e-5);
+  border: 0;
+  border-radius: var(--kr-r-pilule);
+  background: transparent;
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.kr-segments > button[aria-selected="true"] { background: var(--kr-enfant-fort); color: var(--kr-enfant-sur); }
+
+.kr-puces { display: flex; flex-wrap: wrap; gap: var(--kr-e-3); align-items: center; }
+.kr-puce {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-2);
+  min-height: var(--kr-cible);
+  padding: 0 var(--kr-e-5);
+  border: 2px solid var(--kr-trait);
+  border-radius: var(--kr-r-pilule);
+  background: var(--kr-papier);
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.kr-puce[aria-pressed="true"] { border-color: var(--kr-enfant-fort); background: var(--kr-enfant-doux); color: var(--kr-enfant-fort); }
+.kr-puce[aria-pressed="true"]::before { content: "✓"; }
+
+/* ---------- 8. Surfaces ---------- */
+.kr-carte {
+  background: var(--kr-papier);
+  border: 2px solid var(--kr-trait);
+  border-radius: var(--kr-r-grand);
+  padding: var(--kr-e-5);
+  box-shadow: var(--kr-ombre-carte);
+}
+.kr-carte--enfant { border-color: var(--kr-enfant); background: var(--kr-enfant-doux); }
+.kr-carte--compacte { padding: var(--kr-e-4); border-radius: var(--kr-r-moyen); }
+
+.kr-marque {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-1);
+  min-height: 36px;
+  padding: 2px var(--kr-e-3);
+  border-radius: var(--kr-r-pilule);
+  background: var(--kr-enfant-doux);
+  color: var(--kr-enfant-fort);
+  font-size: var(--kr-t-petit);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.kr-marque--accent { background: var(--kr-accent-doux); color: var(--kr-accent-fort); }
+.kr-marque--revoir { background: var(--kr-revoir-doux); color: var(--kr-revoir-fort); }
+.kr-marque--juste { background: var(--kr-juste-doux); color: var(--kr-juste-fort); }
+
+/* ---------- 9. Mascotte et bulle ----------
+   Emplacement réservé : un cercle teinté, en attendant les dessins des doudous.
+   Quand l'image existe : <img class="kr-mascotte" src="...">, mêmes tailles.  */
+.kr-mascotte {
+  --kr-m-taille: 120px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--kr-m-taille);
+  height: calc(var(--kr-m-taille) * 1.16);
+  border-radius: 46% 46% 40% 40%;
+  background: var(--kr-enfant-doux);
+  border: 3px dashed var(--kr-enfant);
+  color: var(--kr-enfant-fort);
+  font-family: var(--kr-police-titre);
+  font-weight: 800;
+  font-size: calc(var(--kr-m-taille) * .13);
+  line-height: 1.05;
+  text-align: center;
+  padding: calc(var(--kr-m-taille) * .06);
+  object-fit: contain;
+  white-space: pre-line;
+}
+img.kr-mascotte { border: 0; background: transparent; padding: 0; border-radius: 0; }
+.kr-mascotte[data-taille="s"] { --kr-m-taille: 48px; font-size: 0; }
+.kr-mascotte[data-taille="m"] { --kr-m-taille: 120px; }
+.kr-mascotte[data-taille="l"] { --kr-m-taille: 220px; }
+.kr-mascotte[data-taille="xl"] { --kr-m-taille: 300px; }
+.kr-mascotte.kr-saute { animation: kr-saut var(--kr-d-fete) var(--kr-courbe); }
+
+.kr-dialogue { display: flex; align-items: flex-end; gap: var(--kr-e-4); }
+.kr-bulle {
+  position: relative;
+  max-width: 520px;
+  padding: var(--kr-e-4) var(--kr-e-5);
+  padding-right: calc(var(--kr-cible) + var(--kr-e-4));
+  background: var(--kr-papier);
+  border: 2px solid var(--kr-trait);
+  border-radius: var(--kr-r-grand);
+  font-size: var(--kr-t-titre-3);
+  line-height: 1.3;
+  box-shadow: var(--kr-ombre-carte);
+  margin-bottom: var(--kr-e-5);
+}
+.kr-bulle::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  bottom: 22px;
+  width: 24px;
+  height: 24px;
+  background: var(--kr-papier);
+  border-left: 2px solid var(--kr-trait);
+  border-bottom: 2px solid var(--kr-trait);
+  transform: rotate(45deg);
+  border-bottom-left-radius: 4px;
+}
+.kr-bulle b { color: var(--kr-enfant-fort); }
+.kr-bulle__ecouter { position: absolute; right: var(--kr-e-2); top: var(--kr-e-2); }
+.kr-dialogue--haut { flex-direction: column; align-items: center; }
+.kr-dialogue--haut .kr-bulle::before { left: calc(50% - 12px); bottom: -14px; transform: rotate(-45deg); }
+
+/* ---------- 10. Question et réponse ---------- */
+.kr-question {
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-question);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: center;
+}
+.kr-question--moyenne { font-size: calc(var(--kr-t-question) * .7); }
+.kr-consigne { font-size: var(--kr-t-titre-3); font-weight: 700; text-align: center; color: var(--kr-encre-douce); }
+.kr-trou {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4em;
+  height: 1.15em;
+  padding: 0 .1em;
+  vertical-align: -.12em;
+  border: 4px dashed var(--kr-enfant);
+  border-radius: var(--kr-r-moyen);
+  color: var(--kr-enfant-fort);
+}
+.kr-trou.est-rempli { border-style: solid; }
+
+.kr-reponse {
+  display: inline-grid;
+  place-items: center;
+  min-width: 220px;
+  height: 112px;
+  padding: 0 var(--kr-e-5);
+  border-radius: var(--kr-r-grand);
+  background: var(--kr-papier);
+  border: 4px solid var(--kr-enfant);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-geant);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: background var(--kr-d-retour), border-color var(--kr-d-retour);
+}
+.kr-reponse[data-etat="vide"] { color: var(--kr-trait); border-style: dashed; }
+.kr-reponse[data-etat="saisie"]::after {
+  content: "";
+  width: 4px;
+  height: .8em;
+  margin-left: 4px;
+  background: var(--kr-enfant-fort);
+  border-radius: 2px;
+  animation: kr-clignote 1s steps(1) infinite;
+}
+.kr-reponse[data-etat="saisie"] { grid-auto-flow: column; justify-content: center; }
+.kr-reponse[data-etat="juste"] { border-color: var(--kr-juste); background: var(--kr-juste-doux); color: var(--kr-juste-fort); }
+.kr-reponse[data-etat="revoir"] { border-color: var(--kr-revoir); background: var(--kr-revoir-doux); color: var(--kr-revoir-fort); }
+.kr-reponse--petite { min-width: 150px; height: 84px; font-size: 52px; }
+
+/* ---------- 11. Pavé numérique ---------- */
+.kr-pave {
+  display: grid;
+  grid-template-columns: repeat(3, var(--kr-touche));
+  gap: var(--kr-e-4);
+  justify-content: center;
+  align-content: center;
+}
+.kr-touche {
+  height: var(--kr-touche);
+  border: 0;
+  border-radius: var(--kr-r-grand);
+  background: var(--kr-papier);
+  color: var(--kr-encre);
+  font-family: var(--kr-police-titre);
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px var(--kr-trait) inset, 0 var(--kr-relief-haut) 0 var(--kr-relief);
+  transition: transform var(--kr-d-appui) ease-out, box-shadow var(--kr-d-appui) ease-out;
+}
+.kr-touche:active, .kr-touche.est-appuye { transform: translateY(var(--kr-relief-haut)); box-shadow: 0 0 0 2px var(--kr-trait) inset; background: var(--kr-enfant-doux); }
+.kr-touche--effacer { font-size: 34px; color: var(--kr-encre-douce); }
+.kr-touche--valider {
+  background: var(--kr-enfant-fort);
+  color: var(--kr-enfant-sur);
+  box-shadow: 0 var(--kr-relief-haut) 0 color-mix(in srgb, var(--kr-enfant-fort) 60%, #000);
+}
+.kr-touche--valider:active, .kr-touche--valider.est-appuye { background: var(--kr-enfant-fort); box-shadow: none; }
+.kr-touche:disabled { opacity: .4; cursor: default; }
+.kr-touche:disabled:active { transform: none; }
+.kr-pave[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+
+/* ---------- 12. Choix (oui ou non, plusieurs propositions) ---------- */
+.kr-choix { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--kr-e-4); }
+.kr-choix__option {
+  min-height: var(--kr-cible-grande);
+  padding: var(--kr-e-3) var(--kr-e-5);
+  border: 3px solid var(--kr-trait);
+  border-radius: var(--kr-r-grand);
+  background: var(--kr-papier);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-titre-2);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 var(--kr-relief-haut) 0 var(--kr-relief);
+  margin-bottom: var(--kr-relief-haut);
+  transition: transform var(--kr-d-appui) ease-out;
+}
+.kr-choix__option:active { transform: translateY(var(--kr-relief-haut)); box-shadow: none; }
+.kr-choix__option[aria-pressed="true"] { border-color: var(--kr-enfant-fort); background: var(--kr-enfant-doux); }
+.kr-choix__option[data-etat="juste"] { border-color: var(--kr-juste); background: var(--kr-juste-doux); color: var(--kr-juste-fort); }
+.kr-choix__option[data-etat="juste"]::after { content: " ✓"; }
+.kr-choix__option[data-etat="revoir"] { border-color: var(--kr-revoir); background: var(--kr-revoir-doux); color: var(--kr-revoir-fort); }
+.kr-choix__option[data-etat="attenue"] { opacity: .45; }
+
+/* ---------- 13. Retour après une réponse ---------- */
+.kr-zone-retour { transition: background var(--kr-d-retour) var(--kr-courbe-douce); border-radius: var(--kr-r-grand); }
+.kr-zone-retour[data-etat="juste"] { background: var(--kr-juste-doux); }
+.kr-zone-retour[data-etat="revoir"] { background: var(--kr-revoir-doux); }
+
+.kr-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-3);
+  min-height: var(--kr-cible);
+  padding: var(--kr-e-2) var(--kr-e-5);
+  border-radius: var(--kr-r-pilule);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-titre-3);
+  font-weight: 800;
+  white-space: nowrap;
+  animation: kr-apparait var(--kr-d-retour) var(--kr-courbe);
+}
+.kr-retour[data-etat="juste"] { background: var(--kr-juste-fort); color: var(--kr-papier); }
+.kr-retour[data-etat="revoir"] { background: var(--kr-revoir-doux); color: var(--kr-revoir-fort); border: 2px solid var(--kr-revoir); }
+.kr-retour[data-etat="rapide"] { background: var(--kr-accent-doux); color: var(--kr-accent-fort); }
+
+.kr-astuce {
+  display: flex;
+  gap: var(--kr-e-3);
+  align-items: flex-start;
+  max-width: 560px;
+  padding: var(--kr-e-4) var(--kr-e-5);
+  background: var(--kr-papier);
+  border: 2px solid var(--kr-trait);
+  border-left: 8px solid var(--kr-enfant);
+  border-radius: var(--kr-r-moyen);
+  font-size: var(--kr-t-titre-3);
+  line-height: 1.35;
+}
+.kr-astuce b { color: var(--kr-enfant-fort); }
+.kr-astuce::before { content: "💡"; flex: none; }
+
+/* ---------- 14. Avancement de la séance et jauges ---------- */
+.kr-points { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.kr-points > i {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--kr-niv-0);
+}
+.kr-points > i[data-etat="fait"] { background: var(--kr-enfant); }
+.kr-points > i[data-etat="revu"] { background: var(--kr-revoir); }
+.kr-points > i[data-etat="courant"] { background: var(--kr-papier); box-shadow: 0 0 0 3px var(--kr-enfant) inset; transform: scale(1.25); }
+
+.kr-jauge {
+  height: 16px;
+  border-radius: var(--kr-r-pilule);
+  background: var(--kr-niv-0);
+  overflow: hidden;
+}
+.kr-jauge > i {
+  display: block;
+  height: 100%;
+  width: var(--kr-valeur, 0%);
+  border-radius: inherit;
+  background: var(--kr-enfant);
+  transition: width .5s var(--kr-courbe-douce);
+}
+
+/* Semaine : les jours entraînés, sans jamais montrer une série perdue */
+.kr-semaine { display: flex; gap: var(--kr-e-2); }
+.kr-semaine > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--kr-niv-0);
+  color: var(--kr-encre-douce);
+  font-size: var(--kr-t-mini);
+  font-weight: 800;
+}
+.kr-semaine > span[data-fait] { background: var(--kr-enfant); color: var(--kr-enfant-sur); }
+.kr-semaine > span[data-fait]::before { content: "★"; font-size: 20px; }
+.kr-semaine > span[data-fait] > b { display: none; }
+.kr-semaine > span[data-aujourdhui] { box-shadow: 0 0 0 3px var(--kr-enfant-fort); }
+[data-theme="dark"] .kr-semaine > span[data-fait], [data-theme="dark"].kr-semaine > span[data-fait] { color: #13212B; }
+
+/* ---------- 15. Maîtrise : niveaux et grille ---------- */
+.kr-niveau {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-2);
+  min-height: 40px;
+  padding: 2px var(--kr-e-4);
+  border-radius: var(--kr-r-pilule);
+  font-size: var(--kr-t-petit);
+  font-weight: 800;
+  white-space: nowrap;
+  background: var(--kr-niv-0);
+  color: var(--kr-encre);
+}
+.kr-niveau[data-niveau="1"] { background: var(--kr-niv-1); color: var(--kr-niv-encre); }
+.kr-niveau[data-niveau="2"] { background: var(--kr-niv-2); color: var(--kr-niv-encre); }
+.kr-niveau[data-niveau="3"] { background: var(--kr-niv-3); color: var(--kr-niv-encre); }
+.kr-niveau::before { content: "○"; }
+.kr-niveau[data-niveau="1"]::before { content: "◔"; }
+.kr-niveau[data-niveau="2"]::before { content: "◑"; }
+.kr-niveau[data-niveau="3"]::before { content: "★"; }
+
+.kr-grille {
+  --kr-g-colonnes: 11;
+  display: grid;
+  grid-template-columns: repeat(var(--kr-g-colonnes), 1fr);
+  gap: 5px;
+  width: 100%;
+}
+.kr-case {
+  aspect-ratio: 1;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: var(--kr-niv-0);
+  color: transparent;
+  font-family: var(--kr-police-titre);
+  font-size: clamp(14px, 2.1vw, 22px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  padding: 0;
+  cursor: pointer;
+}
+.kr-case[data-niveau="1"] { background: var(--kr-niv-1); color: var(--kr-niv-encre); }
+.kr-case[data-niveau="2"] { background: var(--kr-niv-2); color: var(--kr-niv-encre); }
+.kr-case[data-niveau="3"] { background: var(--kr-niv-3); color: var(--kr-niv-encre); }
+.kr-case--entete { background: transparent; color: var(--kr-encre-douce); cursor: default; }
+.kr-case[aria-pressed="true"] { outline: 4px solid var(--kr-enfant-fort); outline-offset: 2px; }
+.kr-case.vient-de-monter { animation: kr-monte 900ms var(--kr-courbe) both; }
+
+.kr-legende { display: flex; flex-wrap: wrap; gap: var(--kr-e-3) var(--kr-e-5); }
+
+/* ---------- 16. Chemin des notions ---------- */
+.kr-chemin { display: flex; justify-content: space-between; gap: var(--kr-e-3); position: relative; }
+.kr-chemin::before {
+  content: "";
+  position: absolute;
+  left: 60px; right: 60px; top: 52px;
+  border-top: 8px dotted var(--kr-trait);
+}
+.kr-etape {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kr-e-2);
+  text-align: center;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.kr-etape__rond {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: var(--kr-papier);
+  border: 3px solid var(--kr-trait);
+  font-family: var(--kr-police-titre);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+.kr-etape__nom { font-size: var(--kr-t-petit); font-weight: 800; line-height: 1.2; }
+.kr-etape[data-etat="fait"] .kr-etape__rond { background: var(--kr-niv-3); border-color: var(--kr-niv-3); color: var(--kr-niv-encre); }
+.kr-etape[data-etat="encours"] .kr-etape__rond { background: var(--kr-enfant-fort); border-color: var(--kr-enfant-fort); color: var(--kr-enfant-sur); box-shadow: 0 0 0 8px var(--kr-enfant-doux); }
+.kr-etape[data-etat="ferme"] .kr-etape__rond { background: var(--kr-niv-0); color: var(--kr-encre-douce); }
+.kr-etape[data-etat="ferme"] { cursor: default; }
+
+/* ---------- 17. Défi : chrono et records ---------- */
+.kr-chrono {
+  --kr-avance: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(var(--kr-enfant) calc(var(--kr-avance) * 1turn), var(--kr-niv-0) 0);
+}
+.kr-chrono::after { content: ""; position: absolute; inset: 16px; border-radius: 50%; background: var(--kr-papier); }
+.kr-chrono > span {
+  position: relative;
+  z-index: 1;
+  font-family: var(--kr-police-titre);
+  font-size: 40px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.kr-records { display: flex; align-items: flex-end; gap: var(--kr-e-3); height: 180px; }
+.kr-records > div {
+  width: 56px;
+  height: var(--kr-h, 50%);
+  display: flex;
+  justify-content: center;
+  padding-top: var(--kr-e-1);
+  border-radius: 12px 12px 4px 4px;
+  background: var(--kr-enfant-doux);
+  color: var(--kr-enfant-fort);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+}
+.kr-records > div.est-dernier { background: var(--kr-enfant-fort); color: var(--kr-enfant-sur); }
+
+/* ---------- 18. Étiquette à glisser (repris du planisphère) ---------- */
+.kr-etiquette {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--kr-cible);
+  padding: 0 var(--kr-e-5);
+  border: 3px solid var(--kr-encre);
+  border-radius: var(--kr-r-petit);
+  background: var(--kr-papier);
+  color: var(--kr-encre);
+  font-family: var(--kr-police-titre);
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 4px 0 var(--kr-encre);
+}
+.kr-etiquette.est-choisie { outline: 4px solid var(--kr-enfant-fort); outline-offset: 3px; background: var(--kr-enfant-doux); }
+.kr-etiquette.est-fantome { position: fixed; z-index: 50; pointer-events: none; transform: translate(-50%, -120%) rotate(-3deg) scale(1.08); box-shadow: 0 12px 24px rgba(0, 0, 0, .2); }
+.kr-etiquette.est-source { opacity: .35; }
+.kr-etiquette.est-posee { border-color: var(--kr-juste); color: var(--kr-juste-fort); box-shadow: 0 4px 0 var(--kr-juste); background: var(--kr-juste-doux); cursor: default; }
+.kr-etiquette.est-a-revoir { animation: kr-hesite .5s ease-in-out; border-color: var(--kr-revoir); box-shadow: 0 4px 0 var(--kr-revoir); }
+
+/* ---------- 19. Interrupteur ---------- */
+.kr-interrupteur {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-3);
+  min-height: var(--kr-cible);
+  padding: 0 var(--kr-e-2);
+  border: 0;
+  background: none;
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.kr-interrupteur > i {
+  flex: none;
+  position: relative;
+  width: 68px;
+  height: 40px;
+  border-radius: var(--kr-r-pilule);
+  background: var(--kr-niv-0);
+  box-shadow: 0 0 0 2px var(--kr-trait) inset;
+  transition: background var(--kr-d-retour);
+}
+.kr-interrupteur > i::after {
+  content: "";
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--kr-papier);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+  transition: transform var(--kr-d-retour) var(--kr-courbe);
+}
+.kr-interrupteur[aria-checked="true"] > i { background: var(--kr-enfant-fort); box-shadow: none; }
+.kr-interrupteur[aria-checked="true"] > i::after { transform: translateX(28px); }
+
+/* ---------- 20. Appui long (entrée du coin parent) ---------- */
+.kr-appui-long {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kr-e-2);
+  min-height: var(--kr-cible);
+  padding: 0 var(--kr-e-4);
+  border: 0;
+  border-radius: var(--kr-r-pilule);
+  background: transparent;
+  color: var(--kr-encre-douce);
+  font-size: var(--kr-t-mini);
+  font-weight: 700;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.kr-appui-long::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--kr-niv-0);
+  transform-origin: left;
+  transform: scaleX(var(--kr-appui, 0));
+  z-index: -1;
+}
+.kr-appui-long { isolation: isolate; }
+
+/* ---------- 21. Tuile de module (portail) ---------- */
+.kr-tuile-module {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: var(--kr-e-4);
+  row-gap: var(--kr-e-1);
+  align-items: center;
+  min-height: 120px;
+  padding: var(--kr-e-4) var(--kr-e-5);
+  background: var(--kr-papier);
+  border: 2px solid var(--kr-trait);
+  border-radius: var(--kr-r-grand);
+  box-shadow: 0 var(--kr-relief-haut) 0 var(--kr-relief);
+  margin-bottom: var(--kr-relief-haut);
+  color: var(--kr-encre);
+  text-decoration: none;
+  transition: transform var(--kr-d-appui) ease-out;
+}
+.kr-tuile-module:active { transform: translateY(var(--kr-relief-haut)); box-shadow: none; }
+.kr-tuile-module__icone {
+  grid-row: 1 / 4;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--kr-r-moyen);
+  background: var(--kr-enfant-doux);
+  font-size: 40px;
+}
+.kr-tuile-module__titre { font-family: var(--kr-police-titre); font-size: var(--kr-t-titre-3); font-weight: 800; line-height: 1.1; }
+.kr-tuile-module__matiere { color: var(--kr-encre-douce); font-size: var(--kr-t-petit); }
+.kr-tuile-module .kr-jauge { height: 12px; margin-top: var(--kr-e-1); }
+.kr-tuile-module .kr-marque { position: absolute; top: -12px; right: var(--kr-e-4); }
+.kr-tuile-module[aria-disabled="true"] { opacity: .55; box-shadow: none; pointer-events: none; border-style: dashed; }
+
+/* ---------- 22. Annonce (message lu par VoiceOver, visible brièvement) ---------- */
+.kr-annonce {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--kr-e-6) + var(--kr-zs-bas));
+  transform: translateX(-50%);
+  max-width: min(560px, calc(100vw - 32px));
+  padding: var(--kr-e-3) var(--kr-e-5);
+  border-radius: var(--kr-r-pilule);
+  background: var(--kr-encre);
+  color: var(--kr-fond);
+  font-size: var(--kr-t-corps);
+  font-weight: 800;
+  text-align: center;
+  z-index: 60;
+  animation: kr-apparait var(--kr-d-retour) var(--kr-courbe);
+}
+.kr-annonce:empty { display: none; }
+
+/* ---------- 23. Modèles d'écran ---------- */
+/* Écran de question : zone question + pavé ; côte à côte en paysage, empilés en portrait */
+.kr-ecran-question {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  min-height: 0;
+}
+.kr-ecran-question__zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kr-e-5);
+  padding: var(--kr-e-7) var(--kr-e-5) var(--kr-e-5);
+  min-width: 0;
+}
+.kr-ecran-question__zone > .kr-points { position: absolute; top: var(--kr-e-5); left: var(--kr-e-5); right: var(--kr-e-5); }
+.kr-ecran-question__pave {
+  display: grid;
+  place-items: center;
+  padding: var(--kr-e-5) var(--kr-e-6) calc(var(--kr-e-5) + var(--kr-zs-bas));
+  background: var(--kr-papier-2);
+  border-left: 2px solid var(--kr-trait);
+}
+@media (orientation: portrait) {
+  .kr-ecran-question { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .kr-ecran-question__pave { border-left: 0; border-top: 2px solid var(--kr-trait); }
+}
+.kr-ecran-question[data-orientation="paysage"] { grid-template-columns: 1fr auto; grid-template-rows: none; }
+.kr-ecran-question[data-orientation="paysage"] .kr-ecran-question__pave { border-left: 2px solid var(--kr-trait); border-top: 0; }
+.kr-ecran-question[data-orientation="portrait"] { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+.kr-ecran-question[data-orientation="portrait"] .kr-ecran-question__pave { border-left: 0; border-top: 2px solid var(--kr-trait); }
+
+/* Écran centré : accueil de séance, fin de séance, découverte */
+.kr-ecran-centre {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kr-e-7);
+  padding: var(--kr-e-6);
+}
+@media (orientation: portrait) {
+  .kr-ecran-centre { flex-direction: column; gap: var(--kr-e-5); }
+}
+.kr-ecran-centre[data-orientation="paysage"] { flex-direction: row; gap: var(--kr-e-7); }
+.kr-ecran-centre[data-orientation="portrait"] { flex-direction: column; gap: var(--kr-e-5); }
+
+.kr-pile { display: flex; flex-direction: column; gap: var(--kr-e-4); }
+.kr-rang { display: flex; flex-wrap: wrap; gap: var(--kr-e-4); align-items: center; }
+
+/* ---------- 23 bis. Format téléphone (iPhone en portrait) ----------
+   Mêmes composants, tailles resserrées, tout empilé. Les cibles restent >= 56 px,
+   sauf les cases de grille, qui ne servent qu'à regarder sur téléphone. */
+@media (max-width: 600px) {
+  :root {
+    --kr-t-question: clamp(52px, 15vw, 80px);
+    --kr-t-geant: 56px;
+    --kr-t-titre-1: 30px;
+    --kr-t-titre-2: 24px;
+    --kr-t-titre-3: 20px;
+    --kr-touche: 76px;
+  }
+  .kr-page__corps { padding: var(--kr-e-4); gap: var(--kr-e-4); }
+  .kr-barre { gap: var(--kr-e-2); padding-left: var(--kr-e-3); padding-right: var(--kr-e-3); min-height: calc(68px + var(--kr-zs-haut)); }
+  .kr-barre > .kr-marque { display: none; }
+  .kr-ecran-question { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .kr-ecran-question__zone { padding: var(--kr-e-6) var(--kr-e-4) var(--kr-e-4); gap: var(--kr-e-4); }
+  .kr-ecran-question__zone > .kr-points { top: var(--kr-e-3); }
+  .kr-ecran-question__pave { border-left: 0; border-top: 2px solid var(--kr-trait); padding: var(--kr-e-4) var(--kr-e-4) calc(var(--kr-e-4) + var(--kr-zs-bas)); }
+  .kr-pave { gap: var(--kr-e-3); }
+  .kr-touche { font-size: 38px; }
+  .kr-reponse { min-width: 160px; height: 88px; }
+  .kr-ecran-centre { flex-direction: column; gap: var(--kr-e-4); padding: var(--kr-e-4); padding-bottom: calc(var(--kr-e-4) + var(--kr-zs-bas)); }
+  .kr-dialogue { flex-direction: column; align-items: center; }
+  .kr-dialogue .kr-bulle { margin-bottom: 0; margin-top: var(--kr-e-3); max-width: 100%; }
+  .kr-dialogue .kr-bulle::before { left: calc(50% - 12px); top: -14px; bottom: auto; transform: rotate(135deg); }
+  .kr-dialogue--haut { flex-direction: column-reverse; }
+  .kr-mascotte[data-taille="l"] { --kr-m-taille: 150px; }
+  .kr-mascotte[data-taille="xl"] { --kr-m-taille: 180px; }
+  .kr-points { gap: 6px; }
+  .kr-points > i { width: 12px; height: 12px; }
+  .kr-semaine { gap: 6px; }
+  .kr-semaine > span { width: 38px; height: 38px; }
+  .kr-chemin { flex-wrap: wrap; justify-content: center; row-gap: var(--kr-e-4); }
+  .kr-chemin::before { display: none; }
+  .kr-etape { flex: 0 0 96px; }
+  .kr-etape__rond { width: 80px; height: 80px; font-size: 22px; }
+  .kr-records > div { width: 44px; }
+  .kr-chrono { width: 130px; height: 130px; }
+  .kr-tuile-module { grid-template-columns: 56px 1fr; min-height: 104px; padding: var(--kr-e-3) var(--kr-e-4); }
+  .kr-tuile-module__icone { width: 56px; height: 56px; font-size: 30px; }
+  .kr-segments { display: flex; width: 100%; }
+  .kr-segments > button { flex: 1 1 0; min-width: 0; padding: 0 var(--kr-e-1); font-size: 18px; }
+  .kr-puce { padding: 0 var(--kr-e-4); }
+  .kr-btn { padding-left: var(--kr-e-4); padding-right: var(--kr-e-4); }
+  .kr-btn--grand { font-size: var(--kr-t-titre-2); }
+  .kr-grille { gap: 3px; }
+  .kr-case { border-radius: 6px; font-size: 13px; }
+}
+[data-format="telephone"] {
+  --kr-t-question: clamp(52px, 15vw, 80px);
+  --kr-t-geant: 56px;
+  --kr-t-titre-1: 30px;
+  --kr-t-titre-2: 24px;
+  --kr-t-titre-3: 20px;
+  --kr-touche: 76px;
+}
+[data-format="telephone"] .kr-page__corps { padding: var(--kr-e-4); gap: var(--kr-e-4); }
+[data-format="telephone"] .kr-barre { gap: var(--kr-e-2); padding-left: var(--kr-e-3); padding-right: var(--kr-e-3); min-height: calc(68px + var(--kr-zs-haut)); }
+[data-format="telephone"] .kr-barre > .kr-marque { display: none; }
+[data-format="telephone"] .kr-ecran-question { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+[data-format="telephone"] .kr-ecran-question__zone { padding: var(--kr-e-6) var(--kr-e-4) var(--kr-e-4); gap: var(--kr-e-4); }
+[data-format="telephone"] .kr-ecran-question__zone > .kr-points { top: var(--kr-e-3); }
+[data-format="telephone"] .kr-ecran-question__pave { border-left: 0; border-top: 2px solid var(--kr-trait); padding: var(--kr-e-4) var(--kr-e-4) calc(var(--kr-e-4) + var(--kr-zs-bas)); }
+[data-format="telephone"] .kr-pave { gap: var(--kr-e-3); }
+[data-format="telephone"] .kr-touche { font-size: 38px; }
+[data-format="telephone"] .kr-reponse { min-width: 160px; height: 88px; }
+[data-format="telephone"] .kr-ecran-centre { flex-direction: column; gap: var(--kr-e-4); padding: var(--kr-e-4); padding-bottom: calc(var(--kr-e-4) + var(--kr-zs-bas)); }
+[data-format="telephone"] .kr-dialogue { flex-direction: column; align-items: center; }
+[data-format="telephone"] .kr-dialogue .kr-bulle { margin-bottom: 0; margin-top: var(--kr-e-3); max-width: 100%; }
+[data-format="telephone"] .kr-dialogue .kr-bulle::before { left: calc(50% - 12px); top: -14px; bottom: auto; transform: rotate(135deg); }
+[data-format="telephone"] .kr-dialogue--haut { flex-direction: column-reverse; }
+[data-format="telephone"] .kr-mascotte[data-taille="l"] { --kr-m-taille: 150px; }
+[data-format="telephone"] .kr-mascotte[data-taille="xl"] { --kr-m-taille: 180px; }
+[data-format="telephone"] .kr-points { gap: 6px; }
+[data-format="telephone"] .kr-points > i { width: 12px; height: 12px; }
+[data-format="telephone"] .kr-semaine { gap: 6px; }
+[data-format="telephone"] .kr-semaine > span { width: 38px; height: 38px; }
+[data-format="telephone"] .kr-chemin { flex-wrap: wrap; justify-content: center; row-gap: var(--kr-e-4); }
+[data-format="telephone"] .kr-chemin::before { display: none; }
+[data-format="telephone"] .kr-etape { flex: 0 0 96px; }
+[data-format="telephone"] .kr-etape__rond { width: 80px; height: 80px; font-size: 22px; }
+[data-format="telephone"] .kr-records > div { width: 44px; }
+[data-format="telephone"] .kr-chrono { width: 130px; height: 130px; }
+[data-format="telephone"] .kr-tuile-module { grid-template-columns: 56px 1fr; min-height: 104px; padding: var(--kr-e-3) var(--kr-e-4); }
+[data-format="telephone"] .kr-tuile-module__icone { width: 56px; height: 56px; font-size: 30px; }
+[data-format="telephone"] .kr-segments { display: flex; width: 100%; }
+[data-format="telephone"] .kr-segments > button { flex: 1 1 0; min-width: 0; padding: 0 var(--kr-e-1); font-size: 18px; }
+[data-format="telephone"] .kr-puce { padding: 0 var(--kr-e-4); }
+[data-format="telephone"] .kr-btn { padding-left: var(--kr-e-4); padding-right: var(--kr-e-4); }
+[data-format="telephone"] .kr-btn--grand { font-size: var(--kr-t-titre-2); }
+[data-format="telephone"] .kr-grille { gap: 3px; }
+[data-format="telephone"] .kr-case { border-radius: 6px; font-size: 13px; }
+
+/* ---------- 24. Animations ---------- */
+@keyframes kr-apparait { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes kr-saut { 0% { transform: translateY(0); } 40% { transform: translateY(-18px) rotate(-3deg); } 70% { transform: translateY(0) rotate(2deg); } 100% { transform: none; } }
+@keyframes kr-monte { 0% { transform: scale(1); } 40% { transform: scale(1.3); box-shadow: 0 0 0 6px var(--kr-niv-3); } 100% { transform: scale(1); } }
+@keyframes kr-hesite { 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+@keyframes kr-clignote { 50% { opacity: 0; } }
+@keyframes kr-pulse { 50% { box-shadow: 0 0 0 10px var(--kr-enfant-doux); } }
+.kr-attire { animation: kr-pulse 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kr *, .kr *::before, .kr *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .kr-reponse[data-etat="saisie"]::after { animation: none; }
+}
