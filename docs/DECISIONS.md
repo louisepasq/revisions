@@ -28,7 +28,12 @@ Format : numéro, date, qui, la décision, la raison, la source.
 
 ## Langue
 
-- **D-13, 01/11/2026, Louis, sur proposition du relecteur bilingue : le cadre de l'app en anglais britannique, le contenu scolaire en français.** Le portail, les boutons, la mascotte et les fins de séance sont en anglais ; les questions, les astuces et les consignes d'exercice restent en français. Les tables restent en français parce qu'un fait arithmétique se retrouve mieux dans la langue où on l'a appris (Spelke et Tsivkin, 2001). Clara lit bien l'anglais, Henri commence. Le coin parent est en français. Source : `revues/2026-11-01_relecture-anglais.md`.
+- **D-13, 01/11/2026, Louis, sur proposition du relecteur bilingue : le cadre de l'app en anglais britannique, le contenu scolaire en français.** Le portail, les boutons, la mascotte et les fins de séance sont en anglais ; les questions, les astuces et les consignes d'exercice restent en français. Les tables restent en français parce qu'un fait arithmétique se retrouve mieux dans la langue où on l'a appris (Spelke et Tsivkin, 2001). Clara lit bien l'anglais, Henri commence. Le coin parent est en français. Source : `revues/2026-11-01_relecture-anglais.md`. **Remplacée par D-21 pour tout ce qui n'est pas les tables.**
+- **D-21, 01/11/2026, Louis : l'anglais par défaut partout, le français seulement là où l'apprentissage l'exige.** Le cadre, les consignes d'exercice (« Touch a number », « What is this place called? »), les explications d'un coup refusé, la mascotte et les voix sont en anglais britannique dans tous les modules. Deux exceptions :
+  - **les tables** : les énoncés des multiplications (questions et faits dits à voix haute) et les astuces restent en français, parce qu'elles construisent la compréhension et les automatismes, qui se retrouvent dans la langue où on les a appris (Spelke et Tsivkin, 2001) ; les consignes autour passent en anglais ;
+  - **la géographie** : l'enfant choisit au début, en anglais ou en français, comme le faisait au départ le planisphère ; le choix se retient et se change à tout moment.
+
+  Un module futur part en anglais ; le français n'y entre que pour une matière qui l'exige (la dictée, l'orthographe). Le coin parent reste en français. Source : demande de Louis du 01/11/2026, après l'essai d'Henri.
 
 ## Dictée et retour de Claude (décidés, pas encore construits)
 
