@@ -8,6 +8,7 @@ Provenance : **[source]** vérifié à la source ; **[appréciation]** choix de 
 
 - Henri et Clara ont chacun leur lien (`/revisions/henri/`, `/revisions/clara/`), ajouté à l'écran d'accueil de l'iPad, avec leur mascotte en icône : **Moussi** pour Henri, **Pooh Bear** pour Clara.
 - Tout vit sur ce site, pour que chaque module s'ouvre dans l'app de l'enfant et y garde sa progression. Détail et contraintes de l'iPad : [`tables/PLAN.md`](tables/PLAN.md), section 3 bis.
+- **Appareils** : l'iPad des enfants d'abord, un iPad 9e génération (10,2 pouces, bouton d'accueil, iPadOS 26.5 au 01/11/2026, 1080 × 810 points en paysage, 810 × 1080 en portrait), dans les deux orientations ; ponctuellement les iPhone des parents (iPhone 17 et iPhone 16 Pro, 402 × 874 points, Dynamic Island), en portrait. La progression vit dans l'appareil : une séance faite sur un téléphone ne remonte pas sur l'iPad (export et import prévus dans le coin parent).
 - Un seul système de design pour tous les modules (polices, couleurs de chaque enfant, composants) : `design-system/`, en cours.
 
 ## 2. Six principes pédagogiques communs à tous les modules

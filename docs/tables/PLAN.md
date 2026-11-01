@@ -109,7 +109,7 @@ revisions/
 
 - Une mascotte par enfant, qui sert aussi d'icône à son app. Les prénoms peuvent apparaître (le portail de Louise les affiche déjà).
 - Un lien et une app par enfant sur l'écran d'accueil (section 3 bis).
-- Appareil : l'iPad.
+- Appareil : l'iPad 9e génération des enfants, dans les deux orientations, et ponctuellement les iPhone des parents (détail dans `../DISPOSITIF.md`, section 1).
 - Un seul dépôt et un seul site : `louisepasq/revisions` (le dépôt de Louise), où les deux parents écrivent ; le plan et la maquette y ont été déplacés depuis `LouisVap/tables-multiplication`, archivé.
 - Diagnostic d'une minute au premier lancement : oui.
 
