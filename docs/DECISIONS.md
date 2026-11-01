@@ -49,4 +49,5 @@ Format : numéro, date, qui, la décision, la raison, la source.
 - **La reconnaissance vocale pour répondre à l'oral** : l'API est absente des web apps de l'écran d'accueil sur iPadOS (ticket WebKit 225298). À confirmer par un essai sur l'iPad. Source : `revues/2026-11-01_relecture-audio.md`.
 - **Une clé d'API dans le site** : elle serait lisible par tous. Tout appel à un service payant passe par une fonction Vercel.
 - **Le pilote, le groupe témoin et le cadrage RGPD du brief ChatGPT** : ils visent un produit pour des classes, pas deux enfants. Source : `tables/PLAN.md`, section 6.
+- **Le déploiement automatique au push** : en plan gratuit, Vercel refuse un dépôt privé dont le commit n'est pas du propriétaire du compte (forums Vercel, 01/11/2026). Déploiement par `outils/deployer.sh` depuis le Mac de Louis.
 - **Un service de sauvegarde séparé** (`LouisVap/revisions-api`, archivé) : fusionné dans le site quand tout est passé sur Vercel, pour n'avoir qu'une adresse et qu'un code.
