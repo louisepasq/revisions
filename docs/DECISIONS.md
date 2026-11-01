@@ -45,6 +45,18 @@ Format : numéro, date, qui, la décision, la raison, la source.
 
 - **D-15, 01/11/2026, Louis : les parents ne sont ni enseignants ni designers.** Dès qu'un choix paraît douteux ou qu'une idée surprend, faire relire par `relecteur-pedagogique` et `designer-apps-enfants` (`.claude/agents/`). Leurs relectures vont dans `docs/revues/`, et leurs propositions ne s'appliquent qu'avec l'accord des parents.
 
+## Accueil et progression
+
+- **D-19, 01/11/2026, Louis : l'accueil de chaque app en « cahiers par matière ».** En haut, le bandeau « Today », avec un seul bouton Start et ce qui est dû aujourd'hui. Dessous, un cahier par matière (maths, français, histoire-géographie, sciences, anglais), avec une jauge par activité. Toucher un cahier ouvre la page de la matière. La carte « My week » montre la progression de la semaine. Chaque module publie un résumé standard (`resume`) que le portail affiche sans être modifié. Raison : beaucoup de petits modules à venir (Henri). Source : `design-system/archive/2026-11-01_accueil/README.md`.
+- **D-20, 01/11/2026, Louis : la progression des tables en album à tampons, avec les cinq ajustements du relecteur pédagogique.**
+  - Chaque paire est une carte. Un fait sorti juste, et qui monte de boîte un jour donné, gagne un tampon entier par jour.
+  - L'or demande les deux sens, et ne se gagne qu'à une révision prévue.
+  - Une carte dorée qui retombe reste dorée, et affiche « revient demain » ; le coin parent garde l'état réel.
+  - Un tampon ne s'échange jamais contre une récompense.
+  - Au plus quatre faits nouveaux par jour, et non par séance.
+
+  Les familles s'ouvrent toujours selon ce que l'enfant sait (boîtes réelles), jamais selon les tampons. La grille de Pythagore reste accessible depuis l'album. Sources : `design-system/archive/2026-11-01_progression/README.md` et `revues/2026-11-01_relecture-progression.md`.
+
 ## Jeu du nombre cible (façon Mathador)
 
 - **D-18, 01/11/2026, Henri et Louis : les règles du jeu du nombre cible**, tel qu'Henri le pratique en classe.
@@ -54,6 +66,7 @@ Format : numéro, date, qui, la décision, la raison, la source.
   - L'app ne tire que des cibles atteignables, et connaît le meilleur score possible.
   - Pas de chrono par défaut : une option que l'enfant active lui-même au début d'une partie.
   - Un indice de Moussi, à la demande de l'enfant, montre un calcul d'une solution et coûte des points, annoncés avant de le prendre.
+  - Diviser par 1 ne compte pas (validé par Louis le 01/11/2026), sinon on gagnerait 3 points sans calculer. À rouvrir seulement si la maîtresse l'accepte en classe.
 
 ## Écarté, avec la raison
 
