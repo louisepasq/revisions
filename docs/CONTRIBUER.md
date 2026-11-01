@@ -67,3 +67,13 @@ Ne fabrique que les phrases manquantes, puis réécrit `commun/voix/index.json`.
 - Cibles tactiles de 56 px au moins, texte de 16 px au moins, rien qui dépende du survol, `prefers-reduced-motion` respecté.
 - Jamais de rouge ni de croix pour une erreur d'enfant ; jamais de comparaison entre les deux enfants.
 - Un titre de document résume son contenu au lieu de l'annoncer.
+
+## 7. Travailler avec des agents sans brûler de tokens
+
+Le 01/11/2026, cinq agents ont tourné de 20 à 26 minutes chacun, pour 1,7 million de tokens en tout. Le gros venait de deux choses : chaque agent relisait des centaines de captures d'écran (une image coûte cher), et tous tournaient sur le modèle le plus haut. Règles qui en sortent :
+
+- **Une petite modification se fait sans agent** : une formulation, un libellé, un réglage. Un agent démarre en relisant tout le contexte, c'est son coût fixe.
+- **Un seul agent par groupe de fichiers** : deux chantiers qui touchent les mêmes fichiers (l'accueil, les textes) vont dans le même brief, pas dans deux agents successifs.
+- **Les contrôles mécaniques restent aux parcours** (débordement, cibles de 56 px, erreurs, rouge) ; l'agent ne regarde que les captures des écrans qu'il a changés, de préférence en planche (plusieurs écrans réduits sur une image), et un seul format en grand.
+- **Il ne relance que le parcours du module qu'il touche** ; la suite complète tourne une fois, avant de déployer.
+- **Le modèle suit le travail** : une traduction, un renommage ou une mise à jour de doc sur un modèle intermédiaire (Sonnet) ; le haut de gamme pour le design, la pédagogie et le moteur.
