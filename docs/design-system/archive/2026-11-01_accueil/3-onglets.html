@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3 · Les onglets</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<link rel="stylesheet" href="maquette.css">
+<style>
+/* Direction 3 : un rail d'onglets (Today, puis une matière par onglet), à gauche en paysage, en haut en portrait. */
+.d3{display:grid;grid-template-columns:212px minmax(0,1fr);min-height:100vh;min-height:100dvh}
+.rail{background:var(--e-100);padding:max(20px,env(safe-area-inset-top)) 14px 20px max(14px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100vh;height:100dvh}
+.rail-nom{font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1;color:var(--e-900);padding:6px 12px 14px}
+.onglet{position:relative;display:flex;align-items:center;gap:12px;min-height:64px;padding:6px 12px;border-radius:20px;font-family:var(--f-jeu);font-weight:700;font-size:20px;line-height:1.1;color:var(--e-900);border:3px solid transparent}
+.onglet .ico{font-size:30px;flex:none;color:var(--e-700)}
+.onglet[aria-current="page"]{background:var(--carte);border-color:var(--e-200);box-shadow:0 4px 0 var(--e-200)}
+.onglet.bientot{color:var(--encre-douce);border:3px dashed var(--pointille)}
+.onglet.bientot .ico{color:var(--encre-douce)}
+.onglet .pt-auj{margin-left:auto;width:26px;height:26px;border-radius:50%;background:var(--e-700);color:var(--sur-e);display:grid;place-items:center;flex:none}
+.onglet .pt-auj .ico{font-size:15px;color:var(--sur-e)}
+
+.contenu{min-width:0;padding:max(18px,env(safe-area-inset-top)) max(28px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) 26px;display:flex;flex-direction:column;gap:18px}
+.c-haut{display:flex;align-items:center;gap:16px}
+.c-haut .masc{width:112px;height:121px;flex:none}
+.c-haut .bulle{font-size:20px}
+.c-haut h1{font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1;color:var(--e-900)}
+.c-haut .coin-p{margin-left:auto;align-self:flex-start}
+.c-titre{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.c-grille{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+
+.progres-c{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.progres-c h2{font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1.1}
+.progres-c .sem-t{font-weight:700;font-size:16px;color:var(--e-900)}
+.progres-c .semaine{gap:6px;justify-content:space-between}
+.progres-c .jour .rd{width:34px;height:34px}
+.progres-c .jour .lb{font-size:15px}
+.p-ligne{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ico nom" "ico barres";column-gap:12px;row-gap:4px;align-items:center;min-height:56px;padding:4px 6px;border-radius:var(--r-s)}
+.p-ligne:active{background:var(--e-50)}
+.p-ligne .tuile{grid-area:ico;width:44px;height:44px;border-radius:13px}
+.p-ligne .tuile .ico{font-size:26px}
+.p-ligne b{grid-area:nom;font-family:var(--f-jeu);font-weight:700;font-size:19px;line-height:1.1}
+.p-barres{grid-area:barres;display:flex;gap:5px}
+.p-barres .jauge-m{width:40px;height:10px;flex:none}
+.p-barres .vide{width:40px;height:10px;border-radius:99px;border:2px dashed var(--pointille);flex:none}
+.p-sep{border:0;border-top:2px solid var(--trait);margin:4px 0}
+
+.mods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.mod{position:relative;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--trait-fort);padding:18px;
+  display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tuile texte" "jauge jauge";column-gap:16px;row-gap:14px;align-items:center;min-height:150px}
+a.mod:active{transform:translateY(var(--relief));box-shadow:none}
+.mod .tuile{grid-area:tuile;width:80px;height:80px;border-radius:22px}
+.mod .tuile .ico{font-size:46px}
+.mod .texte{grid-area:texte;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.mod .texte b{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.05}
+.mod .jauge-m{grid-area:jauge}
+.mod.bientot{background:transparent;border:3px dashed var(--pointille);box-shadow:none}
+.mod.bientot .tuile{background:transparent;border:3px dashed var(--pointille);color:var(--encre-douce)}
+.mod.bientot b{color:var(--encre-douce)}
+.badge-auj{position:absolute;top:-12px;right:16px;display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:99px;background:var(--e-700);color:var(--sur-e);font-weight:700;font-size:15px;white-space:nowrap}
+.badge-auj .ico{font-size:15px}
+.m-titre{display:flex;align-items:center;gap:14px;font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1;color:var(--e-900)}
+.m-titre .ico{font-size:40px;color:var(--e-700)}
+
+/* Paysage : la colonne du programme est étroite, Start passe sous l'activité, en pleine largeur */
+@media (orientation: landscape) and (min-width: 601px){ .c-grille .jour-1{flex-wrap:wrap} .c-grille .jour-1 .go{width:100%} }
+
+/* iPad portrait : le rail devient une barre d'onglets en haut */
+@media (orientation: portrait) and (min-width: 601px){
+  .d3{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+  .rail{position:static;height:auto;flex-direction:row;gap:6px;padding:max(14px,env(safe-area-inset-top)) 20px 12px}
+  .rail-nom{display:none}
+  .onglet{flex:1 1 0;min-width:0;flex-direction:column;justify-content:center;gap:4px;min-height:84px;padding:6px 4px;font-size:16px;text-align:center}
+  .onglet .pt-auj{position:absolute;top:4px;right:6px;width:22px;height:22px}
+  .contenu{padding:18px 28px 28px}
+  .c-grille{grid-template-columns:minmax(0,1fr)}
+}
+/* iPhone : une rangée d'onglets qui défile */
+@media (max-width: 600px){
+  .d3{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+  .rail{position:static;height:auto;flex-direction:row;overflow-x:auto;gap:6px;padding:max(12px,env(safe-area-inset-top)) 16px 10px}
+  .rail-nom{display:none}
+  .onglet{flex:none;min-height:56px;font-size:18px;padding:4px 14px 4px 10px}
+  .onglet .ico{font-size:26px}
+  .onglet .pt-auj{width:22px;height:22px}
+  .contenu{padding:16px 16px max(24px,env(safe-area-inset-bottom));gap:14px}
+  .c-haut{flex-wrap:wrap;gap:10px}
+  .c-haut .masc{width:84px;height:91px}
+  .c-haut h1{font-size:30px}
+  .c-haut .bulle{font-size:18px}
+  .c-grille{grid-template-columns:minmax(0,1fr)}
+  .mods{grid-template-columns:minmax(0,1fr);gap:16px}
+  .mod{min-height:0;padding:16px}
+  .mod .tuile{width:64px;height:64px;border-radius:18px}
+  .mod .tuile .ico{font-size:38px}
+  .mod .texte b{font-size:23px}
+  .m-titre{font-size:30px}
+  .m-titre .ico{font-size:30px}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script src="maquette.js"></script>
+<script>
+const M = Maquette;
+const surMatiere = M.ETAT.page === 'matiere';
+
+function rail() {
+  const auj = `<a class="onglet" href="${M.lien({})}"${!surMatiere ? ' aria-current="page"' : ''}>${KR.icone('etoile')}<span class="l1">Today</span></a>`;
+  const mats = M.matieresPresentes.map(mt => {
+    const actifs = M.modulesDe(mt.id).filter(m => m.etat === 'actif');
+    const pt = M.modulesDe(mt.id).some(M.dansLePlan) ? `<span class="pt-auj" aria-label="Today">${KR.icone('etoile')}</span>` : '';
+    if (!actifs.length) return `<span class="onglet bientot" aria-disabled="true">${KR.icone(mt.icone)}<span class="l1">${mt.court || mt.nom}</span></span>`;
+    const courant = surMatiere && M.ETAT.matiere === mt.id;
+    return `<a class="onglet" href="${M.lien({ page: 'matiere', m: mt.id })}"${courant ? ' aria-current="page"' : ''}>${KR.icone(mt.icone)}<span class="l1">${mt.court || mt.nom}</span>${pt}</a>`;
+  }).join('');
+  return `<nav class="rail" aria-label="Subjects"><div class="rail-nom l1">${KR.prenom()}</div>${auj}${mats}</nav>`;
+}
+
+function progres() {
+  const sem = M.semaine();
+  const lignes = M.matieresPresentes.map(mt => {
+    const mods = M.modulesDe(mt.id);
+    if (!mods.some(m => m.etat === 'actif')) return '';
+    const barres = mods.map(m => m.etat === 'bientot' ? '<span class="vide"></span>' : (M.jauge(m) || '<span class="jauge-m"><i style="width:0"></i></span>')).join('');
+    return `<a class="p-ligne" href="${M.lien({ page: 'matiere', m: mt.id })}"><span class="tuile">${KR.icone(mt.icone)}</span><b class="l1">${mt.nom}</b><span class="p-barres">${barres}</span></a>`;
+  }).join('');
+  return `<section class="progres-c"><h2 class="l1">My week</h2><span class="sem-t l1">${sem.compte}</span>${sem.html}
+    <hr class="p-sep"><h2 class="l1">My subjects</h2>${lignes}</section>`;
+}
+
+function carteModule(m) {
+  if (m.etat === 'bientot') {
+    return `<div class="mod bientot" aria-disabled="true"><span class="tuile">${KR.icone(m.icone)}</span>
+      <span class="texte"><b class="l1">${KR.echapper(m.titre)}</b>${M.phraseProgres(m)}</span></div>`;
+  }
+  const auj = M.dansLePlan(m) ? `<span class="badge-auj">${KR.icone('etoile')}Today</span>` : '';
+  return `<a class="mod" href="#">${auj}<span class="tuile">${KR.icone(m.icone)}</span>
+    <span class="texte"><b class="l1">${KR.echapper(m.titre)}</b><span>${M.phraseProgres(m)}</span></span>${M.jauge(m)}</a>`;
+}
+
+function rendre() {
+  let corps;
+  if (surMatiere) {
+    const mt = M.matiere(M.ETAT.matiere);
+    corps = `<div class="c-haut"><h1 class="m-titre l1">${KR.icone(mt.icone)}${mt.nom}</h1>${M.coinParent()}</div>
+      <div class="mods">${M.modulesDe(mt.id).map(carteModule).join('')}</div>`;
+  } else {
+    corps = `<div class="c-haut">${KR.mascotte('attend')}<div class="c-titre"><h1 class="l1">Hello, ${KR.prenom()}!</h1><div class="bulle parle">${M.bulleDuJour()}</div></div>${M.coinParent()}</div>
+      <div class="c-grille">${M.carteDuJour()}${progres()}</div>`;
+  }
+  document.getElementById('app').innerHTML = `<div class="d3">${rail()}<div class="contenu">${corps}</div></div>`;
+}
+
+M.lancer({
+  numero: 'Direction 3 sur 3',
+  titre: '3 · Les onglets : un rail « Today » puis une matière par onglet, comme les intercalaires d\'un classeur',
+  intro: `<p>L'app s'ouvre sur l'onglet Today : le programme du jour avec son seul bouton plein, et à côté la carte « My week » qui réunit la régularité et une rangée de jauges par matière. Les autres onglets sont les matières ; un rond marque celles qui ont quelque chose aujourd'hui. Le rail est à gauche en paysage, devient une barre d'onglets en haut en portrait, et une rangée qui défile sur iPhone.</p>
+  <ul><li>La progression globale a sa place à elle, toujours sous les yeux au premier écran.</li>
+  <li>Le prix : la navigation reste visible en permanence, et sur iPhone une partie des onglets sort de l'écran.</li></ul>`,
+  lignesEnPlus: [(e, nom) => ({ titre: `${nom}, dans six mois : l'onglet Maths`, quand: 'six-mois', params: { page: 'matiere', m: 'maths' } })],
+  rendre,
+});
+</script>
+</body>
+</html>

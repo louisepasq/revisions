@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2 · Les cahiers par matière</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<link rel="stylesheet" href="maquette.css">
+<style>
+/* Direction 2 : « Today » en bandeau, puis un cahier par matière ; le cahier ouvre la page de la matière. */
+.d2{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.d2-haut{background:var(--e-100);padding:max(16px,env(safe-area-inset-top)) max(28px,env(safe-area-inset-right)) 0 max(28px,env(safe-area-inset-left));
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"masc titre coin" "masc sem sem";column-gap:18px;row-gap:6px;align-items:center}
+.d2-masc{grid-area:masc;align-self:end;display:flex;align-items:flex-end;gap:6px}
+.d2-masc .masc{width:118px;height:128px;margin-bottom:-6px}
+.d2-masc .bulle{font-size:19px;margin-bottom:56px;max-width:190px}
+.d2-masc .bulle.parle::before{top:auto;bottom:16px}
+.d2-titre{grid-area:titre;font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1;color:var(--e-900)}
+.d2-haut .coin-p{grid-area:coin}
+.d2-sem{grid-area:sem;display:flex;align-items:center;gap:14px;padding-bottom:12px}
+.d2-sem .semaine{gap:6px}
+.d2-sem .jour .rd{width:34px;height:34px}
+.d2-sem .jour .lb{font-size:15px}
+.d2-sem .t{font-weight:700;font-size:16px;color:var(--e-900)}
+
+.d2-corps{flex:1;display:flex;flex-direction:column;gap:22px;padding:18px max(28px,env(safe-area-inset-right)) max(26px,env(safe-area-inset-bottom)) max(28px,env(safe-area-inset-left))}
+/* « Today » en bandeau horizontal */
+.jour-c.horiz{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"t t" "un suite";column-gap:18px;row-gap:8px;padding:14px 18px}
+.jour-c.horiz .jour-t{grid-area:t}
+.jour-c.horiz .jour-1{grid-area:un;margin:0}
+.jour-c.horiz .jour-ensuite{display:none}
+.jour-c.horiz .jour-suite{grid-area:suite;justify-content:center}
+.jour-c.horiz .jour-n .t{flex-direction:column;gap:0}
+.jour-c.horiz .jour-n .t b{font-size:21px}
+.jour-c.horiz .jour-n .t span{font-size:16px}
+.jour-c.horiz:not(:has(.jour-suite)){grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "un"}
+
+/* Les cahiers : couverture à motif d'écolier, dos, étiquette ; ils prennent la hauteur qui reste */
+.cahiers{flex:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;align-items:stretch}
+@media (orientation: landscape){ .cahiers{max-height:420px} }
+.cahiers.peu{grid-template-columns:repeat(var(--n),minmax(0,230px))}
+.cahier .couv{flex:1;min-height:150px}
+.cahier{position:relative;display:flex;flex-direction:column;border-radius:20px 26px 26px 20px;background:var(--carte);border:3px solid var(--e-200);box-shadow:0 var(--relief) 0 var(--e-200);overflow:visible;min-width:0}
+a.cahier:active{transform:translateY(var(--relief));box-shadow:none}
+.couv{position:relative;height:170px;border-radius:17px 23px 0 0;background-color:var(--e-100);overflow:hidden;display:grid;place-items:center;padding:14px 12px 14px 30px}
+.couv::before{content:"";position:absolute;inset:0 auto 0 0;width:16px;background:var(--e-700)}
+.etiq-c{position:relative;background:var(--carte);border:3px solid var(--e-200);border-radius:16px;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;width:100%}
+.etiq-c .ico{font-size:40px;color:var(--e-700)}
+.etiq-c b{font-family:var(--f-jeu);font-weight:700;font-size:21px;line-height:1.05}
+.pied{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.pied .n{font-weight:700;font-size:16px;color:var(--encre-douce)}
+.barres{display:flex;flex-direction:column;gap:5px}
+.barres .jauge-m{height:8px}
+.barres .vide{display:block;height:8px;border-radius:99px;border:2px dashed var(--pointille)}
+[data-motif="carreaux"]{background-image:linear-gradient(var(--e-200) 2px,transparent 2px),linear-gradient(90deg,var(--e-200) 2px,transparent 2px);background-size:16px 16px}
+[data-motif="seyes"]{background-image:linear-gradient(90deg,transparent 46px,var(--e-300) 46px 49px,transparent 49px),repeating-linear-gradient(180deg,var(--e-200) 0 2px,transparent 2px 9px)}
+[data-motif="courbes"]{background-image:repeating-radial-gradient(circle at 75% 80%,transparent 0 11px,var(--e-200) 11px 14px)}
+[data-motif="points"]{background-image:radial-gradient(var(--e-300) 2.6px,transparent 3.2px);background-size:18px 18px}
+[data-motif="rayures"]{background-image:repeating-linear-gradient(45deg,transparent 0 10px,var(--e-200) 10px 14px)}
+.badge-auj{position:absolute;top:-12px;right:10px;z-index:1;display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:99px;background:var(--e-700);color:var(--sur-e);font-weight:700;font-size:15px;white-space:nowrap}
+.badge-auj .ico{font-size:15px}
+.cahier.bientot{background:transparent;border:3px dashed var(--pointille);box-shadow:none}
+.cahier.bientot .couv{background:transparent}
+.cahier.bientot .couv::before{background:var(--neutre)}
+.cahier.bientot .etiq-c{border-style:dashed;border-color:var(--pointille)}
+.cahier.bientot .etiq-c .ico,.cahier.bientot b{color:var(--encre-douce)}
+
+/* Page d'une matière */
+.d2-mat-haut{position:relative;background-color:var(--e-100);padding:max(16px,env(safe-area-inset-top)) max(28px,env(safe-area-inset-right)) 18px max(28px,env(safe-area-inset-left));display:flex;align-items:center;gap:20px}
+.d2-mat-haut::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;background:var(--e-700)}
+.d2-mat-haut h1{font-family:var(--f-jeu);font-weight:700;font-size:44px;line-height:1;color:var(--e-900);display:flex;align-items:center;gap:14px;background:var(--carte);border:3px solid var(--e-200);border-radius:20px;padding:10px 22px}
+.d2-mat-haut h1 .ico{font-size:40px;color:var(--e-700)}
+.d2-mat-haut .coin-p{margin-left:auto}
+.mods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:30px max(28px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(28px,env(safe-area-inset-left))}
+.mod{position:relative;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--trait-fort);padding:22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-height:250px;min-width:0}
+a.mod:active{transform:translateY(var(--relief));box-shadow:none}
+.mod .tuile{width:88px;height:88px;border-radius:24px}
+.mod .tuile .ico{font-size:50px}
+.mod b{font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1.05}
+.mod .bas{margin-top:auto;width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.mod.bientot{background:transparent;border:3px dashed var(--pointille);box-shadow:none}
+.mod.bientot .tuile{background:transparent;border:3px dashed var(--pointille);color:var(--encre-douce)}
+.mod.bientot b{color:var(--encre-douce)}
+.mod .badge-auj{right:18px}
+
+@media (orientation: portrait) and (min-width: 601px){
+  .d2-haut{grid-template-areas:"masc titre coin" "masc sem sem"}
+  .jour-c.horiz{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "un" "suite"}
+  .cahiers{flex:none;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:26px}
+  .couv{height:150px}
+  .mods{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 600px){
+  .d2-haut{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"titre coin" "masc masc" "sem sem";padding:max(16px,env(safe-area-inset-top)) 16px 0;row-gap:10px}
+  .d2-titre{font-size:32px}
+  .d2-masc{align-items:center}
+  .d2-masc .masc{width:92px;height:100px}
+  .d2-masc .bulle{margin-bottom:0}
+  .d2-masc .bulle.parle::before{top:18px;bottom:auto}
+  .d2-sem{flex-direction:column;align-items:stretch;gap:4px}
+  .d2-sem .semaine{justify-content:space-between;gap:2px}
+  .d2-corps{padding:16px 16px max(24px,env(safe-area-inset-bottom));gap:18px}
+  .jour-c.horiz{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "un" "suite";padding:14px}
+  .cahiers,.cahiers.peu{flex:none;grid-template-columns:minmax(0,1fr);gap:14px}
+  .cahier .couv{flex:none;min-height:0}
+  .cahier{flex-direction:row;border-radius:20px}
+  .couv{height:auto;width:150px;flex:none;border-radius:17px 0 0 17px;padding:10px 10px 10px 24px}
+  .couv::before{width:12px}
+  .etiq-c{padding:8px 6px 6px}
+  .etiq-c .ico{font-size:30px}
+  .etiq-c b{font-size:18px}
+  .pied{flex:1;min-width:0;justify-content:center}
+  .d2-mat-haut{padding:max(16px,env(safe-area-inset-top)) 16px 22px;gap:12px}
+  .d2-mat-haut h1{font-size:30px;padding:8px 14px}
+  .d2-mat-haut h1 .ico{font-size:30px}
+  .d2-mat-haut .coin-p span{display:none}
+  .mods{grid-template-columns:minmax(0,1fr);padding:22px 16px max(24px,env(safe-area-inset-bottom));gap:16px}
+  .mod{flex-direction:row;flex-wrap:wrap;align-items:center;min-height:0;padding:16px}
+  .mod .tuile{width:68px;height:68px;border-radius:20px}
+  .mod .tuile .ico{font-size:40px}
+  .mod b{font-size:24px;flex:1;min-width:0}
+  .mod .bas{margin-top:0}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script src="maquette.js"></script>
+<script>
+const M = Maquette;
+
+function cahier(mt) {
+  const mods = M.modulesDe(mt.id);
+  const actifs = mods.filter(m => m.etat === 'actif');
+  const etiq = `<span class="etiq-c">${KR.icone(mt.icone)}<b class="deux-lignes-max">${mt.nom}</b></span>`;
+  if (!actifs.length) {
+    return `<div class="cahier bientot" aria-disabled="true"><span class="couv" data-motif="${mt.motif}">${etiq}</span>
+      <span class="pied"><span class="pastille bientot">${KR.t('bientot')}</span></span></div>`;
+  }
+  const auj = mods.some(M.dansLePlan) ? `<span class="badge-auj">${KR.icone('etoile')}Today</span>` : '';
+  const barres = mods.map(m => m.etat === 'bientot' ? '<span class="vide"></span>' : (M.jauge(m) || '<span class="jauge-m"><i style="width:0"></i></span>')).join('');
+  const n = actifs.length === 1 ? '1 activity' : `${actifs.length} activities`;
+  return `<a class="cahier" href="${M.lien({ page: 'matiere', m: mt.id })}">${auj}<span class="couv" data-motif="${mt.motif}">${etiq}</span>
+    <span class="pied"><span class="n l1">${n}</span><span class="barres">${barres}</span></span></a>`;
+}
+
+function accueil() {
+  const sem = M.semaine();
+  return `<div class="d2">
+    <header class="d2-haut">
+      <div class="d2-masc">${KR.mascotte('attend')}<div class="bulle parle">${M.bulleDuJour()}</div></div>
+      <h1 class="d2-titre l1">Hello, ${KR.prenom()}!</h1>
+      ${M.coinParent()}
+      <div class="d2-sem">${sem.html}<span class="t l1">${sem.compte}</span></div>
+    </header>
+    <div class="d2-corps">
+      ${M.carteDuJour({ classe: 'horiz' })}
+      <nav class="cahiers${M.matieresPresentes.length < 4 ? ' peu' : ''}" style="--n:${M.matieresPresentes.length}" aria-label="My subjects">${M.matieresPresentes.map(cahier).join('')}</nav>
+    </div></div>`;
+}
+
+function carteModule(m) {
+  if (m.etat === 'bientot') {
+    return `<div class="mod bientot" aria-disabled="true"><span class="tuile">${KR.icone(m.icone)}</span><b class="l1">${KR.echapper(m.titre)}</b>
+      <span class="bas">${M.phraseProgres(m)}</span></div>`;
+  }
+  const auj = M.dansLePlan(m) ? `<span class="badge-auj">${KR.icone('etoile')}Today</span>` : '';
+  return `<a class="mod" href="#">${auj}<span class="tuile">${KR.icone(m.icone)}</span><b class="l1">${KR.echapper(m.titre)}</b>
+    <span class="bas"><span>${M.phraseProgres(m)}</span>${M.jauge(m)}</span></a>`;
+}
+
+function pageMatiere() {
+  const mt = M.matiere(M.ETAT.matiere);
+  return `<div class="d2">
+    <header class="d2-mat-haut couv-band" data-motif="${mt.motif}">
+      <div class="nav"><a class="rond" href="${M.lien({})}" aria-label="Back">${KR.icone('retour')}</a><span class="nom" aria-hidden="true">Back</span></div>
+      <h1 class="l1">${KR.icone(mt.icone)}${mt.nom}</h1>
+      ${M.coinParent()}
+    </header>
+    <div class="mods">${M.modulesDe(mt.id).map(carteModule).join('')}</div></div>`;
+}
+
+M.lancer({
+  numero: 'Direction 2 sur 3 · ma recommandation',
+  titre: '2 · Les cahiers par matière : « Today » en bandeau, un cahier par matière, la matière ouvre sa page',
+  intro: `<p>L'accueil tient sur un écran, quel que soit le nombre de modules : le programme du jour en bandeau, avec son seul bouton plein, puis un cahier par matière, comme les cahiers du cartable. Chaque couverture a le motif d'un cahier d'écolier (petits carreaux pour les maths, lignes Seyès pour le français, courbes de niveau pour l'histoire-géo, points pour les sciences, rayures pour l'anglais), dans la teinte de l'enfant : aucune couleur nouvelle.</p>
+  <ul><li>Sous chaque cahier, une petite jauge par activité : le progrès de la matière se voit sans être moyenné.</li>
+  <li>Toucher un cahier ouvre la page de la matière, avec les grandes cartes de modules ; Back ramène à l'accueil.</li></ul>`,
+  lignesEnPlus: [(e, nom) => ({ titre: `${nom}, dans six mois : le cahier de maths ouvert`, quand: 'six-mois', params: { page: 'matiere', m: 'maths' } })],
+  rendre: () => { document.getElementById('app').innerHTML = M.ETAT.page === 'matiere' ? pageMatiere() : accueil(); },
+});
+</script>
+</body>
+</html>

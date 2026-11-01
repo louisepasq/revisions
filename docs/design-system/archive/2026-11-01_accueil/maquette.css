@@ -1,0 +1,64 @@
+/* Pièces communes aux trois directions de l'accueil : jauge d'un module, phrase de progrès,
+   carte « Today », bouton du coin parent. Candidates au kit (commun/kit.css) si une direction est retenue. */
+.ecran-app{min-height:100vh;min-height:100dvh}
+.l1{white-space:nowrap}
+a{color:inherit;text-decoration:none}
+
+/* Jauge d'un module : 0 à 1, jamais de pourcentage écrit, l'or quand c'est complet */
+.jauge-m{display:block;width:100%;height:12px;border-radius:99px;background:var(--e-100);overflow:hidden}
+.jauge-m i{display:block;height:100%;border-radius:99px;background:var(--e-700)}
+.jauge-m.complet{background:var(--or-clair)}
+.jauge-m.complet i{background:var(--or-vif)}
+
+/* Phrase de progrès écrite par le module, et le « monté aujourd'hui » en or vif du kit */
+.phrase-p{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:18px;line-height:1.2;color:var(--encre)}
+.phrase-p .ico.or{color:var(--or-fonce);font-size:20px}
+.gain-auj{display:inline-flex;align-items:center;gap:4px;margin-left:8px;min-height:28px;padding:0 10px;border-radius:99px;background:var(--or-vif);color:#3A2800;font-weight:700;font-size:16px;white-space:nowrap}
+.gain-auj .ico{font-size:16px}
+
+/* Coin parent : toujours en haut à droite, appui long, en français */
+.coin-p{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px;border-radius:99px;background:var(--carte);border:3px solid var(--e-200);color:var(--encre-douce);font-weight:700;font-size:17px;white-space:nowrap}
+.coin-p .ico{font-size:22px}
+
+/* ---------- Carte « Today » : un seul bouton plein, la suite en lignes calmes ---------- */
+.jour-c{background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);padding:18px 20px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.jour-t{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+.jour-t b{font-family:var(--f-jeu);font-weight:700;font-size:30px;line-height:1;color:var(--e-900)}
+.jour-t span{font-weight:700;font-size:18px;color:var(--encre-douce)}
+.jour-1{display:flex;align-items:center;gap:16px;padding:12px;margin:0 -8px;border-radius:var(--r-m);background:var(--e-50);border:3px solid var(--e-200);min-width:0}
+.jour-1 .tuile{width:76px;height:76px;border-radius:22px}
+.jour-1 .tuile .ico{font-size:44px}
+.jour-1 .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.jour-1 .t b{font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1.05;overflow:hidden;text-overflow:ellipsis}
+.jour-1 .t span{font-size:18px;color:var(--encre-douce);overflow:hidden;text-overflow:ellipsis}
+.jour-1 .go{min-height:72px;padding:0 26px;font-size:26px}
+.jour-1 .go .ico{font-size:24px}
+.jour-1:active .go{transform:translateY(var(--relief));box-shadow:none}
+.jour-ensuite{font-weight:700;font-size:16px;color:var(--encre-douce);margin-top:2px}
+.jour-suite{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.jour-n{display:flex;align-items:center;gap:14px;min-height:60px;padding:4px 8px 4px 4px;border-radius:var(--r-s);min-width:0}
+.jour-n:active{background:var(--e-50)}
+.tuile.mini{width:52px;height:52px;border-radius:16px}
+.tuile.mini .ico{font-size:30px}
+.jour-n .t{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px}
+.jour-n .t b{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1}
+.jour-n .t span{font-size:17px;color:var(--encre-douce);overflow:hidden;text-overflow:ellipsis}
+.jour-n .min{font-weight:700;font-size:17px;color:var(--encre-douce)}
+.jour-fini{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--juste-700)}
+
+@media (max-width:600px){
+  .jour-c{padding:14px 14px 12px}
+  .jour-t b{font-size:26px}
+  .jour-t span{font-size:16px}
+  .jour-1{flex-wrap:wrap;gap:12px;margin:0;padding:10px}
+  .jour-1 .tuile{width:60px;height:60px;border-radius:18px}
+  .jour-1 .tuile .ico{font-size:34px}
+  .jour-1 .t b{font-size:24px}
+  .jour-1 .t span{font-size:16px}
+  .jour-1 .go{width:100%;min-height:64px}
+  .jour-n .t{flex-direction:column;gap:0}
+  .jour-n .t b{font-size:20px}
+  .jour-n .t span{font-size:16px}
+  .jour-n .min{font-size:16px}
+  .coin-p{min-height:56px;padding:0 16px;font-size:16px}
+}

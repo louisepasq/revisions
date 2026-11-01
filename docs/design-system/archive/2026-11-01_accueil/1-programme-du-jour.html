@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1 · Le programme du jour</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<link rel="stylesheet" href="maquette.css">
+<style>
+/* Direction 1 : une seule page. « Today » en haut, puis toutes les matières en sections, sans second niveau. */
+.d1-haut{background:var(--e-100);padding:max(20px,env(safe-area-inset-top)) max(28px,env(safe-area-inset-right)) 26px max(28px,env(safe-area-inset-left));
+  display:grid;grid-template-columns:200px minmax(0,1fr);grid-template-areas:"titre titre" "masc jour" "masc semaine";column-gap:24px;row-gap:16px}
+.d1-titre{grid-area:titre;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.d1-titre h1{font-family:var(--f-jeu);font-weight:700;font-size:44px;line-height:1;color:var(--e-900)}
+.d1-masc{grid-area:masc;display:flex;flex-direction:column;align-items:flex-start;gap:6px;align-self:start}
+.d1-masc .bulle{max-width:200px;font-size:21px}
+.d1-masc .masc{width:170px;height:184px}
+.jour-c{grid-area:jour}
+.d1-sem{grid-area:semaine;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--carte);border-radius:var(--r-m);padding:10px 18px}
+.d1-sem .t{display:flex;flex-direction:column}
+.d1-sem .t b{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1}
+.d1-sem .t span{font-weight:700;font-size:16px;color:var(--e-900)}
+.d1-sem .semaine{gap:8px}
+.d1-sem .jour .rd{width:38px;height:38px}
+.d1-sem .jour .lb{font-size:15px}
+
+.biblio{padding:28px max(28px,env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom)) max(28px,env(safe-area-inset-left))}
+.biblio-t{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.biblio-t h2{font-family:var(--f-jeu);font-weight:700;font-size:30px;line-height:1.1}
+.sauts{display:flex;gap:8px;flex-wrap:wrap}
+.saut{display:inline-flex;align-items:center;gap:8px;min-height:56px;padding:0 16px;border-radius:99px;background:var(--carte);border:3px solid var(--trait);font-weight:700;font-size:17px;white-space:nowrap}
+.saut .ico{font-size:22px;color:var(--e-700)}
+.mat-sec{margin-top:26px;scroll-margin-top:16px}
+.mat-tete{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mat-tete .tuile{width:48px;height:48px;border-radius:14px}
+.mat-tete .tuile .ico{font-size:28px}
+.mat-tete h3{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1}
+.mat-tete .n{font-weight:700;font-size:16px;color:var(--encre-douce)}
+.mods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mod{position:relative;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-m);box-shadow:0 var(--relief) 0 var(--trait-fort);padding:14px 16px 16px;
+  display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tuile texte" "jauge jauge";column-gap:14px;row-gap:12px;align-items:center;min-height:120px}
+a.mod:active{transform:translateY(var(--relief));box-shadow:none}
+.mod .tuile{grid-area:tuile;width:64px;height:64px;border-radius:18px}
+.mod .tuile .ico{font-size:38px}
+.mod .texte{grid-area:texte;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.mod .texte b{font-family:var(--f-jeu);font-weight:700;font-size:23px;line-height:1.1}
+.mod .jauge-m{grid-area:jauge}
+.mod.bientot{background:transparent;border:3px dashed var(--pointille);box-shadow:none}
+.mod.bientot .tuile{background:transparent;border:3px dashed var(--pointille);color:var(--encre-douce)}
+.mod.bientot b{color:var(--encre-douce)}
+.badge-auj{position:absolute;top:-12px;right:14px;display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:99px;background:var(--e-700);color:var(--sur-e);font-weight:700;font-size:15px;white-space:nowrap}
+.badge-auj .ico{font-size:15px}
+
+@media (orientation: portrait) and (min-width: 601px){
+  .d1-haut{grid-template-columns:170px minmax(0,1fr)}
+  .d1-masc .bulle{max-width:170px;font-size:19px}
+  .d1-masc .masc{width:150px;height:162px}
+  .mods{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 600px){
+  .d1-haut{grid-template-columns:minmax(0,1fr);grid-template-areas:"titre" "masc" "jour" "semaine";padding:max(16px,env(safe-area-inset-top)) 16px 20px;row-gap:12px}
+  .d1-titre h1{font-size:32px}
+  .d1-masc{flex-direction:row;align-items:center;gap:10px}
+  .d1-masc .masc{width:96px;height:104px;order:-1;flex:none}
+  .d1-masc .bulle{max-width:none;font-size:19px}
+  .d1-masc .bulle.bas::before{left:-13px;top:18px;bottom:auto;border-width:0 0 3px 3px}
+  .d1-sem{flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}
+  .d1-sem .t{flex-direction:row;justify-content:space-between;align-items:baseline}
+  .d1-sem .semaine{justify-content:space-between;gap:4px}
+  .d1-sem .jour .rd{width:34px;height:34px}
+  .biblio{padding:22px 16px max(28px,env(safe-area-inset-bottom))}
+  .biblio-t h2{font-size:26px}
+  .sauts{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:4px 16px 8px;width:calc(100% + 32px)}
+  .mods{grid-template-columns:minmax(0,1fr);gap:14px}
+  .mod{min-height:0}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script src="maquette.js"></script>
+<script>
+const M = Maquette;
+
+function carteModule(m) {
+  if (m.etat === 'bientot') {
+    return `<div class="mod bientot" aria-disabled="true"><span class="tuile">${KR.icone(m.icone)}</span>
+      <span class="texte"><b class="l1">${KR.echapper(m.titre)}</b>${M.phraseProgres(m)}</span></div>`;
+  }
+  const auj = M.dansLePlan(m) ? `<span class="badge-auj">${KR.icone('etoile')}Today</span>` : '';
+  return `<a class="mod" href="#">${auj}<span class="tuile">${KR.icone(m.icone)}</span>
+    <span class="texte"><b class="l1">${KR.echapper(m.titre)}</b><span>${M.phraseProgres(m)}</span></span>${M.jauge(m)}</a>`;
+}
+
+function rendre() {
+  const sem = M.semaine();
+  const beaucoup = M.donnees.modules.length > 6;
+  const sauts = beaucoup ? `<nav class="sauts" aria-label="Subjects">${M.matieresPresentes.map(mt =>
+    `<a class="saut" href="#${mt.id}">${KR.icone(mt.icone)}${mt.court || mt.nom}</a>`).join('')}</nav>` : '';
+  document.getElementById('app').innerHTML = `
+    <header class="d1-haut">
+      <div class="d1-titre"><h1 class="l1">Hello, ${KR.prenom()}!</h1>${M.coinParent()}</div>
+      <div class="d1-masc"><div class="bulle parle bas">${M.bulleDuJour()}</div>${KR.mascotte('attend')}</div>
+      ${M.carteDuJour()}
+      <div class="d1-sem"><div class="t"><b class="l1">My week</b><span class="l1">${sem.compte}</span></div>${sem.html}</div>
+    </header>
+    <section class="biblio">
+      <div class="biblio-t"><h2 class="l1">All my subjects</h2>${sauts}</div>
+      ${M.matieresPresentes.map(mt => {
+        const mods = M.modulesDe(mt.id);
+        return `<section class="mat-sec" id="${mt.id}">
+          <div class="mat-tete"><span class="tuile">${KR.icone(mt.icone)}</span><h3 class="l1">${mt.nom}</h3></div>
+          <div class="mods">${mods.map(carteModule).join('')}</div></section>`;
+      }).join('')}
+    </section>`;
+}
+
+M.lancer({
+  numero: 'Direction 1 sur 3',
+  titre: '1 · Le programme du jour : une seule page, « Today » en haut, toutes les matières en dessous',
+  intro: `<p>En arrivant, l'enfant voit son programme du jour (trois choses au plus, quinze minutes au plus) et un seul bouton plein, Start. En dessous, sur la même page, toutes ses activités rangées par matière, chacune avec sa phrase de progrès et sa jauge. Aucun second niveau : ce qu'on ne fait pas aujourd'hui est à un défilement, jamais derrière une porte.</p>
+  <ul><li>Au-delà de six modules, une rangée de raccourcis par matière en tête de la bibliothèque.</li>
+  <li>La semaine sous le programme : la régularité se lit à côté de ce qu'il reste à faire.</li></ul>`,
+  rendre,
+});
+</script>
+</body>
+</html>
