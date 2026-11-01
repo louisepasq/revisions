@@ -3,7 +3,7 @@
 Le site de révisions d'Henri (CM1) et de Clara (CM2), fait par Louise et Louis, publié sur GitHub Pages (`louisepasq.github.io/revisions/`). Un push sur `main` met le site à jour.
 
 - **Le dispositif d'ensemble** (une app par enfant, principes, modules) : [`docs/DISPOSITIF.md`](docs/DISPOSITIF.md). Le détail d'un module vit dans `docs/<module>/`.
-- **Le système de design commun** : `docs/design-system/`, le kit dans `commun/`. Tout module le réutilise.
+- **Le système de design commun** : `docs/design-system/`, le kit dans `commun/`. Tout module le réutilise. Ce qui a été fait avant lui (portail, planisphère) n'est pas une contrainte de design : on vise les meilleures pratiques des apps pour enfants (décision de Louis du 01/11/2026).
 
 ## Les parents ne sont ni enseignants ni designers : faire relire par des spécialistes
 

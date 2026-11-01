@@ -9,7 +9,7 @@ Provenance : **[source]** vérifié à la source ; **[appréciation]** choix de 
 - Henri et Clara ont chacun leur lien (`/revisions/henri/`, `/revisions/clara/`), ajouté à l'écran d'accueil de l'iPad, avec leur mascotte en icône : **Moussi** pour Henri, **Pooh Bear** pour Clara.
 - Tout vit sur ce site, pour que chaque module s'ouvre dans l'app de l'enfant et y garde sa progression. Détail et contraintes de l'iPad : [`tables/PLAN.md`](tables/PLAN.md), section 3 bis.
 - **Appareils** : l'iPad des enfants d'abord, un iPad 9e génération (10,2 pouces, bouton d'accueil, iPadOS 26.5 au 01/11/2026, 1080 × 810 points en paysage, 810 × 1080 en portrait), dans les deux orientations ; ponctuellement les iPhone des parents (iPhone 17 et iPhone 16 Pro, 402 × 874 points, Dynamic Island), en portrait. La progression vit dans l'appareil : une séance faite sur un téléphone ne remonte pas sur l'iPad (export et import prévus dans le coin parent).
-- Un seul système de design pour tous les modules (polices, couleurs de chaque enfant, composants) : `design-system/`, en cours.
+- Un seul système de design pour tous les modules (polices, couleurs de chaque enfant, composants) : `design-system/`. **En refonte depuis le 01/11/2026, sans aucune contrainte héritée** (décision de Louis : le portail et le planisphère de départ ont été faits sans designer ; on part des meilleures pratiques, avant que les enfants ne s'habituent à une interface). Les polices seront hébergées sur le site pour que l'app marche sans réseau.
 
 ## 2. Six principes pédagogiques communs à tous les modules
 
@@ -31,16 +31,24 @@ Provenance : **[source]** vérifié à la source ; **[appréciation]** choix de 
 
 ## 4. Dictée : l'iPad dicte et attend, l'enfant écrit sur papier
 
-**Déroulé [appréciation]**, calqué sur la dictée de classe :
+**Décidé le 01/11/2026, sur proposition du relecteur pédagogique** ([relecture](revues/2026-11-01_relecture-pedagogique.md), propositions 1 à 4) :
+
+- **Préparer avant de dicter** : sur les jours qui précèdent, l'enfant repère les pièges du texte et travaille les mots difficiles en copie flash ; la dictée vient ensuite. La dictée apprend au lieu de seulement mesurer.
+- **Les mots du jour au cœur du module** : une dizaine de mots par semaine, dictés chaque jour, et la phrase du jour redictée ; les mots ratés reviennent par les mêmes boîtes de Leitner que les tables.
+- **L'enfant se corrige d'abord, Claude ensuite** (section 5).
+- **À demander aux maîtresses avant de coder la correction** : la forme de leur dictée, leurs codes de correction, la liste de mots de la semaine. L'app ne doit pas contredire la classe.
+
+**Déroulé de la dictée elle-même**, calqué sur la dictée de classe :
 
 1. **Lecture complète** du texte, une fois, pour le sens.
 2. **Phrase par phrase** : l'iPad lit une phrase, par groupes de mots si elle est longue, puis **se met en pause tout seul**. Deux gros boutons :
    - **Répéter** : relit la phrase (ou le dernier groupe de mots) ;
    - **Phrase suivante**.
-3. **Relecture finale** du texte entier, pour que l'enfant se corrige.
-4. **Photo de la feuille** : l'enfant prend sa dictée en photo, et Claude la corrige (section 5).
+3. **Relecture finale** du texte entier.
+4. **L'enfant se relit avec une consigne précise**, puis compare lui-même sa feuille au texte juste.
+5. **Photo de la feuille** : Claude compare à son tour au texte connu (section 5).
 
-**Réglages** : vitesse de lecture (lente par défaut), ponctuation dite ou non (« virgule », « point »), choix de la voix française de l'iPad.
+**Réglages** : voix active par défaut (c'est le module qui dicte), vitesse de lecture (lente par défaut), ponctuation dite ou non (« virgule », « point »), choix de la voix française de l'iPad.
 
 **Charger une dictée : n'importe qui, sans mode adulte** (demande de Louis du 01/11/2026). Un bouton « Nouvelle dictée » dans l'app de l'enfant, ouvert à tous :
 
@@ -59,10 +67,11 @@ L'app découpe seule le texte en phrases (sur la ponctuation), puis les phrases 
 
 **Le cadre du retour [appréciation]** :
 
-- bienveillant et court, au niveau de l'enfant, qu'il tutoie ;
-- il commence par ce qui est réussi ;
-- pour une dictée, il souligne chaque erreur avec la règle qui permet de la corriger, et propose de la recopier ;
-- pour un exercice, il montre où regarder, sans donner la réponse du premier coup ;
+- **première version : les dictées seulement** (décidé le 01/11/2026), parce que l'app connaît le texte juste et que Claude compare au lieu de deviner ; les exercices photographiés viendront après un essai ;
+- Claude transcrit ce qu'il lit et dit quand un mot est illisible, au lieu de compter une faute ;
+- bienveillant et court, au niveau de l'enfant, qu'il tutoie ; il compte les mots justes plutôt que les fautes ;
+- **trois erreurs au plus** travaillées par retour, en posant d'abord une question sur le raisonnement (« qui fait l'action ? »), puis la règle, puis l'enfant recopie ;
+- les premières semaines, un parent est à côté, le temps de vérifier que Claude lit bien leur écriture ;
 - **pas de conversation libre** avec l'IA : un retour par photo, sur un cadre écrit par les parents ;
 - une copie de chaque retour va dans le coin parent.
 

@@ -44,7 +44,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 ### Écrans
 
 - **La grille** : la table de Pythagore 10 x 10, chaque case se colore à mesure que le résultat est acquis (gris, bronze, argent, or). C'est la récompense centrale et la carte de ce qui reste.
-- **Entraînement du jour** (environ 5 minutes) : rappels dus aujourd'hui, mélange des quatre types de questions, reprise des erreurs à la fin. Pavé numérique géant. Série de jours d'affilée.
+- **Entraînement du jour** (environ 5 minutes) : rappels dus aujourd'hui, mélange des quatre types de questions, reprise des erreurs à la fin. Pavé numérique géant. Régularité affichée en jours faits dans la semaine (décision du 01/11/2026), pas en série qui retombe à zéro. « Rapide ! » reste, discret.
 - **Découvrir une famille** : on débloque les familles dans l'ordre de la section 2, chacune avec son astuce animée et sa représentation en rectangle (7 x 8, c'est 7 rangées de 8).
 - **Défi 1 minute** : le format de l'évaluation nationale, contre son propre record seulement, ouvert une fois la justesse installée.
 - **À voix haute** (option, **[brief GPT]**) : l'appli lit la question, l'enfant répond à l'oral, avec repli sur le pavé si la reconnaissance hésite. Utile en voiture. À tester sur l'iPad avant de le promettre (section 5).
@@ -54,7 +54,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 
 - **Un suivi par résultat** : juste ou faux, temps de réponse, dates. Un résultat passe au niveau suivant quand il sort juste et en moins de 3 secondes (seuil à ajuster) à des jours différents.
 - **Les résultats acquis reviennent de temps en temps**, à une semaine puis à un mois, pour vérifier qu'ils tiennent.
-- **Diagnostic au premier lancement** : un défi d'une minute place chaque enfant dans les boîtes, pour ne pas faire refaire la table de 2 à qui la sait.
+- **Diagnostic au premier lancement** : une minute de questions place chaque enfant dans les boîtes, pour ne pas faire refaire la table de 2 à qui la sait ; le temps de réponse est mesuré en silence, **sans chrono visible** (décision du 01/11/2026, sur proposition du relecteur pédagogique).
 
 ### Erreurs : corriger sans punir, puis faire redire
 
@@ -69,7 +69,7 @@ Provenance de chaque affirmation : **[source]** lu à la source le 01/11/2026 ; 
 ### Son
 
 - Bruitages produits par le navigateur (Web Audio : tintement pour une bonne réponse, son doux pour une erreur, fanfare pour un record), sans fichier ni droit d'auteur.
-- Voix française du navigateur pour lire les questions. Bouton muet.
+- Voix française du navigateur pour lire les questions, **coupée par défaut** dans les tables (décision du 01/11/2026). Bouton muet.
 
 ### Technique
 
@@ -111,7 +111,7 @@ revisions/
 - Un lien et une app par enfant sur l'écran d'accueil (section 3 bis).
 - Appareil : l'iPad 9e génération des enfants, dans les deux orientations, et ponctuellement les iPhone des parents (détail dans `../DISPOSITIF.md`, section 1).
 - Un seul dépôt et un seul site : `louisepasq/revisions` (le dépôt de Louise), où les deux parents écrivent ; le plan et la maquette y ont été déplacés depuis `LouisVap/tables-multiplication`, archivé.
-- Diagnostic d'une minute au premier lancement : oui.
+- Diagnostic d'une minute au premier lancement : oui, sans chrono visible. Les deux enfants sont droitiers : pavé à droite en paysage.
 
 ## 5. Points à tester sur l'iPad avant de les promettre
 
