@@ -36,7 +36,7 @@ const MESSAGES = {
 
 function page(suite, enfant, erreur) {
   const prenom = PRENOMS[enfant];
-  const titre = prenom ? `L'app de ${prenom}` : 'Nos révisions';
+  const titre = prenom ? `L'app ${/^[AEIOUYH]/.test(prenom) ? "d'" : 'de '}${prenom}` : 'Nos révisions';
   const consigne = prenom ? `Ton code secret, ${prenom}.` : 'Le code parent.';
   const html = `<!doctype html>
 <html lang="fr" data-enfant="${prenom ? enfant : ''}">
