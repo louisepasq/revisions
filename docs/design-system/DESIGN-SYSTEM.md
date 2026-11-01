@@ -1,5 +1,7 @@
 # Système de design « Nos révisions »
 
+> **Statut au 01/11/2026 : première version, en refonte.** Elle partait des choix du portail et du planisphère de départ ; Louis a demandé de repartir sans aucune contrainte héritée, depuis les meilleures pratiques (panel de design en cours). Ne pas l'utiliser pour un nouveau module avant la refonte.
+
 Le socle commun de toutes les petites apps de révision d'Henri (CM1) et de Clara (CM2) sur iPad : les principes, les tokens, les composants, les modèles d'écran et l'ossature d'une page. Trois fichiers l'accompagnent :
 
 - `kit.css` : les tokens en variables CSS et les classes des composants, préfixées `kr-`.
