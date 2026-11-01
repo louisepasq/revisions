@@ -746,6 +746,7 @@
   /* =================== Fin de séance =================== */
   function fin(s) {
     const b = Z.bilan(s, etat, PROG, new Date());
+    Z.finirSeance(etat, new Date()); // seule une séance finie fait sortir le voyage du « Today » (D-22)
     sauver();
     publier();
     KR.son('fete');

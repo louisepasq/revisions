@@ -3,7 +3,10 @@
    - progres : l'album à tampons (D-20), son avancement en tampons sur 144 (36 cartes × 4), qui ne
      redescend jamais puisqu'un tampon ne se perd pas ;
    - du : une séance chaque jour (« Peu et souvent »), annoncée par les cartes qui reviennent quand
-     il y en a ; calculée pour demain si l'enfant a déjà joué aujourd'hui ;
+     il y en a ; calculée pour demain si une séance est finie aujourd'hui (une réponse seule ne
+     suffit pas, D-22 point 10) ; l'album entier en or et rien de dû, la prochaine révision prévue
+     à sa date (D-22 point 9) ;
+   - fini : la dernière séance finie { jour, nature, minutes }, comptée dans le plafond du « Today » ;
    - parent : l'état réel (boîtes), en français.
    Logique pure. Dépend de moteur.js (Tables), album.js (Album) et commun/textes.js (Textes).
    Tests : test/resume.test.js */
@@ -48,21 +51,22 @@
     else if (or) phrase = deux('res_tampons_or', { n: total, or });
     else phrase = deux(total === 1 ? 'tampon_un' : 'tampons_n', { n: total });
 
-    let du;
+    let du = null;
     if (!etat.diagnostic) {
       du = { des: j, nature: 'decouverte', phrase: deux('res_on_commence'), minutes: MINUTES };
     } else {
-      const ref = (etat.jours || []).includes(j) ? T.ajouterJours(j, 1) : j;
-      const cartes = new Set();
-      Object.keys(etat.faits || {}).forEach(k => {
-        const f = etat.faits[k];
-        const [a, b] = k.split('x').map(Number);
-        if (!f || !f.vu || !f.prochain || f.prochain > ref || T.familleDuFait(a, b) >= (etat.familles || 1)) return;
-        cartes.add(T.cle(Math.min(a, b), Math.max(a, b)));
-      });
-      du = cartes.size
-        ? { des: ref, nature: 'revision', phrase: deux(cartes.size === 1 ? 'res_carte_revient' : 'res_cartes_reviennent', { n: cartes.size }), minutes: MINUTES }
-        : { des: ref, nature: 'seance', phrase: deux('entrainement'), minutes: MINUTES };
+      // Le module ne sort du « Today » qu'une séance finie (D-22, point 10) : une réponse seule ne suffit pas.
+      const ref = T.finieLe(etat, j) ? T.ajouterJours(j, 1) : j;
+      const revision = (des, n) => ({ des, nature: 'revision', phrase: deux(n === 1 ? 'res_carte_revient' : 'res_cartes_reviennent', { n }), minutes: MINUTES });
+      const n = cartesDues(etat, ref).size;
+      if (n) du = revision(ref, n);
+      else if (or < A.PAIRES.length) du = { des: ref, nature: 'seance', phrase: deux('entrainement'), minutes: MINUTES };
+      else {
+        // Tout l'album en or et rien de dû : la prochaine révision prévue, pas une séance chaque jour
+        // (D-22, point 9), comme le voyage.
+        const prochaine = prochaineRevision(etat, ref);
+        if (prochaine) du = revision(prochaine, cartesDues(etat, prochaine).size || 1);
+      }
     }
 
     const depuis = T.ajouterJours(j, 1 - JOURS_GARDES);
@@ -74,9 +78,35 @@
         jour: j,
       },
       du,
+      // La dernière séance finie, que le portail compte dans le plafond du jour (D-22, point 1).
+      fini: etat.seanceFinie ? { jour: etat.seanceFinie.jour, nature: etat.seanceFinie.nature, minutes: MINUTES } : null,
       jours: Array.from(new Set(etat.jours || [])).filter(x => x >= depuis && x <= j).sort(),
       parent: phraseParent(etat),
     };
+  }
+
+  /* Les cartes (paires) vues qui reviennent au plus tard le jour ref, dans les familles ouvertes. */
+  function cartesDues(etat, ref) {
+    const T = racine.Tables;
+    const cartes = new Set();
+    Object.keys(etat.faits || {}).forEach(k => {
+      const f = etat.faits[k];
+      const [a, b] = k.split('x').map(Number);
+      if (!f || !f.vu || !f.prochain || f.prochain > ref || T.familleDuFait(a, b) >= (etat.familles || 1)) return;
+      cartes.add(T.cle(Math.min(a, b), Math.max(a, b)));
+    });
+    return cartes;
+  }
+
+  /* La date de la prochaine révision prévue après ref, dans les familles ouvertes, ou null. */
+  function prochaineRevision(etat, ref) {
+    const T = racine.Tables;
+    const dates = Object.keys(etat.faits || {}).map(k => {
+      const f = etat.faits[k];
+      const [a, b] = k.split('x').map(Number);
+      return f && f.vu && f.prochain > ref && T.familleDuFait(a, b) < (etat.familles || 1) ? f.prochain : null;
+    }).filter(Boolean).sort();
+    return dates[0] || null;
   }
 
   racine.TablesResume = { resume, phraseParent };

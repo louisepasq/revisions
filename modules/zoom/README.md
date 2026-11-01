@@ -10,7 +10,7 @@ La pédagogie, le contenu par enfant, les sources et les licences sont dans [`do
 | `cartes.js` | `window.ZoomCartes` : les tracés de chaque étape, en entiers dans un viewBox de 1000 de large. **Fabriqué** par `outils/cartes.py`, ne pas le modifier à la main | rien |
 | `geometrie.js` | `window.ZoomGeo` : chemins SVG et « le doigt a-t-il touché ce lieu ? » (marges en pixels d'écran, mers hors des terres, point voisin désigné) | rien |
 | `moteur.js` | `window.Zoom` : boîtes de Leitner par lieu et par type de question, découvertes, étapes qui s'ouvrent, séance, choix des noms, bilan, stockage `<enfant>.zoom`. **Générique** : il ne connaît que le programme qu'on lui passe | rien |
-| `resume.js` | `window.ZoomResume` : le résumé publié pour le portail (D-19, contrat dans `docs/ARCHITECTURE.md`, section 8), testé dans `test/resume.test.js` | `moteur.js`, `contenu.js`, `commun/textes.js` |
+| `resume.js` | `window.ZoomResume` : le résumé publié pour le portail (D-19, contrat dans `docs/ARCHITECTURE.md`, section 8), avec la séance finie (`fini`) ; le voyage ne quitte le « Today » qu'à l'écran de fin d'une séance (D-22, point 10 : `Zoom.finirSeance` pose `seanceFinie` dans l'état, champ facultatif), testé dans `test/resume.test.js` | `moteur.js`, `contenu.js`, `commun/textes.js` |
 | `zoom.js`, `zoom.css` | l'interface : accueil et étapes, grand voyage, exploration, séance, fin | `commun/textes.js`, `commun/kit.js` et les quatre fichiers ci-dessus |
 | `henri/zoom.html`, `clara/zoom.html` | pages fines qui posent `data-enfant` et chargent le tout, avec `commun/sync.js` et `commun/synchro-page.js` | |
 

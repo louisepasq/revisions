@@ -82,15 +82,39 @@ test('tables : les cartes qui reviennent aujourd\'hui, comptées par paire, fami
   assert.match(r.parent, /Album : 3 tampons, 0 carte en or\./);
 });
 
-test('tables : déjà joué aujourd\'hui, la séance de demain est annoncée pour demain', () => {
+test('tables (D-22, point 10) : une réponse seule laisse la séance due ; une séance finie annonce celle de demain', () => {
   const e = etatTables();
-  e.jours.push('2026-11-04');
-  const r = tables(e);
+  e.jours.push('2026-11-04'); // une réponse donnée aujourd'hui, puis retour à l'accueil
+  let r = tables(e);
+  assert.equal(r.du.des, '2026-11-04', 'pas encore finie : toujours due aujourd\'hui');
+  assert.equal(r.fini, null);
+  const lire = res => [{ id: 'tables', matiere: 'maths', etat: 'actif', decouvrable: true, resume: g.Portail.nettoyerResume(Object.assign({ version: 1 }, copie(res))) }];
+  assert.equal(g.Portail.planDuJour(lire(r), '2026-11-04').activites.length, 1, 'les tables restent dans le « Today »');
+  // L'écran de fin : la nature est celle que le résumé proposait à l'ouverture.
+  e.resume = copie(r);
+  T.finirSeance(e, MERCREDI);
+  assert.deepEqual(copie(e.seanceFinie), { jour: '2026-11-04', nature: 'revision' });
+  r = tables(e);
+  verifierForme(r);
   assert.equal(r.du.des, '2026-11-05');
   assert.equal(r.du.phrase.en, '2 cards come back', '2 × 3 et 2 × 5 reviennent demain');
-  const portail = g.Portail.planDuJour([{ id: 'tables', matiere: 'maths', etat: 'actif', resume: g.Portail.nettoyerResume(r) }], '2026-11-04');
+  assert.deepEqual(copie(r.fini), { jour: '2026-11-04', nature: 'revision', minutes: 5 });
+  const portail = g.Portail.planDuJour(lire(r), '2026-11-04');
   assert.equal(portail.activites.length, 0, 'rien de plus aujourd\'hui');
+  assert.equal(portail.finis, 1, 'la séance finie garde sa place dans le plafond');
   assert.equal(portail.faitAujourdhui, true);
+  // Une deuxième séance le même jour ne change pas la nature de la première.
+  e.resume = copie(r);
+  T.finirSeance(e, MERCREDI);
+  assert.equal(e.seanceFinie.nature, 'revision');
+});
+
+test('tables : le premier jour, la séance finie est la découverte', () => {
+  const e = T.etatNeuf();
+  e.resume = copie(tables(e)); // publié à l'ouverture : « Let's begin »
+  Object.assign(e, { diagnostic: true, jours: ['2026-11-04'] });
+  T.finirSeance(e, MERCREDI);
+  assert.equal(tables(e).fini.nature, 'decouverte');
 });
 
 test('tables : sans carte due, la séance du jour ; toutes dorées, la phrase le dit', () => {
@@ -104,6 +128,28 @@ test('tables : sans carte due, la séance du jour ; toutes dorées, la phrase le
   verifierForme(r);
   assert.equal(r.progres.phrase.en, 'All 36 gold!');
   assert.equal(r.progres.avancement, 1);
+});
+
+test('tables (D-22, point 9) : tout l\'album en or et rien de dû, la prochaine révision prévue, pas une séance chaque jour', () => {
+  const or = Object.assign(T.etatNeuf(), { diagnostic: true, familles: 6 });
+  g.Album.PAIRES.forEach(([a, b]) => {
+    const f = { boite: 5, vu: true, prochain: '2026-12-01', justesJours: [], tampons: ['2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04'] };
+    or.faits[T.cle(a, b)] = f;
+    or.faits[T.cle(b, a)] = Object.assign({}, f);
+  });
+  or.faits['6x7'].prochain = '2026-11-20';
+  or.faits['7x6'].prochain = '2026-11-20';
+  let r = tables(or);
+  verifierForme(r);
+  assert.equal(r.du.nature, 'revision');
+  assert.equal(r.du.des, '2026-11-20');
+  assert.equal(r.du.phrase.en, '1 card comes back', '6 × 7 et 7 × 6 sont la même carte');
+  assert.equal(g.Portail.planDuJour([{ id: 'tables', matiere: 'maths', etat: 'actif', decouvrable: true, resume: g.Portail.nettoyerResume(Object.assign({ version: 1 }, copie(r))) }], '2026-11-04').activites.length, 0);
+  // Le jour venu, la révision est due ; une carte qui revient aujourd'hui l'est tout de suite.
+  or.faits['3x4'].prochain = '2026-11-04';
+  r = tables(or);
+  assert.equal(r.du.des, '2026-11-04');
+  assert.equal(r.du.phrase.en, '1 card comes back');
 });
 
 /* ---------- Zoom ---------- */
@@ -134,6 +180,18 @@ test('zoom : les lieux qui reviennent, les lieux montés aujourd\'hui, l\'avance
   assert.equal(r.progres.phrase.en, `2 of ${total} places`);
   assert.ok(Math.abs(r.progres.avancement - 2 / total) < 1e-9);
   assert.match(r.parent, /^Le voyage : 2 lieux découverts sur \d+/);
+});
+
+test('zoom (D-22, point 10) : le voyage ne sort du « Today » qu\'une séance finie', () => {
+  const e = Object.assign(Z.etatNeuf(), { intro: false, jours: ['2026-11-04'] }); // une réponse, pas finie
+  assert.equal(zoom(e).du.des, '2026-11-04');
+  e.resume = copie(zoom(e));
+  e.intro = true;
+  Z.finirSeance(e, MERCREDI);
+  const r = zoom(e);
+  verifierForme(r);
+  assert.deepEqual(copie(r.fini), { jour: '2026-11-04', nature: 'decouverte', minutes: 5 }, 'le grand voyage est la découverte du jour');
+  assert.ok(r.du.des > '2026-11-04', 'la suite est pour demain');
 });
 
 test('zoom : rien de dû ni de nouveau, la prochaine révision est annoncée à sa date', () => {

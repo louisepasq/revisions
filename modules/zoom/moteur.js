@@ -266,6 +266,19 @@
     });
   }
 
+  /* Une séance arrivée à son écran de fin (D-22, point 10) : seul ce moment fait sortir le voyage du
+     « Today ». Champ facultatif `seanceFinie: { jour, nature }`, absent d'un état d'avant D-22 (il
+     n'entre pas dans etatNeuf, pour qu'un état enregistré se relise à l'identique) ; `nature` est
+     celle de ce que le résumé proposait à l'ouverture, et la première séance finie d'un jour fait foi. */
+  function finirSeance(etat, maintenant) {
+    const j = jour(maintenant);
+    if (etat.seanceFinie && etat.seanceFinie.jour === j) return etat;
+    const du = etat.resume && etat.resume.du;
+    etat.seanceFinie = { jour: j, nature: du && du.des <= j && du.nature ? du.nature : 'seance' };
+    return etat;
+  }
+  const seanceFinieLe = (etat, j) => !!(etat.seanceFinie && etat.seanceFinie.jour === j);
+
   function charger(enfant) {
     try {
       const brut = localStorage.getItem(enfant + '.zoom');
@@ -283,6 +296,6 @@
     MODULE: 'zoom', RAPIDE_MS, TAILLE_SEANCE, NOUVEAUX_PAR_SEANCE, INTERVALLE_JOURS, BOITE_NOMMER, ajouterJours,
     cle, jour, etatNeuf, boite, decouvrir, enregistrer, couleur, majEtages, lieuxOuverts, seance, choix,
     creerSeance, courante, repondre, suivante, finie, avancement, bilan, compte, fragiles, joursDeLaSemaine,
-    charger, sauver,
+    finirSeance, seanceFinieLe, charger, sauver,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

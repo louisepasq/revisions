@@ -14,8 +14,11 @@
   const t = KR.t;
   const enfant = KR.enfant();
   const app = document.getElementById('app');
-  // Clara (CM2) : une cible qui admet le coup parfait ; Henri (CM1) : toute cible atteignable.
-  const SCORE_MIN = KR.infos().classe === 'CM2' ? C.COUP_PARFAIT : 1;
+  // Clara (CM2) : une cible qui admet le coup parfait ; Henri (CM1) : une cible atteignable qui
+  // demande au moins deux calculs, jamais un seul (D-22, point 5).
+  const CM2 = KR.infos().classe === 'CM2';
+  const SCORE_MIN = CM2 ? C.COUP_PARFAIT : 1;
+  const ETAPES_MIN = CM2 ? 1 : 2;
   const CHRONOS = [0, 3, 5]; // minutes ; 0 = sans chrono, le défaut (D-18)
   const OPS = ['+', '−', '×', '÷'];
   const SECOURS_VOIX = 8000;
@@ -72,14 +75,15 @@
       if (b && actions[b.dataset.a] && !b.disabled) actions[b.dataset.a](b, e);
     };
   }
-  /* Une feuille posée sur l'écran : deux boutons, le principal à droite. */
-  function feuille(titre, texte, boutons, quand, attitude) {
+  /* Une feuille posée sur l'écran : deux boutons, le principal à droite ; `extra` (html déjà sûr) se
+     pose juste au-dessus des boutons. */
+  function feuille(titre, texte, boutons, quand, attitude, extra) {
     if (document.querySelector('.voile')) return;
     const voile = document.createElement('div');
     voile.className = 'voile';
     voile.innerHTML = `<div class="feuille feuille-arret c-feuille" role="dialog" aria-modal="true" aria-labelledby="c-feuille-titre">
       <div class="c-feuille-masc">${KR.mascotte(attitude || 'attend')}</div>
-      <h2 id="c-feuille-titre">${KR.echapper(titre)}</h2>${texte ? `<p class="c-feuille-texte">${KR.echapper(texte)}</p>` : ''}
+      <h2 id="c-feuille-titre">${KR.echapper(titre)}</h2>${texte ? `<p class="c-feuille-texte">${KR.echapper(texte)}</p>` : ''}${extra || ''}
       <div class="boutons">${boutons.map(b => `<button type="button" class="btn ${b.classe}" data-f="${b.id}">${KR.echapper(b.texte)}</button>`).join('')}</div></div>`;
     document.body.appendChild(voile);
     voile.addEventListener('click', e => {
@@ -138,7 +142,7 @@
     E.commencer(etat);
     sauver();
     const graine = `${enfant}-${E.jour(new Date())}-${etat.parties}`;
-    const tirage = C.tirer(graine, SCORE_MIN) || C.tirer(graine + '-bis');
+    const tirage = C.tirer(graine, SCORE_MIN, ETAPES_MIN) || C.tirer(graine + '-bis', 1, ETAPES_MIN) || C.tirer(graine + '-ter');
     jeu(tirage, minutes);
   }
 
@@ -317,6 +321,8 @@
       const question = t('cible_indice_question', { mascotte: KR.nomMascotte() });
       const cout = t('cible_indice_cout', { n: C.COUT_INDICE });
       if (voixActive()) KR.lireSuite([question, cout].map(texte => ({ texte, langue: langue() })), SECOURS_VOIX);
+      // Le coût en chiffre et en symbole, en gros, compris même sans lire l'anglais (D-22, point 7).
+      const coutGros = `<p class="c-feuille-cout" aria-hidden="true"><span>−${C.COUT_INDICE}</span>${KR.icone('etoile')}</p>`;
       feuille(question, cout, [
         { id: 'non', classe: 'btn-secondaire', texte: t('cible_indice_non') },
         { id: 'oui', classe: 'btn-primaire', texte: t('cible_indice_oui') },
@@ -331,7 +337,7 @@
         message = { genre: 'indice', texte: CC.AFFICHE.indice(e), dit: CC.DIT.indice, ids: [idA, idB] };
         rendre();
         dire([message.dit]);
-      }, 'aide');
+      }, 'aide', coutGros);
     }
 
     function victoire() {
@@ -389,13 +395,18 @@
     dire([CC.DIT.cible(tirage.cible)]);
   }
 
-  /* =================== Fin de partie : le score, et le meilleur chemin en défi =================== */
+  /* =================== Fin de partie : le score, et le meilleur chemin en défi ===================
+     La bulle est lue d'elle-même par la voix (D-22, point 7), comme le coût de l'indice. */
   function fin(tirage, minutes, r) {
     const nom = KR.nomMascotte();
     const moins = r.brut - r.score;
     const semaine = E.joursDeLaSemaine(etat, new Date());
+    // Coup parfait obtenu avec un indice (D-22, point 4) : le badge reste (point 8), et le défi est de le
+    // refaire seul, sans montrer le chemin de la mascotte, que l'enfant vient de jouer.
+    const parfaitAide = r.parfait && r.indices > 0;
     const defi = r.score < tirage.meilleur;
-    const bulle = defi ? t('cible_defi', { mascotte: nom, n: tirage.meilleur }) : t('cible_meilleur');
+    const montrer = defi && !parfaitAide;
+    const bulle = parfaitAide ? t('cible_parfait_sans_indice') : defi ? t('cible_defi', { mascotte: nom, n: tirage.meilleur }) : t('cible_meilleur');
     const chemin = (tirage.solution || []).map(e => etapeHtml(e, false)).join('');
     changerEcran(`<div class="ecran fin-seance c-fin">
       <div class="fin-masc">${KR.mascotte('fete', 'rebondit')}<p class="fin-nb">${t('cible_mot')} ${tirage.cible}</p></div>
@@ -411,7 +422,7 @@
         </div>
         <div class="retour-masc c-defi">${KR.medaillon(defi ? 'attend' : 'fete')}<div class="bulles">
           <div class="bulle parle">${KR.echapper(bulle)}</div>
-          ${defi ? `<button type="button" class="btn btn-calme c-montre" data-a="montre">${t('cible_montre')}</button>
+          ${montrer ? `<button type="button" class="btn btn-calme c-montre" data-a="montre">${t('cible_montre')}</button>
           <div class="bulle astuce c-solution cache"><div class="etiq">${KR.icone('ampoule')}${KR.echapper(CC.ETIQUETTE_CHEMIN(nom))}</div><ol class="c-etapes">${chemin}</ol></div>` : ''}
         </div></div>
         <div class="ligne-fin">${KR.semaine(semaine)}<p class="jours-n">${KR.joursFaits(semaine)}</p></div>

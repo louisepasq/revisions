@@ -181,6 +181,9 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     verifier(page.evaluate("window.__paroles.at(-1).langue") == "en-GB", f"{suffixe} : la cible n'est pas lue en anglais")
     verifier("Touch a number" in page.inner_text(".c-calcul"), f"{suffixe} : consigne absente ou pas en anglais")
     verifier(page.locator(".c-tuile").count() == 5, f"{suffixe} : pas cinq nombres")
+    if enfant == "henri":
+        # Henri : jamais une cible qu'un seul calcul atteint (D-22, point 5).
+        verifier(page.evaluate("window.CibleJeu.tirage().plusCourte.length") >= 2, f"{suffixe} : une cible d'un seul calcul pour Henri")
     capture(page, f"jeu_{suffixe}", err)
 
     # Coup refusé : le plus petit moins le plus grand
@@ -215,6 +218,13 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     page.wait_for_selector(".voile .c-feuille")
     question = page.inner_text(".voile .c-feuille")
     verifier(MASCOTTES[enfant] in question and "3" in question, f"{suffixe} : l'indice n'annonce pas son coût ({question})")
+    # Le coût en gros, « −3 » et l'étoile des points (D-22, point 7), et la question lue d'elle-même.
+    verifier(page.locator(".voile .c-feuille-cout").count() == 1 and "−3" in page.inner_text(".voile .c-feuille-cout"),
+             f"{suffixe} : le « −3 » de l'indice n'est pas affiché en gros")
+    taille = page.evaluate("parseFloat(getComputedStyle(document.querySelector('.c-feuille-cout')).fontSize)")
+    verifier(taille >= 36, f"{suffixe} : le « −3 » est trop petit ({taille} px)")
+    page.wait_for_timeout(100)
+    verifier("It costs 3 points from your score." in paroles(page), f"{suffixe} : le coût de l'indice n'est pas dit")
     capture(page, f"indice_question_{suffixe}", err)
     page.click("[data-f='oui']")
     page.wait_for_selector(".c-retour .etiq")
@@ -235,7 +245,20 @@ def partie_complete(navigateur, base, enfant, fmt, schema="light"):
     bulle = page.inner_text(".c-defi .bulle.parle")
     tirage = page.evaluate("window.CibleJeu.tirage()")
     score = etat["dernieres"][-1]["score"] if etat else 0
-    if score < tirage["meilleur"]:
+    parfait_aide = page.locator(".c-badge-parfait").count() == 1
+    if enfant == "clara":
+        # Clara ne tire que des cibles qui admettent le coup parfait : le chemin joué après l'indice en est un.
+        verifier(parfait_aide, f"{suffixe} : le coup parfait avec indice n'a pas été joué")
+    if parfait_aide:
+        # Coup parfait avec un indice (D-22, points 4 et 8) : le badge reste, le défi est de le refaire seul.
+        verifier("Perfect move! Can you do it again without a hint?" == bulle.strip(), f"{suffixe} : bulle du coup parfait aidé ({bulle})")
+        verifier("for the hint" in page.inner_text(".c-score"), f"{suffixe} : la retenue de l'indice n'est pas écrite")
+        verifier(page.locator("[data-a='montre']").count() == 0, f"{suffixe} : le chemin de la mascotte est proposé alors que l'enfant vient de le jouer")
+        verifier(page.locator(".actions-fin .btn-primaire[data-a='meme']").count() == 1, f"{suffixe} : « Same target again » n'est pas le bouton principal")
+        page.wait_for_timeout(900)
+        verifier(bulle.strip() in paroles(page), f"{suffixe} : la bulle du coup parfait aidé n'est pas dite")
+        capture(page, f"fin_parfait_indice_{suffixe}", err)
+    elif score < tirage["meilleur"]:
         verifier(f"{MASCOTTES[enfant]} found a path worth {tirage['meilleur']} points" in bulle, f"{suffixe} : défi absent ({bulle})")
         verifier(bulle in paroles(page), f"{suffixe} : le défi n'est pas dit")
         capture(page, f"fin_defi_{suffixe}", err)

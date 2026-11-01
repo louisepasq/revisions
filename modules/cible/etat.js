@@ -43,6 +43,9 @@
   /* Une partie gagnée : { cible, nombres, score, meilleur, indices, chrono, etapes }. */
   function gagner(etat, p, maintenant) {
     marquerJour(etat, maintenant);
+    // Le jour de la découverte (D-22) : la première cible atteinte. Champ facultatif, hors d'etatNeuf
+    // pour qu'un état enregistré se relise à l'identique ; un état d'avant D-22 qui a déjà gagné ne le reçoit jamais.
+    if (!etat.gagnees && !etat.decouvert) etat.decouvert = jour(maintenant);
     etat.gagnees++;
     if (p.parfait) etat.parfaits++;
     if (p.score >= p.meilleur && !p.indices) etat.meilleurs++;
@@ -90,7 +93,12 @@
     };
     return {
       progres,
-      du: null, // un jeu libre : rien n'est dû, l'enfant y vient quand il veut
+      // Un jeu libre (D-22, point 6) : rien n'est dû une fois découvert, l'enfant y vient quand il veut.
+      // Tant qu'aucune cible n'est atteinte, c'est une découverte, que le portail ne propose que deux
+      // jours par semaine ; elle ne sort du « Today » qu'une cible atteinte (point 10).
+      du: etat.gagnees ? null : { des: auj, nature: 'decouverte', phrase: { en: T.t('res_nouveau', null, 'en'), fr: T.t('res_nouveau', null, 'fr') }, minutes: 5 },
+      // La séance de découverte finie, comptée dans le plafond du jour où elle a eu lieu (point 1).
+      fini: etat.decouvert ? { jour: etat.decouvert, nature: 'decouverte', minutes: 5 } : null,
       jours: etat.jours.filter(j => j >= depuis && j <= auj),
       parent: phraseParent(etat),
     };

@@ -4,7 +4,8 @@
    - progres : les lieux découverts (retrouvés au moins une fois) sur ceux du programme de l'enfant ;
    - du : le grand voyage tant qu'il n'est pas fait, puis les lieux qui reviennent, sinon les lieux
      nouveaux des étapes ouvertes, sinon la prochaine date de révision ; calculé pour demain si
-     l'enfant a déjà joué aujourd'hui ;
+     une séance est finie aujourd'hui (une réponse seule ne suffit pas, D-22 point 10) ;
+   - fini : la dernière séance finie { jour, nature, minutes }, comptée dans le plafond du « Today » ;
    - parent : en français, comme l'ancien coin parent.
    Logique pure. Dépend de moteur.js (Zoom), contenu.js (ZoomContenu) et commun/textes.js.
    Tests : test/resume.test.js */
@@ -62,7 +63,8 @@
     if (!etat.intro) {
       du = { des: j, nature: 'decouverte', phrase: deux('res_grand_voyage'), minutes: MINUTES };
     } else {
-      const ref = (etat.jours || []).includes(j) ? Z.ajouterJours(j, 1) : j;
+      // Le voyage ne sort du « Today » qu'une séance finie (D-22, point 10) : une réponse seule ne suffit pas.
+      const ref = Z.seanceFinieLe(etat, j) ? Z.ajouterJours(j, 1) : j;
       const dus = lieuxDus(etat, prog, ref);
       const nouveaux = Z.lieuxOuverts(etat, prog).some(o => { const t = etat.cartes[Z.cle(o.lieu, 'toucher')]; return !t || !t.vu; });
       if (dus.size) {
@@ -88,6 +90,8 @@
         jour: j,
       },
       du,
+      // La dernière séance finie, que le portail compte dans le plafond du jour (D-22, point 1).
+      fini: etat.seanceFinie ? { jour: etat.seanceFinie.jour, nature: etat.seanceFinie.nature, minutes: MINUTES } : null,
       jours: Array.from(new Set(etat.jours || [])).filter(x => x >= depuis && x <= j).sort(),
       parent: phraseParent(etat, prog),
     };

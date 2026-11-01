@@ -18,6 +18,9 @@
 .gain-auj{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 10px;border-radius:99px;background:var(--or-vif);color:#3A2800;font-weight:700;font-size:16px}
 .gain-auj .ico{font-size:16px}
 @media (prefers-color-scheme: dark){ .phrase-p .ico.or{color:var(--or-vif)} }
+/* « New! » : un module découvert pour la première fois dans le « Today » (D-22, point 2) */
+.jour-c .t .pastille.nouveau{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 10px;border-radius:99px;background:var(--or-vif);color:#3A2800;font-weight:700;font-size:16px;line-height:1;vertical-align:middle;overflow:visible}
+.jour-c .t .pastille.nouveau .ico{font-size:16px;color:#3A2800}
 
 /* Coin parent : toujours en haut à droite, appui long, en français */
 .coin-p{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px;border-radius:99px;background:var(--carte);border:3px solid var(--e-200);color:var(--encre-douce);font-weight:700;font-size:17px;white-space:nowrap}

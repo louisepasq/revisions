@@ -536,6 +536,7 @@
     const maintenant = new Date();
     const j = T.jour(maintenant);
     const b = S.bilan(s, etat, maintenant);
+    T.finirSeance(etat, maintenant); // seule une séance finie fait sortir les tables du « Today » (D-22)
     sauver();
     publier();
     KR.son('fete');

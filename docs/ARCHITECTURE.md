@@ -100,7 +100,7 @@ Le portail en cahiers par matière (D-19, rendu de référence `design-system/ar
 **Ce que montre le portail** (`commun/portail.js`, vues dans l'adresse : rien, `#matiere-<id>`, `#semaine`) :
 
 - le bandeau : la mascotte et sa bulle (la toucher la lit à voix haute), « Hello, {prénom}! », la semaine comptée sur tous les modules (`resume.jours`) ; toucher la semaine ouvre « My week » ;
-- la carte « Today » : trois activités au plus, quinze minutes au plus, une matière à la fois au premier passage, les révisions d'abord (`planDuJour`, la règle de la maquette) ; la première porte le seul bouton plein, Start, à droite ; les suivantes sont sous « Then ». Rien de dû et rien de fait : « Today, you choose. » ; tout fait : « All done. See you tomorrow! » ;
+- la carte « Today » (`planDuJour`, règle détaillée plus bas) : la première activité porte le seul bouton plein, Start, à droite ; les suivantes sont sous « Then » ; un module découvert pour la première fois porte la pastille « New! ». Rien de dû et rien de fait : « Today, you choose. » ; plafond de la journée atteint, ou tout fait : « All done. See you tomorrow! » ;
 - un cahier par matière, les cinq toujours (D-19) ; une matière sans activité est un cahier « Coming soon » qu'on ne touche pas ; sous la couverture, une jauge par activité, jamais une moyenne ;
 - la page d'une matière : Back, le titre sur le motif du cahier, une grande carte par module (phrase de progrès, « monté aujourd'hui » en or vif, jauge, badge « Today ») ;
 - « My week » : la semaine en grand, puis une rangée de jauges par matière ;
@@ -122,7 +122,7 @@ window.Catalogue = {
 };
 ```
 
-Champs facultatifs de plus : `synchro: false` (état hors de `<enfant>.<module>`, ignoré par la sauvegarde en ligne), `noteParent` (clé de `textes.js` montrée sous le bilan dans le coin parent). Les matières (`window.Matieres`) donnent l'ordre de l'emploi du temps, l'icône et le motif de la couverture ; leurs noms sont dans `textes.js` (`mat_<id>`, `mat_<id>_court`). L'ordre des lignes du catalogue est l'ordre des modules dans leur cahier ; `enfants` remplace la liste `data-modules` de l'ancienne page.
+Champs facultatifs de plus : `synchro: false` (état hors de `<enfant>.<module>`, ignoré par la sauvegarde en ligne), `noteParent` (clé de `textes.js` montrée sous le bilan dans le coin parent), `libre: true` (un jeu qu'on choisit, le nombre cible : hors du « Today » une fois découvert, D-22). Les matières (`window.Matieres`) donnent l'ordre de l'emploi du temps, l'icône et le motif de la couverture ; leurs noms sont dans `textes.js` (`mat_<id>`, `mat_<id>_court`). L'ordre des lignes du catalogue est l'ordre des modules dans leur cahier ; `enfants` remplace la liste `data-modules` de l'ancienne page.
 
 **La partie vivante : `resume`, écrit par le module, dans `localStorage['<enfant>.<module>'].resume`.**
 
@@ -143,14 +143,30 @@ Champs facultatifs de plus : `synchro: false` (état hors de `<enfant>.<module>`
     minutes: 5,                // durée honnête, de 2 à 8
     lien: 'tables.html',       // facultatif : une page du site, sinon la page du catalogue
   },
-  jours: ['2026-10-30', '2026-11-04'],   // jours pratiqués, les 14 derniers au plus
+  fini: {                      // la dernière séance finie (écran de fin atteint), ou null (D-22)
+    jour: '2026-11-04',
+    nature: 'revision',        // ce que le résumé proposait à l'ouverture : revision | seance | decouverte
+    minutes: 5,
+  },
+  jours: ['2026-10-30', '2026-11-04'],   // jours pratiqués (une réponse suffit), les 14 derniers au plus
   parent: 'Les tables : 15 multiplications sur 36 sont devenues automatiques. …',  // français, coin parent
 }
 ```
 
 - **Publier** : `KR.publierResume(module, resume)` (`commun/kit.js`) pose `version` et `ecritLe`, garde l'avancement au plus haut déjà publié, range le résumé dans l'état local et prévient la sauvegarde en ligne. Il rend le résumé complet : le module le recopie dans son état en mémoire (`etat.resume = KR.publierResume(...)`), sinon son prochain `sauver` l'effacerait. À appeler à l'ouverture du module et en fin de séance (les tables et le zoom le font dans leur `accueil()` et leur `fin()`).
-- **Le portail calcule, le module déclare** : dû ou pas (`du.des` comparé à aujourd'hui), fait aujourd'hui (`jours` contient la date), au programme ou pas. Un module qui a déjà été pratiqué aujourd'hui calcule son `du` pour demain.
-- **Un module sans résumé** s'affiche quand même, sans jauge ni phrase, et n'entre jamais dans le « Today » : c'est le planisphère tant qu'il n'en publie pas, et chaque module tant qu'il n'a pas été rouvert une fois depuis la mise en service du portail.
+- **Le portail calcule, le module déclare** : dû ou pas (`du.des` comparé à aujourd'hui), séance finie aujourd'hui (`fini.jour`), pratiqué aujourd'hui pour la semaine (`jours`), au programme ou pas. Un module dont la séance est finie aujourd'hui calcule son `du` pour demain ; une réponse seule ne suffit pas (D-22, point 10) : les tables et le zoom rangent `seanceFinie: { jour, nature }` dans leur état à l'écran de fin (`finirSeance` de leur moteur), le nombre cible `decouvert` (le jour de la première cible atteinte). Ces champs sont facultatifs et n'entrent pas dans `etatNeuf`, pour qu'un état enregistré se relise à l'identique (`test/progression.test.js`).
+- **Un résumé publié avant D-22** n'a pas de `fini` : le portail retombe alors sur l'ancienne règle (pratiqué aujourd'hui, donc fait) jusqu'à la prochaine ouverture du module, qui republie son résumé.
+- **Un module sans résumé** s'affiche quand même, sans jauge ni phrase. S'il a un `objet` (il sait publier un résumé), il est proposé d'office dans le « Today » en découverte de cinq minutes, marquée « New! » (D-22, point 2) ; le planisphère, sans `objet`, reste dehors.
+
+**La règle du « Today »** (`planDuJour` de `commun/portail.js`, testée dans `test/portail.test.js` ; maquette de D-19, corrigée par D-22 sur la relecture `revues/2026-11-01_relecture-today.md`) :
+
+1. **Le plafond porte sur la journée entière** : trois activités et quinze minutes, ce qui est déjà fini aujourd'hui compris (`fini.jour` = aujourd'hui, avec ses minutes). Sa matière compte comme vue pour le premier passage. Quand le plafond est atteint, ou que tout est fait : « All done. See you tomorrow! ». L'enfant qui en veut plus ouvre un cahier, librement.
+2. **Ce qui est proposé** : un `du` dont la date est arrivée, et dont la séance n'est pas finie aujourd'hui ; un module jamais ouvert qui a un `objet`, en découverte « New! ».
+3. **Tri** : révisions, puis séances, puis découvertes (un jeu libre après les autres) ; à égalité, la plus ancienne date due, puis l'ordre du catalogue.
+4. **Premier passage** : une activité par matière ; **second passage** s'il reste de la place.
+5. **Au plus une découverte par jour** (D-22, point 3), finie ou proposée : les modules arrivent un par un (les tables le premier jour, le voyage le deuxième…).
+6. **Un jeu libre** (`libre: true`, le nombre cible) : il ne publie pas de `du` une fois découvert, reste hors du « Today » et ne prend pas de place quand il est joué. Tant qu'il n'est pas découvert (jamais ouvert, ou aucune cible atteinte), il n'est proposé que le lundi et le jeudi (`JOURS_JEU_LIBRE`), au plus deux fois par semaine (D-22, point 6) ; le jour de sa découverte, la partie gagnée garde sa place dans le plafond et compte comme la découverte du jour.
+7. Le reste attend demain, sans rien perdre ; jamais de retard ni de « tu as manqué » affichés.
 - **Ce qu'un résumé ne porte jamais** : un pourcentage écrit, un rang, une comparaison, une série, un compte à rebours, une perte.
 - **Lecture prudente** : le portail ignore un champ mal formé sans faire tomber le reste (`nettoyerResume`, testé dans `test/portail.test.js`). Les résumés des tables et du zoom sont testés dans `test/resume.test.js`.
 - **Textes** : les phrases des résumés vivent dans `commun/textes.js` (clés `res_*`, jamais lues à voix haute, donc écartées par `commun/outils/phrases.js`) ; celles du portail dans le bloc `/* accueil */`.

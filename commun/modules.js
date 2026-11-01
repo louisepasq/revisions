@@ -16,7 +16,11 @@
    - synchro  : false pour un module qui ne range pas son état sous <enfant>.<module> (le
                 planisphère de Louise) : la sauvegarde en ligne l'ignore ;
    - noteParent : facultatif, une clé de commun/textes.js affichée sous son résumé dans le coin
-                parent (crédits des cartes du zoom).
+                parent (crédits des cartes du zoom) ;
+   - libre    : facultatif, true pour un jeu qu'on choisit (le nombre cible) : hors du « Today »
+                une fois découvert, et sans place dans son plafond (D-22, points 1 et 6).
+   Un module avec `objet` qui n'a pas encore publié de résumé est proposé en découverte « New! »
+   dans le « Today » (D-22, point 2) ; sans `objet` (le planisphère), il reste dehors.
    L'ordre des lignes est l'ordre des modules dans leur cahier. */
 (function (racine) {
   'use strict';
@@ -49,6 +53,7 @@
       enfants: ['henri', 'clara'],
       etat: 'actif',
       objet: 'CibleEtat',
+      libre: true, // un jeu : hors du « Today », sauf pour sa découverte (D-22, point 6)
     },
     planisphere: {
       // Le module de Louise : il apparaît sans résumé tant qu'il n'en publie pas.

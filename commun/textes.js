@@ -173,6 +173,7 @@
     accueil_bulle_fini: { fr: 'Tout est fait. À demain !', en: 'All done. See you tomorrow!' },
     accueil_bulle_libre: { fr: 'Choisis un cahier !', en: 'Pick a notebook!' },
     accueil_libre: { fr: "Aujourd'hui, c'est toi qui choisis.", en: 'Today, you choose.' },
+    accueil_nouveau: { fr: 'Nouveau !', en: 'New!' }, // un module découvert dans le « Today » (D-22)
     accueil_activite_un: { fr: '1 activité', en: '1 activity' },
     accueil_activites: { fr: '{n} activités', en: '{n} activities' },
     accueil_mes_matieres: { fr: 'Mes matières', en: 'My subjects' },
@@ -264,6 +265,7 @@
     cible_coup_parfait: { fr: 'Coup parfait !', en: 'Perfect move!' },
     cible_defi: { fr: '{mascotte} a trouvé un chemin à {n} points. Tu veux essayer ?', en: '{mascotte} found a path worth {n} points. Want to try?' },
     cible_meilleur: { fr: "C'est le meilleur score possible !", en: "That's the best score possible!" },
+    cible_parfait_sans_indice: { fr: 'Coup parfait ! Tu peux le refaire sans indice ?', en: 'Perfect move! Can you do it again without a hint?' }, // D-22
     cible_montre: { fr: 'Montre-moi', en: 'Show me' },
     cible_meme: { fr: 'Rejouer cette cible', en: 'Same target again' },
     cible_nouvelle: { fr: 'Nouvelle cible', en: 'New target' },

@@ -121,6 +121,19 @@
     return { version: VERSION, faits: {}, familles: 1, diagnostic: false, jours: [], records: [] };
   }
 
+  /* Une séance arrivée à son écran de fin (D-22, point 10) : seul ce moment fait sortir les tables
+     du « Today ». Champ facultatif `seanceFinie: { jour, nature }`, absent d'un état d'avant D-22 ;
+     `nature` est celle de ce que le résumé proposait à l'ouverture (la découverte du premier jour,
+     une révision ou une séance), et la première séance finie d'un jour fait foi. */
+  function finirSeance(etat, maintenant) {
+    const j = jour(maintenant);
+    if (etat.seanceFinie && etat.seanceFinie.jour === j) return etat;
+    const du = etat.resume && etat.resume.du;
+    etat.seanceFinie = { jour: j, nature: du && du.des <= j && du.nature ? du.nature : 'seance' };
+    return etat;
+  }
+  const finieLe = (etat, j) => !!(etat.seanceFinie && etat.seanceFinie.jour === j);
+
   function fait(etat, a, b) {
     const k = cle(a, b);
     if (!etat.faits[k]) etat.faits[k] = { boite: 0, vu: false, prochain: null, justesJours: [], erreurs: 0, dernierTemps: null };
@@ -463,7 +476,7 @@
   racine.Tables = {
     FAMILLES, RAPIDE_MS, TAILLE_SEANCE, NOUVEAUX_PAR_JOUR, TAMPONS_OR, VERSION,
     tampons, estOr, aRevoir, estCarte, cleCarte, migrer, nouveauxDuJour, ajouterJours,
-    cle, jour, astuce, enLettres, faitDit, questionDite, etatNeuf, couleur, compteOr, etatsDesPaires, fragiles, enregistrer, majFamilles,
+    cle, jour, astuce, enLettres, faitDit, questionDite, etatNeuf, finirSeance, finieLe, couleur, compteOr, etatsDesPaires, fragiles, enregistrer, majFamilles,
     seance, question, verifier, relanceDecomposition, questionsDiagnostic, appliquerDiagnostic,
     joursDeLaSemaine, familleDuFait, faitsDeFamille, charger, sauver,
   };

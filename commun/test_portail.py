@@ -86,8 +86,9 @@ def deux(en, fr):
     return {"en": en, "fr": fr}
 
 
-def resume(avancement, phrase, du=None, jours=(), aujourdhui=None, parent=""):
-    return {
+def resume(avancement, phrase, du=None, jours=(), aujourdhui=None, parent="", **plus):
+    """Sans `fini`, un résumé publié avant D-22 ; fini=... (ou None), un résumé d'aujourd'hui."""
+    r = {
         "version": 1,
         "ecritLe": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "progres": {"avancement": avancement, "phrase": phrase, "aujourdhui": aujourdhui, "jour": jour()},
@@ -95,6 +96,12 @@ def resume(avancement, phrase, du=None, jours=(), aujourdhui=None, parent=""):
         "jours": sorted(jours),
         "parent": parent,
     }
+    r.update(plus)
+    return r
+
+
+def fini(decalage, nature, minutes=5):
+    return {"jour": jour(decalage), "nature": nature, "minutes": minutes}
 
 
 def du(decalage, nature, phrase, minutes=5):
@@ -147,12 +154,20 @@ ETATS = {
             None, deux("21 targets hit", "21 cibles atteintes"), du(0, "seance", deux("A new target", "Une nouvelle cible"), 4), [jour(-3)],
             parent="Le nombre cible : 21 cibles atteintes en 6 jours.")},
     },
-    # Tout est fait aujourd'hui : la carte « Today » le dit, la mascotte se repose.
+    # Tout est fait aujourd'hui (D-22, point 1) : les séances finies gardent leur place, le nombre
+    # cible est découvert (un jeu libre, hors du « Today ») ; la carte le dit, la mascotte se repose.
     ("henri", "fini"): {
         "henri.tables": {"version": 2, "jours": [jour()], "resume": resume(
-            0.2, deux("30 stamps", "30 tampons"), du(1, "seance", SEANCE), [jour()], aujourdhui=deux("+8 stamps", "+8 tampons"))},
+            0.2, deux("30 stamps", "30 tampons"), du(1, "seance", SEANCE), [jour()], aujourdhui=deux("+8 stamps", "+8 tampons"),
+            fini=fini(0, "seance"))},
+        "henri.zoom": {"version": 1, "jours": [jour()], "resume": resume(
+            0.2, deux("6 of 31 places", "6 lieux sur 31"), du(1, "revision", deux("2 places come back", "2 lieux reviennent")), [jour()],
+            fini=fini(0, "revision"))},
+        "henri.cible": {"version": 1, "jours": [jour(-6)], "resume": resume(
+            None, deux("2 targets hit", "2 cibles atteintes"), None, [jour(-6)], fini=fini(-6, "decouverte"))},
     },
-    # Aucun résumé du tout (avant toute ouverture d'un module) : l'enfant choisit un cahier.
+    # Le tout premier jour : aucun résumé ; les tables sont la découverte « New! » du jour (D-22,
+    # points 2 et 3), le voyage attend demain.
     ("clara", "vide"): {},
 }
 
@@ -163,7 +178,15 @@ START_ATTENDU = {
     ("henri", "riche"): "tables.html",
     ("clara", "riche"): "tables.html",
     ("henri", "fini"): None,
-    ("clara", "vide"): None,
+    ("clara", "vide"): "tables.html",
+}
+
+# Ce que la carte « Today » doit montrer (D-22) : « New! » pour un module jamais ouvert, « All done »
+# quand le plafond de la journée est atteint.
+TODAY_ATTENDU = {
+    ("henri", "aujourdhui"): ["New!"],
+    ("clara", "vide"): ["New!"],
+    ("henri", "fini"): ["All done. See you tomorrow!"],
 }
 
 
@@ -245,6 +268,11 @@ def parcours(navigateur, base, enfant, cas, fmt, schema="light"):
             PROBLEMES.append(f"{nom} : un Start alors que rien n'est dû")
     elif not start.count() or start.get_attribute("href") != attendu:
         PROBLEMES.append(f"{nom} : Start mène à {start.get_attribute('href') if start.count() else 'rien'} au lieu de {attendu}")
+    for attendu_t in TODAY_ATTENDU.get((enfant, cas), []):
+        if attendu_t not in page.inner_text(".jour-c"):
+            PROBLEMES.append(f"{nom} : la carte « Today » ne montre pas « {attendu_t} »")
+    if (enfant, cas) == ("clara", "vide") and page.locator(".jour-c .pastille.nouveau").count() != 1:
+        PROBLEMES.append(f"{nom} : plus d'une découverte « New! » le premier jour")
     texte = page.inner_text(".portail")
     for interdit in ("Henri" if enfant == "clara" else "Clara", "%"):
         if interdit in texte:
@@ -312,8 +340,6 @@ def main():
         navigateur = p.chromium.launch(channel="chrome")
         for enfant, cas in ETATS:
             for fmt in FORMATS:
-                if cas in ("fini", "vide") and fmt != "ipad-paysage":
-                    continue
                 parcours(navigateur, base, enfant, cas, fmt)
         parcours(navigateur, base, "henri", "riche", "ipad-paysage", "dark")
         parcours(navigateur, base, "clara", "riche", "iphone", "dark")

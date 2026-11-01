@@ -70,15 +70,19 @@
   }
 
   /* Un tirage jouable : cinq nombres (un par dé), une cible de 10 à 99 atteignable,
-     qui n'est pas déjà un des cinq nombres, et dont le meilleur score atteint au moins `scoreMin`. */
-  function tirer(graine, scoreMin) {
+     qui n'est pas déjà un des cinq nombres, dont le meilleur score atteint au moins `scoreMin`, et
+     dont la solution la plus courte compte au moins `etapesMin` calculs (2 pour Henri, D-22 point 5 :
+     aucun calcul unique entre deux nombres de départ ne donne la cible). */
+  function tirer(graine, scoreMin, etapesMin) {
     const alea = hasard(graine);
     for (let essai = 0; essai < 400; essai++) {
       const nombres = DES.map(d => 1 + Math.floor(alea() * d));
       const cible = 10 + Math.floor(alea() * (CIBLE_MAX - 9));
       if (nombres.includes(cible)) continue;
       const r = resoudre(cible, nombres);
-      if (r.possible && r.meilleur >= (scoreMin || 1)) return { cible, nombres, meilleur: r.meilleur, solution: r.solution, plusCourte: r.plusCourte };
+      if (!r.possible || r.meilleur < (scoreMin || 1)) continue;
+      if (r.plusCourte && r.plusCourte.length < (etapesMin || 1)) continue;
+      return { cible, nombres, meilleur: r.meilleur, solution: r.solution, plusCourte: r.plusCourte };
     }
     return null;
   }

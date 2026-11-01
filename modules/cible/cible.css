@@ -98,6 +98,10 @@ a.rond{text-decoration:none}
 .feuille-arret h2{margin:6px 0 12px}
 .c-feuille-masc .masc{width:110px;height:119px;margin:0 auto}
 .c-feuille-texte{font-size:20px;margin-bottom:18px;color:var(--encre)}
+/* Le coût de l'indice en gros, compris sans lire l'anglais (D-22, point 7) : jamais en rouge */
+.c-feuille-cout{display:inline-flex;align-items:center;gap:8px;margin:0 auto 14px;padding:4px 24px;border-radius:99px;background:var(--or-clair);border:3px solid var(--astuce-trait);font-family:var(--f-jeu);font-weight:800;font-size:46px;line-height:1.1;color:var(--encre)}
+.c-feuille-cout .ico{font-size:40px;color:var(--or-fonce)}
+@media (prefers-color-scheme: dark){ .c-feuille-cout .ico{color:var(--or-vif)} }
 .feuille-arret .boutons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px}
 
 /* ---------- Fin de partie ---------- */

@@ -39,6 +39,20 @@ assert.ok(C.resoudre(t1.cible, t1.nombres).possible);
 const exigeant = C.tirer('clara-2026-11-02-1', 13);
 assert.ok(exigeant && exigeant.meilleur === 13, 'on sait tirer une cible qui admet un coup parfait');
 
+// Henri (D-22, point 5) : jamais une cible qu'un seul calcul entre deux nombres de départ atteint.
+const OPS = ['+', '−', '×', '÷'];
+const enUnCalcul = t => t.nombres.some((a, i) => t.nombres.some((b, k) => i !== k && OPS.some(op => C.calculer(a, op, b) === t.cible)));
+let unSeul = 0;
+for (let n = 1; n <= 60; n++) {
+  const libre = C.tirer(`henri-2026-11-0${1 + (n % 7)}-${n}`);
+  if (libre && enUnCalcul(libre)) unSeul++;
+  const t = C.tirer(`henri-2026-11-0${1 + (n % 7)}-${n}`, 1, 2);
+  assert.ok(t, 'un tirage existe');
+  assert.ok(!enUnCalcul(t), `${t.cible} avec ${t.nombres} se fait en un calcul`);
+  assert.ok(t.plusCourte.length >= 2);
+}
+assert.ok(unSeul > 0, 'sans le filtre, des cibles d\'un seul calcul sortaient bien');
+
 // Une partie : jouer, se tromper de chemin, annuler, prendre un indice, gagner.
 const partie = C.nouvellePartie({ cible: 10, nombres: [5, 2, 1, 3, 7], meilleur: 13 });
 assert.strictEqual(C.jouer(partie, 'd1', '−', 'd0').ok, false, '2 − 5 est refusé');

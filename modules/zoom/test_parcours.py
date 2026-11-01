@@ -300,6 +300,10 @@ def premier_lancement(navigateur, base, fmt):
     resume = page.evaluate("JSON.parse(localStorage.getItem('clara.zoom')).resume")
     if not resume or not resume.get("ecritLe") or not resume.get("progres") or not resume.get("parent"):
         PROBLEMES.append(f"résumé {fmt} : le zoom ne publie pas son résumé ({resume})")
+    # La séance finie (D-22, point 10) : le grand voyage est la découverte du jour.
+    fini = (resume or {}).get("fini") or {}
+    if fini.get("jour") != page.evaluate("window.Zoom.jour(new Date())") or fini.get("nature") != "decouverte":
+        PROBLEMES.append(f"résumé {fmt} : la séance finie n'est pas publiée comme découverte du jour ({fini})")
     page.goto(page.url.replace("zoom.html", "index.html"))
     page.click(".cahier[data-matiere='hg']")
     page.wait_for_selector("a.mod[href='zoom.html'] .jauge-m")

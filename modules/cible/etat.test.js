@@ -12,13 +12,14 @@ const C = globalThis.Cible;
 const lundi = new Date(2026, 10, 2, 17, 0); // lundi 2 novembre 2026
 const jeudi = new Date(2026, 10, 5, 17, 0);
 
-// Un enfant qui n'a jamais joué : rien de dû, une invitation, aucun jour.
+// Un enfant qui n'a jamais gagné : une découverte (D-22, points 2 et 6), une invitation, aucun jour.
 const neuf = E.etatNeuf();
 let r = E.resume(neuf, lundi);
 assert.strictEqual(r.progres.avancement, null);
 assert.strictEqual(r.progres.jour, '2026-11-02');
 assert.strictEqual(r.progres.aujourdhui, null);
-assert.strictEqual(r.du, null);
+assert.deepStrictEqual(r.du, { des: '2026-11-02', nature: 'decouverte', phrase: { en: 'New!', fr: 'Nouveau !' }, minutes: 5 });
+assert.strictEqual(r.fini, null);
 assert.deepStrictEqual(r.jours, []);
 assert.ok(r.progres.phrase.en && r.progres.phrase.fr);
 assert.ok(/pas encore commencé/.test(r.parent));
@@ -38,6 +39,15 @@ assert.strictEqual(e.meilleurs, 1, 'le meilleur score sans indice');
 assert.strictEqual(e.indices, 1);
 
 r = E.resume(e, jeudi);
+// Découvert le lundi (première cible atteinte) : un jeu libre, plus rien de dû (D-22, point 6).
+assert.strictEqual(e.decouvert, '2026-11-02');
+assert.strictEqual(r.du, null);
+assert.deepStrictEqual(r.fini, { jour: '2026-11-02', nature: 'decouverte', minutes: 5 });
+// Un état d'avant D-22 qui avait déjà gagné ne reçoit pas de jour de découverte.
+const ancien = Object.assign(E.etatNeuf(), { parties: 4, gagnees: 2, jours: ['2026-10-20'] });
+E.gagner(ancien, { cible: 30, nombres: [1, 2, 3, 4, 5], score: 3, meilleur: 13, indices: 0 }, jeudi);
+assert.strictEqual(ancien.decouvert, undefined);
+assert.strictEqual(E.resume(ancien, jeudi).fini, null);
 assert.deepStrictEqual(r.progres.phrase, { en: '3 targets hit', fr: '3 cibles atteintes' });
 assert.deepStrictEqual(r.progres.aujourdhui, { en: '1 target today', fr: "1 cible aujourd'hui" });
 assert.deepStrictEqual(r.jours, ['2026-11-02', '2026-11-05']);

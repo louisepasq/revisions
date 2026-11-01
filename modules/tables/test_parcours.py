@@ -302,6 +302,10 @@ def seance(page, err, fmt):
     resume = page.evaluate("JSON.parse(localStorage.getItem('clara.tables')).resume")
     if not resume or not resume.get("ecritLe") or not resume.get("progres") or not resume.get("parent"):
         PROBLEMES.append(f"{fmt} : les tables ne publient pas leur résumé ({resume})")
+    # La séance finie (D-22, point 10) : la découverte du jour, comptée dans le plafond du « Today ».
+    fini = (resume or {}).get("fini") or {}
+    if fini.get("jour") != page.evaluate("window.Tables.jour(new Date())") or fini.get("nature") != "decouverte":
+        PROBLEMES.append(f"{fmt} : la séance finie n'est pas publiée comme découverte du jour ({fini})")
     page.click(".accueil-tables .barre a.rond[href='./']")
     page.wait_for_selector(".portail .cahiers")
     if "stamp" not in page.inner_text(".cahier[data-matiere='maths']") and not page.locator(".cahier[data-matiere='maths'] .jauge-m i").count():
