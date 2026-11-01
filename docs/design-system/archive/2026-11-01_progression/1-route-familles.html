@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 · La route des familles</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<style>
+/* ---------- Mise en page de la maquette (hors écran iPad) ---------- */
+html,body{background:var(--trait)}
+body{padding:8px 0 70px}
+.bandeau{width:1080px;margin:16px auto 0;background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:22px 30px 24px}
+.bandeau .num{font-family:var(--f-jeu);font-weight:700;font-size:18px;color:var(--e-700)}
+.bandeau h1{font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1.1;margin:2px 0 10px}
+.bandeau p{font-size:20px;line-height:1.45}
+.legende-ecran{width:1080px;margin:36px auto 12px;font-family:var(--f-jeu);font-weight:700;font-size:23px;line-height:1.2}
+.legende-ecran span{display:block;font-family:var(--f-texte);font-weight:400;font-size:18px;color:var(--encre-douce);margin-top:4px}
+.ipad{width:1080px;height:810px;margin:0 auto;background:var(--toile);border-radius:22px;box-shadow:0 0 0 3px var(--trait-fort),0 10px 30px rgba(30,33,71,.12);overflow:hidden;position:relative;display:flex;flex-direction:column;padding:12px 28px 24px}
+
+/* ---------- La route : stations (familles), pierres (les 36 paires), Moussi ---------- */
+.route{--pierre:48px;--station:84px;position:relative;display:flex;flex-direction:column;gap:var(--entre,62px)}
+.route svg.trace{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.rangee{position:relative;display:flex;align-items:center;justify-content:space-between;padding:0 50px}
+.rangee.retour{flex-direction:row-reverse}
+.noeud{position:relative;z-index:1;flex:none}
+.pierre{width:var(--pierre);height:var(--pierre);border-radius:14px;background:var(--carte);border:3px solid var(--e-300);overflow:hidden;display:grid;place-items:center}
+.pierre i{position:absolute;left:0;right:0;bottom:0;background:var(--e-300)}
+.pierre b{position:relative;font-family:var(--f-jeu);font-weight:700;font-size:16px;line-height:1;color:var(--encre);white-space:nowrap}
+.pierre.vide{border-style:dashed}
+.pierre.or{background:var(--or-clair);border-color:var(--or-relief)}
+.pierre.or i{display:none}
+.pierre.ferme{background:var(--toile);border:3px dashed var(--pointille)}
+.pierre.ferme b{color:var(--encre-douce)}
+.pierre.monte{box-shadow:0 0 0 3px var(--toile),0 0 0 7px var(--or-vif)}
+.pierre.or.monte{background:var(--or-vif)}
+@media (prefers-color-scheme: dark){ .pierre.or b{color:var(--or-fonce)} .pierre.or.monte b,.station.medaille{color:#2A1E00} }
+.station{width:var(--station);height:var(--station);border-radius:50%;background:var(--e-700);color:var(--sur-e);display:grid;place-items:center;box-shadow:0 5px 0 var(--e-relief);font-family:var(--f-jeu);font-weight:800;font-size:25px;line-height:1;text-align:center}
+.station small{display:block;font-size:17px;font-weight:700}
+.station.ferme{background:var(--toile);color:var(--encre-douce);border:3px dashed var(--pointille);box-shadow:none}
+.station.medaille{background:var(--or-vif);color:var(--or-fonce);box-shadow:0 5px 0 var(--or-relief)}
+.station .med{position:absolute;top:-12px;right:-10px;width:36px;height:36px;border-radius:50%;background:var(--carte);color:var(--or-fonce);display:grid;place-items:center;border:3px solid var(--or-vif)}
+.station .med .ico{font-size:20px}
+.station.arrivee{background:var(--carte);color:var(--e-900);border:3px dashed var(--pointille);box-shadow:none;font-size:18px}
+.nom-station{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--f-jeu);font-weight:700;font-size:17px;line-height:1.1;color:var(--encre);text-align:center}
+.nom-station span{display:block;font-family:var(--f-texte);font-weight:700;font-size:16px;color:var(--encre-douce)}
+.moussi{position:absolute;z-index:2;width:74px;height:80px;transform:translate(-50%,-100%);pointer-events:none}
+.moussi .masc{width:74px;height:80px}
+.moussi.fantome{opacity:.35}
+.route.mini{--pierre:22px;--station:38px;--entre:26px}
+.route.mini .rangee{padding:0 26px}
+.route.mini .pierre{border-width:2px;border-radius:6px}
+.route.mini .pierre b,.route.mini .nom-station,.route.mini .station small,.route.mini .med{display:none}
+.route.mini .station{font-size:13px;box-shadow:0 3px 0 var(--e-relief)}
+.route.mini .station.ferme,.route.mini .station.arrivee{box-shadow:none;border-width:2px}
+.route.mini .station.medaille{box-shadow:0 3px 0 var(--or-relief)}
+.route.mini .moussi,.route.mini .moussi .masc{width:34px;height:37px}
+
+/* ---------- Écran A ---------- */
+.carte-route{margin-top:6px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);padding:14px 18px 38px;text-align:left;width:100%}
+.carte-route .route{--entre:52px}
+.cr-tete{display:flex;align-items:baseline;gap:16px;margin:0 6px 46px}
+.cr-tete b{font-family:var(--f-jeu);font-weight:700;font-size:30px;color:var(--e-900)}
+.cr-tete span{font-size:19px;font-weight:700;color:var(--encre-douce)}
+.cr-tete span b{font-size:21px;color:var(--encre)}
+.bas-accueil{margin-top:20px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:20px;flex:1;min-height:0}
+.pratique{display:flex;align-items:center;gap:18px;text-align:left;background:var(--e-700);color:var(--sur-e);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-relief);padding:18px 24px}
+.pratique .txt{flex:1;min-width:0}
+.pratique .txt b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:34px;line-height:1;white-space:nowrap}
+.pratique .txt span{display:block;font-size:20px;margin-top:6px}
+.pratique .sem{background:var(--carte);color:var(--encre);border-radius:var(--r-m);padding:10px 14px}
+.pratique .sem .semaine{gap:6px}
+.pratique .sem .jour .rd{width:34px;height:34px}
+.pratique .go{flex:none;width:80px;height:80px;border-radius:50%;background:var(--sur-e);color:var(--e-700);display:grid;place-items:center}
+.pratique .go .ico{font-size:42px;margin-left:6px}
+.tuile-grille{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900)}
+.tuile-grille .tuile{width:80px;height:80px;border-radius:22px}
+.tuile-grille .tuile .ico{font-size:46px}
+
+/* ---------- Écran B ---------- */
+.fin{flex:1;display:grid;grid-template-columns:230px minmax(0,1fr);gap:26px;align-items:center;min-height:0}
+.fin-g{display:flex;flex-direction:column;align-items:center;gap:6px}
+.fin-g .masc{width:220px;height:238px}
+.fin-g .nb{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900)}
+.fin-d{display:flex;flex-direction:column;gap:14px}
+.fin-d > *{margin:0}
+.fin-d h1{font-family:var(--f-jeu);font-weight:700;font-size:44px;line-height:1;color:var(--e-900)}
+.bloc{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:14px 20px 18px}
+.bloc .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1.1}
+.bloc .titre .ico{font-size:28px;color:var(--juste-700)}
+.bloc .sous{font-size:19px;color:var(--encre-douce);margin-top:4px}
+.bloc .sous b{color:var(--encre)}
+.zoom{margin:96px 0 40px}
+.zoom .route{--pierre:62px;--station:84px}
+.zoom .rangee{padding:0 4px}
+.zoom .pierre b{font-size:19px}
+.fleche-pas{position:absolute;z-index:3;transform:translate(-50%,-100%);font-family:var(--f-jeu);font-weight:800;font-size:22px;color:var(--or-fonce);background:var(--or-vif);border-radius:99px;padding:4px 12px;box-shadow:0 3px 0 var(--or-relief);white-space:nowrap}
+.aussi{display:flex;align-items:center;gap:10px;font-size:19px;padding-top:10px;border-top:3px dashed var(--trait)}
+.aussi .ico{color:var(--or-fonce);font-size:22px}
+.ligne-fin{display:flex;align-items:center;gap:18px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:10px 18px}
+.ligne-fin .semaine{gap:9px}
+.ligne-fin .jour .rd{width:40px;height:40px}
+.jours-n{font-family:var(--f-jeu);font-weight:700;font-size:20px;white-space:nowrap;color:var(--e-900)}
+.actions{display:flex;gap:16px;justify-content:flex-end}
+.actions .btn{min-height:60px;font-size:23px}
+
+/* ---------- Écran C ---------- */
+.route-pleine{flex:1;margin-top:8px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:58px 20px 20px;display:flex;flex-direction:column}
+.route-pleine .route{--pierre:52px;--station:88px;--entre:96px}
+.route-pleine .pierre b{font-size:17px}
+.legende-r{margin-top:auto;display:flex;gap:24px;align-items:center;border-top:3px dashed var(--trait);padding-top:12px;font-size:17px;font-weight:700;color:var(--encre-douce)}
+.legende-r div{display:flex;align-items:center;gap:8px}
+.legende-r .pierre{--pierre:28px;border-width:2px;border-radius:8px;position:relative}
+
+/* ---------- Ligne d'état ---------- */
+.etats{width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.etat{display:grid;grid-template-columns:600px 1fr;gap:24px;align-items:center;background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:18px 22px}
+.etat h3{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1}
+.etat .date{font-size:16px;color:var(--encre-douce);margin:2px 0 10px}
+.etat p{font-size:18px;line-height:1.4}
+.etat .avant{margin-top:10px;padding-top:10px;border-top:2px dashed var(--trait);font-size:16px;color:var(--encre-douce)}
+</style>
+</head>
+<body>
+<header class="bandeau" lang="fr">
+  <p class="num">Mécanique 1 sur 3</p>
+  <h1>1 · La route des familles</h1>
+  <p>Moussi marche sur une route pavée par les 36 multiplications, rangées par familles dans l'ordre d'Eduscol : chaque tampon gagné le fait avancer d'un pas, et la prochaine famille est toujours en vue au bout du tronçon.</p>
+</header>
+
+<p class="legende-ecran" lang="fr">A · Accueil du module, lundi 9 novembre, après 5 séances<span>La route remplace le titre « 2 of 36 by heart » : Moussi est à 62 % du tronçon des doubles, et l'écran dit combien de pas restent jusqu'à la famille suivante.</span></p>
+<section class="ipad" id="ecran-a"></section>
+
+<p class="legende-ecran" lang="fr">B · Fin de séance, lundi 9 novembre (séance 6) : Moussi avance de 10 pas<span>Le tronçon en cours, en grand : la position d'hier en transparence, les pierres qui ont grandi aujourd'hui cerclées d'or vif. Les pas gagnés sur les familles déjà passées sont dits à part.</span></p>
+<section class="ipad" id="ecran-b"></section>
+
+<p class="legende-ecran" lang="fr">C · Ma route, vendredi 27 novembre, après 20 séances<span>La route entière : sous chaque station, le jour où la famille s'est ouverte ; une station devient une médaille d'or quand toutes ses pierres sont dorées. Le boss final n'a qu'une pierre neuve, 7 × 7 : le reste de la table de 7 est déjà pavé.</span></p>
+<section class="ipad" id="ecran-c"></section>
+
+<p class="legende-ecran" lang="fr">Ligne d'état : la route après 1, 5 et 20 séances<span>Simulation du vrai moteur (simulation.js, profil de CM1, cinq séances par semaine à partir du lundi 2 novembre).</span></p>
+<section class="etats" id="etats" lang="fr"></section>
+
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script>
+KR.demarrer();
+
+/* Instantanés de simulation.json : par paire, tampons de chaque sens, 4 au plus (8 par paire). */
+const SIM = {
+  1: '2x2:00 2x3:00 2x4:20 2x5:01 2x6:00 2x7:00 2x8:00 2x9:22 3x3:00 3x4:00 3x5:00 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:00 4x6:00 4x7:22 4x8:00 4x9:00 5x5:00 5x6:11 5x7:22 5x8:01 5x9:00 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  5: '2x2:11 2x3:01 2x4:44 2x5:34 2x6:20 2x7:21 2x8:12 2x9:43 3x3:00 3x4:00 3x5:23 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:33 4x6:00 4x7:22 4x8:00 4x9:00 5x5:33 5x6:43 5x7:44 5x8:23 5x9:33 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  6: '2x2:22 2x3:12 2x4:44 2x5:34 2x6:30 2x7:32 2x8:23 2x9:44 3x3:00 3x4:00 3x5:33 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:33 4x6:00 4x7:22 4x8:00 4x9:00 5x5:33 5x6:44 5x7:44 5x8:34 5x9:33 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  20: '2x2:33 2x3:44 2x4:44 2x5:44 2x6:44 2x7:44 2x8:44 2x9:44 3x3:11 3x4:34 3x5:44 3x6:02 3x7:11 3x8:34 3x9:22 4x4:44 4x5:44 4x6:33 4x7:43 4x8:33 4x9:33 5x5:44 5x6:44 5x7:44 5x8:44 5x9:44 6x6:22 6x7:22 6x8:43 6x9:21 7x7:00 7x8:24 7x9:00 8x8:33 8x9:33 9x9:00',
+};
+const lire = s => Object.fromEntries(s.split(' ').map(x => { const [k, v] = x.split(':'); return [k, [Number(v[0]), Number(v[1])]]; }));
+const ETAT = Object.fromEntries(Object.entries(SIM).map(([n, s]) => [n, lire(s)]));
+/* Familles ouvertes par le moteur à chaque instantané, et jour d'ouverture. */
+const OUVERTES = { 1: 2, 5: 2, 6: 2, 20: 4 };
+const FAMILLES = [
+  { nom: 'Easy ones', tables: [5], badge: '×5', sous: '×1 ×10', paires: ['2x5', '3x5', '4x5', '5x5', '5x6', '5x7', '5x8', '5x9'], ouverte: 'Mon 2 Nov' },
+  { nom: 'Doubles', tables: [2], badge: '×2', paires: ['2x2', '2x3', '2x4', '2x6', '2x7', '2x8', '2x9'], ouverte: 'Mon 2 Nov' },
+  { nom: 'Double doubles', tables: [4, 8], badge: '×4', sous: '×8', paires: ['3x4', '3x8', '4x4', '4x6', '4x7', '4x8', '4x9', '6x8', '7x8', '8x8', '8x9'], ouverte: 'Thu 12 Nov' },
+  { nom: 'Double plus one', tables: [3, 6], badge: '×3', sous: '×6', paires: ['3x3', '3x6', '3x7', '3x9', '6x6', '6x7', '6x9'], ouverte: 'Wed 25 Nov' },
+  { nom: 'Ten minus one', tables: [9], badge: '×9', paires: ['7x9', '9x9'] },
+  { nom: 'Final boss', tables: [7], badge: '×7', paires: ['7x7'] },
+];
+const SEUIL = 0.75; // la famille suivante s'ouvre aux trois quarts des tampons du tronçon (règle proposée)
+function ecrit(k, f) {
+  let [a, b] = k.split('x').map(Number);
+  if (!f.tables.includes(a) && f.tables.includes(b)) [a, b] = [b, a];
+  return `${a}×${b}`;
+}
+const pts = (e, k) => e[k][0] + e[k][1];
+const estOr = (e, k) => e[k][0] >= 4 && e[k][1] >= 4;
+const pasTroncon = (e, f) => f.paires.reduce((s, k) => s + pts(e, k), 0);
+const butTroncon = f => Math.ceil(f.paires.length * 8 * SEUIL);
+
+function pierre(k, f, e, ouverte, avant) {
+  const s = pts(e, k);
+  const or = estOr(e, k);
+  const monte = avant && s > pts(avant, k);
+  const cl = !ouverte ? 'ferme' : or ? 'or' : s === 0 ? 'vide' : '';
+  return `<div class="noeud pierre ${cl}${monte ? ' monte' : ''}" lang="fr">${ouverte && !or ? `<i style="height:${(s / 8 * 100).toFixed(0)}%"></i>` : ''}<b>${ecrit(k, f)}</b></div>`;
+}
+function station(i, e, ouvertes, opts) {
+  const f = FAMILLES[i];
+  const ouverte = i < ouvertes;
+  const toutOr = ouverte && f.paires.every(k => estOr(e, k));
+  const cl = !ouverte ? 'ferme' : toutOr ? 'medaille' : '';
+  const nom = opts && opts.dates ? `${f.nom}<span>${ouverte ? 'opened ' + f.ouverte : 'not open yet'}</span>` : f.nom;
+  return `<div class="noeud station ${cl}" data-station="${i}" lang="fr">${toutOr ? `<span class="med">${KR.icone('etoile')}</span>` : ''}<span>${f.badge}${f.sous ? `<small>${f.sous}</small>` : ''}</span><span class="nom-station" lang="en">${nom}</span></div>`;
+}
+/* Un tronçon : la station, puis ses pierres, pavées depuis la station (les plus avancées d'abord). */
+function troncon(i, e, ouvertes, opts) {
+  const f = FAMILLES[i];
+  const tri = f.paires.slice().sort((p, q) => (estOr(e, q) - estOr(e, p)) || pts(e, q) - pts(e, p));
+  return [station(i, e, ouvertes, opts)].concat(tri.map(k => pierre(k, f, e, i < ouvertes, opts && opts.avant)));
+}
+/* 43 nœuds (6 stations, 36 pierres, l'arrivée) en serpentin de trois rangées : 15, 14 et 14. */
+function route(e, ouvertes, opts) {
+  const noeuds = FAMILLES.flatMap((_, i) => troncon(i, e, ouvertes, opts))
+    .concat(`<div class="noeud station arrivee" lang="en">36!<span class="nom-station">All by heart</span></div>`);
+  const rangs = [noeuds.slice(0, 15), noeuds.slice(15, 29), noeuds.slice(29)];
+  return `<div class="route${opts && opts.mini ? ' mini' : ''}" data-ouvertes="${ouvertes}">
+    <svg class="trace" aria-hidden="true"></svg>
+    ${rangs.map((r, i) => `<div class="rangee${i === 1 ? ' retour' : ''}">${r.join('')}</div>`).join('')}
+  </div>`;
+}
+/* Centre d'un élément dans le repère de la route (offset, insensible au zoom). */
+function centre(el, repere) {
+  let x = el.offsetWidth / 2, y = el.offsetHeight / 2, n = el;
+  while (n && n !== repere) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+  return [x, y];
+}
+function tracer(r) {
+  const noeuds = [...r.querySelectorAll('.noeud')];
+  const c = noeuds.map(n => centre(n, r));
+  const rangDe = n => [...r.querySelectorAll('.rangee')].indexOf(n.closest('.rangee'));
+  const larg = r.offsetWidth;
+  let d = `M${c[0][0]} ${c[0][1]}`;
+  for (let i = 1; i < c.length; i++) {
+    if (rangDe(noeuds[i]) !== rangDe(noeuds[i - 1])) {
+      const droite = rangDe(noeuds[i - 1]) % 2 === 0;
+      const xe = droite ? larg - 6 : 6;
+      d += ` C${xe} ${c[i - 1][1]} ${xe} ${c[i][1]} ${c[i][0]} ${c[i][1]}`;
+    } else d += ` L${c[i][0]} ${c[i][1]}`;
+  }
+  const mini = r.classList.contains('mini');
+  r.querySelector('svg.trace').innerHTML = `<path d="${d}" fill="none" stroke="var(--e-100)" stroke-width="${mini ? 12 : 26}" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${d}" fill="none" stroke="var(--e-200)" stroke-width="${mini ? 2 : 3}" stroke-dasharray="${mini ? '4 6' : '8 12'}" stroke-linecap="round"/>`;
+}
+/* Moussi sur le tronçon en cours, au prorata des pas du tronçon jusqu'au but. */
+function placerMoussi(r, e, ouvertes, attitude, classe) {
+  const i = ouvertes - 1;
+  const f = FAMILLES[i];
+  const part = Math.min(1, pasTroncon(e, f) / butTroncon(f));
+  const tous = [...r.querySelectorAll('.noeud')];
+  const debut = tous.indexOf(r.querySelector(`[data-station="${i}"]`));
+  let fin = debut + 1;
+  while (fin < tous.length - 1 && !tous[fin].classList.contains('station')) fin++;
+  const chaine = tous.slice(debut, fin + 1);
+  const pos = part * (chaine.length - 1);
+  const a = centre(chaine[Math.floor(pos)], r), b = centre(chaine[Math.ceil(pos)], r);
+  const t = pos - Math.floor(pos);
+  const x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t;
+  const m = document.createElement('div');
+  m.className = 'moussi' + (classe ? ' ' + classe : '');
+  m.style.left = x + 'px';
+  m.style.top = (y - (r.classList.contains('mini') ? 8 : 20)) + 'px';
+  m.innerHTML = KR.mascotte(attitude || 'attend');
+  r.appendChild(m);
+  return [x, y];
+}
+function nav(icone, nom) {
+  return `<div class="nav"><button type="button" class="rond" aria-label="${nom}">${KR.icone(icone)}</button><span class="nom" aria-hidden="true">${nom}</span></div>`;
+}
+function semaine(faits, auj) {
+  return KR.semaine(Array.from({ length: 7 }, (_, i) => ({ fait: i < faits, aujourdhui: i === auj, avenir: i > auj })));
+}
+
+/* ---------- A : accueil, lundi 9 novembre, après la séance 5 ---------- */
+(function () {
+  const e = ETAT[5], ouv = OUVERTES[5];
+  const f = FAMILLES[ouv - 1], suiv = FAMILLES[ouv];
+  const reste = butTroncon(f) - pasTroncon(e, f);
+  const el = document.getElementById('ecran-a');
+  el.innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My times tables</h1><p class="indice">Every stamp is one step for Moussi</p></div></header>
+    <button type="button" class="carte-route">
+      <p class="cr-tete"><b>My road</b><span>Next stop: <b>${suiv.nom}</b> · ${reste} steps to go</span></p>
+      ${route(e, ouv)}
+    </button>
+    <div class="bas-accueil">
+      <button type="button" class="pratique"><span class="txt"><b>Today's practice</b><span>20 questions today</span></span>
+        <span class="sem">${semaine(0, 0)}</span><span class="go">${KR.icone('jouer')}</span></button>
+      <button type="button" class="tuile-grille"><span class="tuile">${KR.icone('grille')}</span>My grid</button>
+    </div>`;
+  const r = el.querySelector('.route');
+  tracer(r);
+  placerMoussi(r, e, ouv);
+})();
+
+/* ---------- B : fin de la séance 6, le tronçon des doubles en grand ---------- */
+(function () {
+  const av = ETAT[5], ap = ETAT[6], ouv = OUVERTES[6];
+  const i = ouv - 1, f = FAMILLES[i], suiv = FAMILLES[ouv];
+  const gagnes = pasTroncon(ap, f) - pasTroncon(av, f);
+  const derriere = FAMILLES.slice(0, i).reduce((s, g) => s + pasTroncon(ap, g) - pasTroncon(av, g), 0);
+  const reste = butTroncon(f) - pasTroncon(ap, f);
+  const dores = f.paires.filter(k => estOr(ap, k) && !estOr(av, k)).map(k => ecrit(k, f).replace('×', ' × '));
+  const el = document.getElementById('ecran-b');
+  const tri = f.paires.slice().sort((p, q) => (estOr(ap, q) - estOr(ap, p)) || pts(ap, q) - pts(ap, p));
+  el.innerHTML = `
+    <div class="fin">
+      <div class="fin-g">${KR.mascotte('fete', 'rebondit')}<p class="nb">21 questions</p></div>
+      <div class="fin-d">
+        <h1>Well done, Henri!</h1>
+        <div class="bloc">
+          <p class="titre">${KR.icone('monte')}Moussi walked ${gagnes} steps</p>
+          <p class="sous">${reste} more steps to open <b>${suiv.nom}</b>${dores.length ? ` · <b lang="fr">${dores.join(', ')}</b> turned gold` : ''}</p>
+          <div class="zoom"><div class="route"><svg class="trace" aria-hidden="true"></svg>
+            <div class="rangee">${station(i, ap, ouv)}${tri.map(k => pierre(k, f, ap, true, av)).join('')}${station(i + 1, ap, ouv)}</div></div></div>
+          <p class="aussi">${KR.icone('etoile')}<span>And ${derriere} steps on the road behind you, in <b>${FAMILLES[0].nom}</b>.</span></p>
+        </div>
+        <div class="ligne-fin">${semaine(1, 0)}<p class="jours-n">1 day this week</p></div>
+        <div class="actions"><button type="button" class="btn btn-secondaire">See my road</button><button type="button" class="btn btn-primaire">Done for today</button></div>
+      </div>
+    </div>`;
+  const r = el.querySelector('.zoom .route');
+  tracer(r);
+  placerMoussi(r, av, ouv, 'attend', 'fantome');
+  const [x, y] = placerMoussi(r, ap, ouv, 'fete');
+  const fl = document.createElement('div');
+  fl.className = 'fleche-pas';
+  fl.textContent = '+' + gagnes;
+  fl.style.left = (x + 64) + 'px';
+  fl.style.top = (y - 60) + 'px';
+  r.appendChild(fl);
+})();
+
+/* ---------- C : ma route, vendredi 27 novembre ---------- */
+(function () {
+  const e = ETAT[20], ouv = OUVERTES[20];
+  const total = Object.keys(e).reduce((s, k) => s + pts(e, k), 0);
+  const el = document.getElementById('ecran-c');
+  el.innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My road</h1><p class="indice">${total} steps since Mon 2 Nov · ${ouv} families open</p></div></header>
+    <div class="route-pleine">${route(e, ouv, { dates: true })}
+      <div class="legende-r">
+        <div><span class="pierre vide"></span>Not met yet</div>
+        <div><span class="pierre"><i style="height:50%;background:var(--e-300)"></i></span>Filling with stamps</div>
+        <div><span class="pierre or"></span>Gold: by heart</div>
+        <div><span class="pierre ferme"></span>Family not open yet</div>
+      </div></div>`;
+  const r = el.querySelector('.route');
+  tracer(r);
+  placerMoussi(r, e, ouv);
+})();
+
+/* ---------- Ligne d'état ---------- */
+(function () {
+  const textes = {
+    1: ['Après 1 séance', 'lundi 2 novembre', 'Le diagnostic a ouvert les faciles et les doubles. Moussi a fait 6 pas ; deux pierres ouvertes sur trois sont encore vides.', 0],
+    5: ['Après 5 séances', 'vendredi 6 novembre', 'Le tronçon des faciles est presque plein, Moussi est à 62 % du tronçon des doubles : 84 pas, 13 gagnés ce jour-là.', 2],
+    20: ['Après 20 séances', 'vendredi 27 novembre', 'Quatre familles ouvertes, la route des faciles est en or (médaille), 211 pas. Moussi est à mi-chemin du ×9.', 15],
+  };
+  const el = document.getElementById('etats');
+  el.innerHTML = [1, 5, 20].map(n => `<article class="etat"><div class="hote" data-n="${n}">${route(ETAT[n], OUVERTES[n], { mini: true })}</div>
+    <div><h3>${textes[n][0]}</h3><p class="date">${textes[n][1]}</p><p>${textes[n][2]}</p>
+    <p class="avant">L'app actuelle affiche «&nbsp;${textes[n][3]}&nbsp;of&nbsp;36 by&nbsp;heart&nbsp;».</p></div></article>`).join('');
+  el.querySelectorAll('.hote').forEach(h => { const r = h.querySelector('.route'); const n = h.dataset.n; tracer(r); placerMoussi(r, ETAT[n], OUVERTES[n]); });
+})();
+</script>
+</body>
+</html>

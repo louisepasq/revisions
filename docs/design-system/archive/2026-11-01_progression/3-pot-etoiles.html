@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 · Le pot d'étoiles</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<link rel="stylesheet" href="../../../../modules/tables/tables.css">
+<style>
+/* ---------- Mise en page de la maquette (hors écran iPad) ---------- */
+html,body{background:var(--trait)}
+body{padding:8px 0 70px}
+.bandeau{width:1080px;margin:16px auto 0;background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:22px 30px 24px}
+.bandeau .num{font-family:var(--f-jeu);font-weight:700;font-size:18px;color:var(--e-700)}
+.bandeau h1{font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1.1;margin:2px 0 10px}
+.bandeau p{font-size:20px;line-height:1.45}
+.legende-ecran{width:1080px;margin:36px auto 12px;font-family:var(--f-jeu);font-weight:700;font-size:23px;line-height:1.2}
+.legende-ecran span{display:block;font-family:var(--f-texte);font-weight:400;font-size:18px;color:var(--encre-douce);margin-top:4px}
+.ipad{width:1080px;height:810px;margin:0 auto;background:var(--toile);border-radius:22px;box-shadow:0 0 0 3px var(--trait-fort),0 10px 30px rgba(30,33,71,.12);overflow:hidden;position:relative;display:flex;flex-direction:column;padding:12px 28px 24px}
+
+/* ---------- Le pot : une couche par jour joué, une étoile par fait retrouvé ---------- */
+.pot{--l:230px;--h:290px;--e:17px;position:relative;width:var(--l);flex:none}
+.pot .couvercle{height:26px;margin:0 22px;border-radius:12px 12px 4px 4px;background:var(--e-300);border:3px solid var(--e-500)}
+.pot .col{height:14px;margin:0 30px;background:var(--e-100);border-left:3px solid var(--e-300);border-right:3px solid var(--e-300)}
+.pot .corps{height:var(--h);border:4px solid var(--e-300);border-radius:34px 34px 44px 44px;background:color-mix(in srgb,var(--e-50) 70%,transparent);padding:10px 12px 14px;display:flex;flex-direction:column-reverse;gap:5px;overflow:hidden}
+.couche{display:flex;align-items:flex-start;gap:6px;padding-top:4px;border-top:2px dashed var(--e-200)}
+.couche:last-child{border-top:0}
+.couche .j{flex:none;width:36px;font-family:var(--f-jeu);font-weight:700;font-size:16px;line-height:var(--e);color:var(--e-900)}
+.couche .et{display:flex;flex-wrap:wrap;gap:2px;flex:1}
+.couche .et .ico{width:var(--e);height:var(--e);color:var(--or-relief)}
+.couche.auj{background:color-mix(in srgb,var(--or-vif) 22%,transparent);border-radius:12px;border-top:0;padding:4px 4px 2px}
+.couche.auj .et .ico{color:var(--or-vif);filter:drop-shadow(0 1px 0 var(--or-relief))}
+.ruban{position:absolute;left:50%;top:2px;transform:translateX(-50%) rotate(-4deg);background:var(--e-700);color:var(--sur-e);font-family:var(--f-jeu);font-weight:700;font-size:17px;padding:4px 14px;border-radius:8px;box-shadow:0 3px 0 var(--e-relief);white-space:nowrap;z-index:2}
+.pot.vide .corps{border-style:dashed;border-color:var(--pointille);background:transparent}
+.pot.vide .couvercle,.pot.vide .col{display:none}
+.pot.petit{--l:150px;--h:200px;--e:10px}
+.pot.petit .couche .j{display:none}
+.pot.petit .couche .et{gap:1px}
+.pot.petit .corps{padding:8px 9px 10px;border-radius:24px 24px 30px 30px;gap:3px}
+.pot.petit .couvercle{height:18px;margin:0 16px}
+.pot.petit .col{height:10px;margin:0 22px}
+.pot.petit .ruban{top:0;font-size:16px;padding:3px 10px}
+.etagere .pot.petit{--l:168px;--h:410px;--e:20px}
+
+/* L'anneau de la semaine : quatre jours visés */
+.anneau{position:relative;width:150px;height:150px;flex:none}
+.anneau svg{width:100%;height:100%}
+.anneau .centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.anneau .centre b{font-family:var(--f-jeu);font-weight:800;font-size:40px;line-height:1;color:var(--e-900)}
+.anneau .centre span{font-size:16px;font-weight:700;color:var(--encre-douce);line-height:1.1}
+.anneau.petit{width:104px;height:104px}
+.anneau.petit .centre b{font-size:28px}
+
+/* ---------- Écran A ---------- */
+.acc{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding-top:18px;min-height:0}
+.acc .carte-entrainement{grid-area:auto;min-height:0;padding:26px}
+.acc .ce-masc{width:150px;height:150px}
+.acc .ce-masc .masc{width:118px;height:128px}
+.acc .ce-texte b{font-size:46px}
+.panneau-pot{background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);padding:20px 22px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto 1fr;column-gap:22px;row-gap:12px;text-align:left;color:var(--encre)}
+.panneau-pot .tete{grid-column:1 / -1;font-family:var(--f-jeu);font-weight:700;font-size:30px;line-height:1;color:var(--e-900)}
+.panneau-pot .pot{align-self:end;--l:210px;--h:340px;--e:22px}
+.panneau-pot .droite{display:flex;flex-direction:column;gap:20px;align-items:center;justify-content:flex-end}
+.gros-n{font-family:var(--f-jeu);font-weight:800;font-size:48px;line-height:1;color:var(--encre);display:flex;align-items:center;gap:8px}
+.gros-n .ico{color:var(--or-relief);font-size:40px}
+.gros-n small{display:block;font-size:18px;font-weight:700;color:var(--encre-douce);font-family:var(--f-texte)}
+.etagere-lien{align-self:stretch;justify-content:center;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 16px;border-radius:18px;border:3px solid var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:19px;color:var(--e-900);background:var(--e-50)}
+.etagere-lien .ico{color:var(--or-relief)}
+
+/* ---------- Écran B ---------- */
+.fin{flex:1;display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:center;min-height:0}
+.fin-g{display:flex;flex-direction:column;align-items:center;gap:6px}
+.fin-g .masc{width:220px;height:238px}
+.fin-g .nb{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900)}
+.fin-d{display:flex;flex-direction:column;gap:16px}
+.fin-d > *{margin:0}
+.fin-d h1{font-family:var(--f-jeu);font-weight:700;font-size:44px;line-height:1;color:var(--e-900)}
+.bloc-pot{display:flex;gap:28px;align-items:flex-end;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:20px 24px}
+.bloc-pot .pot{--h:300px;--e:19px}
+.bloc-pot .txt{flex:1;display:flex;flex-direction:column;gap:16px;padding-bottom:8px}
+.plus{font-family:var(--f-jeu);font-weight:800;font-size:64px;line-height:1;color:var(--or-fonce);display:flex;align-items:center;gap:10px}
+.plus .ico{color:var(--or-vif);font-size:56px;filter:drop-shadow(0 3px 0 var(--or-relief))}
+.bloc-pot .phrase{font-size:21px;line-height:1.35}
+.bloc-pot .phrase b{font-family:var(--f-jeu)}
+.objectif{display:flex;align-items:center;gap:18px;padding-top:14px;border-top:3px dashed var(--trait)}
+.objectif p{font-size:20px;line-height:1.3}
+.objectif p b{font-family:var(--f-jeu);font-size:22px}
+.actions{display:flex;gap:16px;justify-content:flex-end}
+.actions .btn{min-height:60px;font-size:23px}
+
+/* ---------- Écran C ---------- */
+.etagere{flex:1;margin-top:10px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:6px}
+.pots{display:flex;align-items:flex-end;justify-content:space-around;padding:0 10px}
+.planche{height:22px;border-radius:8px;background:var(--trait-fort);box-shadow:0 6px 0 color-mix(in srgb,var(--trait-fort) 70%,var(--encre))}
+.etiquettes{display:flex;justify-content:space-around;padding:14px 10px 0}
+.etiq-pot{width:170px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.etiq-pot b{font-family:var(--f-jeu);font-weight:700;font-size:20px;line-height:1.1}
+.etiq-pot .n{display:flex;align-items:center;justify-content:center;gap:5px;font-family:var(--f-jeu);font-weight:800;font-size:26px;line-height:1}
+.etiq-pot .n .ico{color:var(--or-relief)}
+.etiq-pot span{font-size:16px;font-weight:700;color:var(--encre-douce)}
+.etiq-pot.vide b{color:var(--encre-douce)}
+.cumul{display:flex;align-items:center;gap:14px;margin-top:4px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 20px;font-size:19px}
+.cumul .ico{color:var(--or-relief);font-size:28px}
+.cumul b{font-family:var(--f-jeu);font-size:24px}
+
+/* ---------- Ligne d'état ---------- */
+.etats{width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:18px}
+.etat{background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:16px 18px 18px;display:flex;flex-direction:column}
+.etat h3{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1}
+.etat .date{font-size:16px;color:var(--encre-douce);margin:2px 0 12px}
+.etat .scene{display:flex;align-items:flex-end;justify-content:center;gap:10px;min-height:250px}
+.etat .scene .pot.petit{--l:92px;--h:150px;--e:8px}
+.etat .scene .pot.petit .ruban{font-size:16px;top:0}
+.etat p.c{font-size:18px;line-height:1.4;margin-top:12px}
+.etat .avant{margin-top:auto;padding-top:10px;border-top:2px dashed var(--trait);font-size:16px;color:var(--encre-douce)}
+</style>
+</head>
+<body>
+<header class="bandeau" lang="fr">
+  <p class="num">Mécanique 3 sur 3</p>
+  <h1>3 · Le pot d'étoiles de la semaine</h1>
+  <p>Chaque séance verse dans le pot de la semaine une étoile par multiplication retrouvée du premier coup le jour où elle revenait ; le pot ne se vide jamais, quatre jours joués lui valent son ruban, et les pots s'alignent sur l'étagère semaine après semaine.</p>
+</header>
+
+<p class="legende-ecran" lang="fr">A · Accueil du module, mercredi 11 novembre, avant la séance<span>Le pot de la semaine, ses deux couches (lundi, mardi) et l'anneau des jours : deux sur quatre. Le pot de la semaine passée attend sur l'étagère.</span></p>
+<section class="ipad" id="ecran-a"></section>
+
+<p class="legende-ecran" lang="fr">B · Fin de séance, mercredi 11 novembre (séance 8) : 18 étoiles<span>La couche du jour brille, le chiffre est le plus gros objet de l'écran, et la phrase dit d'où viennent les étoiles. L'anneau passe à trois jours sur quatre.</span></p>
+<section class="ipad" id="ecran-b"></section>
+
+<p class="legende-ecran" lang="fr">C · Mon étagère, vendredi 27 novembre, après 20 séances<span>Un pot par semaine, jamais vidé, avec son ruban s'il a eu quatre jours, et les cartes passées à l'or cette semaine-là. Une place vide attend la semaine suivante.</span></p>
+<section class="ipad" id="ecran-c"></section>
+
+<p class="legende-ecran" lang="fr">Ligne d'état : les pots après 1, 5 et 20 séances<span>Simulation du vrai moteur (simulation.js, profil de CM1, cinq séances par semaine à partir du lundi 2 novembre). Une étoile = un fait dû ce jour-là, ou nouveau, réussi du premier coup.</span></p>
+<section class="etats" id="etats" lang="fr"></section>
+
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script>
+KR.demarrer();
+
+/* Étoiles par séance (simulation.json), cinq séances par semaine, du lundi au vendredi. */
+const ETOILES = [5, 10, 8, 8, 12, 17, 18, 18, 7, 17, 14, 15, 12, 15, 15, 16, 16, 8, 3, 15];
+const NOUVEAUX_OR = [2, 6, 5, 3];
+const LUNDIS = ['2 Nov', '9 Nov', '16 Nov', '23 Nov'];
+const JOURS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const OBJECTIF = 4;
+const semaineDe = (w, jusqua) => ETOILES.slice(w * 5, w * 5 + (jusqua == null ? 5 : jusqua)).map((n, i) => ({ j: JOURS[i], n }));
+
+function pot(couches, opts) {
+  opts = opts || {};
+  const html = couches.map((c, i) => `<div class="couche${opts.auj === i ? ' auj' : ''}"><span class="j">${c.j}</span><span class="et">${KR.icone('etoile').repeat(c.n)}</span></div>`).join('');
+  const ruban = couches.length >= OBJECTIF && !opts.sansRuban ? `<span class="ruban">${couches.length} days!</span>` : '';
+  return `<div class="pot${opts.classe ? ' ' + opts.classe : ''}" role="img" aria-label="${couches.reduce((s, c) => s + c.n, 0)} stars">${ruban}<div class="couvercle"></div><div class="col"></div><div class="corps">${html}</div></div>`;
+}
+function anneau(jours, opts) {
+  opts = opts || {};
+  const r = 60, c = 75, seg = 360 / OBJECTIF;
+  let arcs = '';
+  for (let i = 0; i < OBJECTIF; i++) {
+    const a0 = (i * seg - 90 + 6) * Math.PI / 180, a1 = ((i + 1) * seg - 90 - 6) * Math.PI / 180;
+    const d = `M${c + r * Math.cos(a0)} ${c + r * Math.sin(a0)} A${r} ${r} 0 0 1 ${c + r * Math.cos(a1)} ${c + r * Math.sin(a1)}`;
+    const fait = i < jours;
+    arcs += `<path d="${d}" fill="none" stroke="${fait ? 'var(--e-700)' : 'var(--pointille)'}" stroke-width="${fait ? 16 : 4}" stroke-linecap="round"${fait ? '' : ' stroke-dasharray="6 7"'}/>`;
+  }
+  return `<div class="anneau${opts.petit ? ' petit' : ''}" role="img" aria-label="${jours} of ${OBJECTIF} days"><svg viewBox="0 0 150 150">${arcs}</svg>
+    <div class="centre">${jours < OBJECTIF ? `<b>${jours}/${OBJECTIF}</b><span>days</span>` : `<b>${jours}</b><span>days!</span>`}</div></div>`;
+}
+function nav(icone, nom) {
+  return `<div class="nav"><button type="button" class="rond" aria-label="${nom}">${KR.icone(icone)}</button><span class="nom" aria-hidden="true">${nom}</span></div>`;
+}
+function semaine(faits, auj) {
+  return KR.semaine(Array.from({ length: 7 }, (_, i) => ({ fait: i < faits, aujourdhui: i === auj, avenir: i > auj })));
+}
+const somme = l => l.reduce((s, c) => s + c.n, 0);
+
+/* ---------- A : accueil, mercredi 11 novembre, avant la séance 8 ---------- */
+(function () {
+  const couches = semaineDe(1, 2);
+  document.getElementById('ecran-a').innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My times tables</h1><p class="indice">Remember the ones that come back: a star each</p></div></header>
+    <div class="acc">
+      <button type="button" class="carte-entrainement">
+        <span class="ce-haut"><span class="ce-masc">${KR.mascotte('attend')}</span>
+          <span class="ce-infos"><span class="ce-info">${KR.icone('ok')}<span>20 questions today</span></span>
+          <span class="ce-info">${KR.icone('etoile')}<span>18 of them come back today</span></span></span></span>
+        <span class="ce-semaine">${semaine(2, 2)}</span>
+        <span class="ce-texte"><b>Today's practice</b><span>A little every day</span></span>
+        <span class="ce-go">${KR.icone('jouer')}</span>
+      </button>
+      <button type="button" class="panneau-pot">
+        <span class="tete">This week's jar</span>
+        ${pot(couches)}
+        <span class="droite"><span class="gros-n">${KR.icone('etoile')}<span>${somme(couches)}<small>stars</small></span></span>${anneau(couches.length)}
+          <span class="etagere-lien">${KR.icone('etoile')}My shelf</span></span>
+      </button>
+    </div>`;
+})();
+
+/* ---------- B : fin de la séance 8 ---------- */
+(function () {
+  const couches = semaineDe(1, 3);
+  const n = couches[2].n;
+  document.getElementById('ecran-b').innerHTML = `
+    <div class="fin">
+      <div class="fin-g">${KR.mascotte('fete', 'rebondit')}<p class="nb">21 questions</p></div>
+      <div class="fin-d">
+        <h1>Well done, Henri!</h1>
+        <div class="bloc-pot">${pot(couches, { auj: 2 })}
+          <div class="txt">
+            <p class="plus">${KR.icone('etoile')}+${n}</p>
+            <p class="phrase"><b>${n} sums</b> came back today, and you remembered them first time. ${somme(couches)} stars in this week's jar.</p>
+            <div class="objectif">${anneau(3, { petit: true })}<p><b>3 days</b> this week.<br>One more day and the jar gets its ribbon.</p></div>
+          </div>
+        </div>
+        <p class="demain">${KR.icone('cal')}<span>Tomorrow, <b lang="fr">2 × 7</b> comes back to see you.</span></p>
+        <div class="actions"><button type="button" class="btn btn-secondaire">See my shelf</button><button type="button" class="btn btn-primaire">Done for today</button></div>
+      </div>
+    </div>`;
+})();
+
+/* ---------- C : l'étagère, vendredi 27 novembre ---------- */
+(function () {
+  const total = ETOILES.reduce((a, b) => a + b, 0);
+  const pots = [0, 1, 2, 3].map(w => pot(semaineDe(w), { classe: 'petit', auj: w === 3 ? 4 : -1 })).join('') + `<div class="pot petit vide"><div class="corps"></div></div>`;
+  const etiq = [0, 1, 2, 3].map(w => `<div class="etiq-pot"><b>Week of ${LUNDIS[w]}</b><span class="n">${KR.icone('etoile')}${somme(semaineDe(w))}</span><span>5 days · ${NOUVEAUX_OR[w]} new gold</span></div>`).join('')
+    + `<div class="etiq-pot vide"><b>Next week</b><span>Waiting for you</span></div>`;
+  document.getElementById('ecran-c').innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My shelf</h1><p class="indice">One jar a week. Jars never empty.</p></div></header>
+    <div class="etagere"><div class="pots">${pots}</div><div class="planche"></div><div class="etiquettes">${etiq}</div></div>
+    <p class="cumul">${KR.icone('etoile')}<span><b>${total} stars</b> since Mon 2 Nov: every one is a sum you remembered when it came back.</span></p>`;
+})();
+
+/* ---------- Ligne d'état ---------- */
+(function () {
+  const e1 = [{ j: 'Mon', n: ETOILES[0] }];
+  const s1 = pot(e1, { classe: 'petit', auj: 0 }) + anneau(1, { petit: true });
+  const s5 = pot(semaineDe(0), { classe: 'petit', auj: 4 }) + anneau(5, { petit: true });
+  const s20 = [0, 1, 2, 3].map(w => pot(semaineDe(w), { classe: 'petit', auj: w === 3 ? 4 : -1 })).join('');
+  const t = [
+    ['Après 1 séance', 'lundi 2 novembre', s1, `<b>5 étoiles</b>, un jour sur quatre. Peu, parce que rien n'était encore dû : seuls les faits nouveaux réussis comptent ce jour-là.`, 0],
+    ['Après 5 séances', 'vendredi 6 novembre', s5, `<b>43 étoiles</b> en cinq couches, le ruban gagné jeudi.`, 2],
+    ['Après 20 séances', 'vendredi 27 novembre', s20, `<b>249 étoiles</b> sur quatre pots. Au creux de la quatrième semaine (3 étoiles le jeudi 26), le pot continue de monter.`, 15],
+  ];
+  document.getElementById('etats').innerHTML = t.map(x => `<article class="etat"><h3>${x[0]}</h3><p class="date">${x[1]}</p><div class="scene">${x[2]}</div><p class="c">${x[3]}</p>
+    <p class="avant">L'app actuelle affiche «&nbsp;${x[4]}&nbsp;of&nbsp;36 by&nbsp;heart&nbsp;».</p></article>`).join('');
+})();
+</script>
+</body>
+</html>

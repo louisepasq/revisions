@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en" data-enfant="henri">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 · L'album à tampons</title>
+<link rel="stylesheet" href="../../../../commun/kit.css">
+<link rel="stylesheet" href="../../../../modules/tables/tables.css">
+<style>
+/* ---------- Mise en page de la maquette (hors écran iPad) ---------- */
+html,body{background:var(--trait)}
+body{padding:8px 0 70px}
+.bandeau{width:1080px;margin:16px auto 0;background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:22px 30px 24px}
+.bandeau .num{font-family:var(--f-jeu);font-weight:700;font-size:18px;color:var(--e-700)}
+.bandeau h1{font-family:var(--f-jeu);font-weight:700;font-size:40px;line-height:1.1;margin:2px 0 10px}
+.bandeau p{font-size:20px;line-height:1.45}
+.legende-ecran{width:1080px;margin:36px auto 12px;font-family:var(--f-jeu);font-weight:700;font-size:23px;line-height:1.2}
+.legende-ecran span{display:block;font-family:var(--f-texte);font-weight:400;font-size:18px;color:var(--encre-douce);margin-top:4px}
+.ipad{width:1080px;height:810px;margin:0 auto;background:var(--toile);border-radius:22px;box-shadow:0 0 0 3px var(--trait-fort),0 10px 30px rgba(30,33,71,.12);overflow:hidden;position:relative;display:flex;flex-direction:column;padding:12px 28px 24px}
+
+/* ---------- La carte d'une multiplication : quatre tampons, puis l'or ---------- */
+.cf{width:118px;height:150px;flex:none;border-radius:18px;background:var(--carte);border:3px solid var(--e-200);box-shadow:0 4px 0 var(--e-200);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative}
+.cf .op{font-family:var(--f-jeu);font-weight:700;font-size:32px;line-height:1;color:var(--encre);white-space:nowrap}
+.cf .rep{font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1;color:var(--or-fonce);margin-top:-8px}
+.tps{display:flex;gap:5px}
+.tp{width:22px;height:22px;border-radius:50%;border:2px dashed var(--pointille);display:grid;place-items:center;color:var(--pointille)}
+.tp .ico{font-size:13px}
+.tp.plein{border:2px solid var(--e-700);background:var(--e-700);color:var(--sur-e)}
+.tp.demi{border:2px solid var(--e-700);background:linear-gradient(90deg,var(--e-700) 50%,var(--carte) 50%);color:transparent}
+/* Un tampon gagné aujourd'hui est en or vif, la couleur du « monté aujourd'hui » */
+.tp.du-jour{border:2px solid var(--or-relief);color:var(--or-fonce)}
+.cf.neuf{background:transparent;border-style:dashed;border-color:var(--pointille);box-shadow:none}
+.cf.neuf .op{color:var(--encre-douce)}
+.cf.presque{background:var(--e-50);border-color:var(--e-300);box-shadow:0 4px 0 var(--e-300)}
+.cf.or{background:var(--or-clair);border-color:var(--or-relief);box-shadow:0 4px 0 var(--or-relief);gap:12px}
+.cf.or .tp.plein{background:var(--or-fonce);border-color:var(--or-fonce);color:var(--or-clair)}
+.cf.or-auj{background:var(--or-vif);border-color:var(--or-relief);box-shadow:0 5px 0 var(--or-relief)}
+.cf.or-auj .tp.plein{color:var(--or-vif)}
+.badge-or{position:absolute;top:-14px;right:-14px;width:42px;height:42px;border-radius:50%;background:var(--or-vif);border:3px solid var(--carte);color:var(--or-fonce);display:grid;place-items:center;box-shadow:0 3px 0 var(--or-relief)}
+.badge-or .ico{font-size:24px}
+.cf.petit{width:90px;height:118px;gap:12px;border-radius:16px}
+.cf.petit .op{font-size:25px}
+.cf.petit .tps{gap:4px}
+.cf.petit .tp{width:17px;height:17px}
+.cf.petit .tp .ico{font-size:10px}
+.cf.grand{width:136px;height:148px;gap:8px}
+.cf.grand .op{font-size:36px}
+.cf.grand .rep{font-size:30px;margin-top:-4px}
+.cf.grand .tp{width:26px;height:26px}
+@media (prefers-color-scheme: dark){ .cf .rep{color:var(--or-fonce)} .cf.or-auj .op,.cf.or-auj .rep{color:#2A1E00} }
+
+/* ---------- Écran A : accueil du module ---------- */
+.acc{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding-top:18px;min-height:0}
+.acc .carte-entrainement{grid-area:auto;min-height:0;padding:26px}
+.acc .ce-masc{width:150px;height:150px}
+.acc .ce-masc .masc{width:118px;height:128px}
+.acc .ce-texte b{font-size:46px}
+.panneau-album{background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);padding:22px 24px;display:flex;flex-direction:column;gap:16px;text-align:left;color:var(--encre)}
+.pa-tete{display:flex;align-items:center;gap:16px}
+.pa-tete .tuile{width:76px;height:76px;border-radius:22px}
+.pa-tete .tuile .ico{font-size:44px}
+.pa-tete b{display:block;font-family:var(--f-jeu);font-weight:700;font-size:34px;line-height:1;color:var(--e-900)}
+.compteurs{display:flex;gap:12px;margin-top:8px}
+.compteur{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:99px;background:var(--e-50);border:2px solid var(--e-200);font-weight:700;font-size:18px;white-space:nowrap}
+.compteur .tp{width:20px;height:20px}
+.compteur.or{background:var(--or-clair);border-color:var(--or-relief)}
+.compteur.or .ico{color:var(--or-fonce);font-size:20px}
+.pa-sous{font-family:var(--f-jeu);font-weight:700;font-size:21px;color:var(--encre)}
+.rang-cartes{display:flex;gap:16px;justify-content:space-between}
+.pa-note{font-size:18px;color:var(--encre-douce)}
+.pa-familles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:auto}
+.fam-mini{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:14px;background:var(--e-50);font-size:16px;font-weight:700;line-height:1.2}
+.fam-mini .n{display:flex;align-items:center;gap:5px;color:var(--encre-douce);font-weight:700}
+.fam-mini .n .ico{color:var(--or-fonce)}
+.fam-mini.ferme{background:transparent;border:2px dashed var(--pointille);color:var(--encre-douce)}
+.fam-mini.complet{background:var(--or-clair)}
+
+/* ---------- Écran B : fin de séance ---------- */
+.fin{flex:1;display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:center;padding-top:4px;min-height:0}
+.fin-g{display:flex;flex-direction:column;align-items:center;gap:6px}
+.fin-g .masc{width:230px;height:248px}
+.fin-g .nb{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900)}
+.fin-d{display:flex;flex-direction:column;gap:12px}
+.fin-d > *{margin:0}
+.fin-d h1{font-family:var(--f-jeu);font-weight:700;font-size:42px;line-height:1;color:var(--e-900)}
+.bloc{background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 20px 16px}
+.bloc .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:700;font-size:25px;line-height:1.1;margin-bottom:12px}
+.bloc .titre .ico{font-size:26px;color:var(--juste-700)}
+.bloc .titre .total{margin-left:auto;font-family:var(--f-texte);font-size:18px;color:var(--encre-douce)}
+.bloc-or{background:var(--astuce-fond);border-color:var(--astuce-trait)}
+.bloc-or .titre .ico{color:var(--or-fonce)}
+.bloc-or .contenu{display:flex;align-items:center;gap:26px}
+.bloc-or .phrase{font-size:20px;line-height:1.35;max-width:250px}
+.rangee{display:flex;gap:9px}
+.ligne-fin{display:flex;align-items:center;gap:18px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:10px 18px}
+.ligne-fin .semaine{gap:9px}
+.ligne-fin .jour .rd{width:40px;height:40px}
+.ligne-fin .jour .lb{font-size:16px}
+.jours-n{font-family:var(--f-jeu);font-weight:700;font-size:20px;white-space:nowrap}
+.demain{display:flex;align-items:center;gap:10px;font-size:20px}
+.demain .ico{color:var(--e-700);font-size:26px}
+.actions{display:flex;gap:16px;justify-content:flex-end}
+.actions .btn{min-height:60px;font-size:23px}
+
+/* ---------- Écran C : mon album ---------- */
+.onglets{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding-top:6px}
+.onglet{min-height:76px;border-radius:18px;background:var(--carte);border:3px solid var(--e-200);box-shadow:0 4px 0 var(--e-200);padding:8px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;text-align:left;position:relative}
+.onglet b{font-family:var(--f-jeu);font-weight:700;font-size:19px;line-height:1.05}
+.onglet span{display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--encre-douce)}
+.onglet span .ico{color:var(--or-fonce)}
+.onglet.actif{background:var(--e-700);border-color:var(--e-700);box-shadow:0 4px 0 var(--e-relief);color:var(--sur-e)}
+.onglet.actif span{color:var(--sur-e)}
+.onglet.actif span .ico{color:var(--or-vif)}
+.onglet.complet{background:var(--or-clair);border-color:var(--or-relief);box-shadow:0 4px 0 var(--or-relief)}
+.onglet.complet .medaille{position:absolute;top:-10px;right:-8px;width:34px;height:34px;border-radius:50%;background:var(--or-vif);border:3px solid var(--carte);display:grid;place-items:center;color:var(--or-fonce)}
+.onglet.ferme{background:transparent;border:3px dashed var(--pointille);box-shadow:none;color:var(--encre-douce)}
+.page-album{flex:1;margin-top:18px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:18px 26px 20px;display:flex;flex-direction:column;gap:16px;min-height:0}
+.page-tete{display:flex;align-items:baseline;gap:16px}
+.page-tete h2{font-family:var(--f-jeu);font-weight:700;font-size:30px;line-height:1}
+.page-tete p{font-size:19px;color:var(--encre-douce);font-weight:700}
+.cartes-page{display:grid;grid-template-columns:repeat(6,118px);justify-content:space-between;row-gap:22px}
+.legende-tp{margin-top:auto;display:flex;gap:26px;align-items:center;border-top:3px dashed var(--trait);padding-top:12px;font-size:17px;font-weight:700;color:var(--encre-douce)}
+.legende-tp div{display:flex;align-items:center;gap:8px}
+.legende-tp .tp{width:22px;height:22px}
+
+/* ---------- Ligne d'état ---------- */
+.etats{width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.etat{background:var(--carte);border:3px solid var(--trait-fort);border-radius:var(--r-l);padding:16px 18px 18px}
+.etat h3{font-family:var(--f-jeu);font-weight:700;font-size:22px;line-height:1.1;margin-bottom:4px}
+.etat .date{font-size:16px;color:var(--encre-douce);margin-bottom:12px}
+.mini{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.mc{height:36px;border-radius:7px;border:2px solid var(--e-200);background:var(--carte);position:relative;overflow:hidden}
+.mc i{position:absolute;left:0;right:0;bottom:0;background:var(--e-300)}
+.mc.neuf{border-style:dashed;border-color:var(--pointille);background:transparent}
+.mc.or{background:var(--or-vif);border-color:var(--or-relief)}
+.mc.or i{display:none}
+.chiffres{margin-top:12px;font-size:18px;line-height:1.35}
+.chiffres b{font-family:var(--f-jeu);font-size:22px}
+.avant{margin-top:10px;padding-top:10px;border-top:2px dashed var(--trait);font-size:16px;color:var(--encre-douce)}
+</style>
+</head>
+<body>
+<header class="bandeau" lang="fr">
+  <p class="num">Mécanique 2 sur 3 · ma recommandation</p>
+  <h1>2 · L'album à tampons</h1>
+  <p>Chaque multiplication est une carte qui gagne un tampon chaque jour où elle sort juste, d'un sens puis de l'autre ; au quatrième tampon, posé un autre jour, elle devient dorée : par cœur.</p>
+</header>
+
+<p class="legende-ecran" lang="fr">A · Accueil du module, lundi 9 novembre, après 5 séances<span>Le nombre de tampons remplace « 2 of 36 by heart » : il bouge à chaque séance. Les trois cartes les plus proches de l'or donnent le prochain but.</span></p>
+<section class="ipad" id="ecran-a"></section>
+
+<p class="legende-ecran" lang="fr">B · Fin de séance, lundi 9 novembre (séance 6) : 14 tampons, deux cartes passent à l'or<span>Chaque moitié de tampon gagnée aujourd'hui est en or vif ; une carte qui devient dorée a sa place à part, avec son résultat enfin écrit.</span></p>
+<section class="ipad" id="ecran-b"></section>
+
+<p class="legende-ecran" lang="fr">C · Mon album, vendredi 27 novembre, après 20 séances<span>Une page par famille, dans l'ordre d'Eduscol ; un onglet doré porte une médaille quand toute la page est dorée. Les familles pas encore ouvertes sont en pointillé, jamais cadenassées.</span></p>
+<section class="ipad" id="ecran-c"></section>
+
+<p class="legende-ecran" lang="fr">Ligne d'état : l'album après 1, 5 et 20 séances<span>Simulation du vrai moteur (simulation.js, profil de CM1, cinq séances par semaine à partir du lundi 2 novembre). Chaque petite carte se remplit avec ses tampons et devient dorée à l'or.</span></p>
+<section class="etats" id="etats" lang="fr"></section>
+
+<script src="../../../../commun/textes.js"></script>
+<script src="../../../../commun/kit.js"></script>
+<script>
+KR.demarrer();
+const t = KR.t;
+
+/* Instantanés de simulation.json : par paire, tampons de chaque sens (a × b, puis b × a), 4 au plus. */
+const SIM = {
+  1: '2x2:00 2x3:00 2x4:20 2x5:01 2x6:00 2x7:00 2x8:00 2x9:22 3x3:00 3x4:00 3x5:00 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:00 4x6:00 4x7:22 4x8:00 4x9:00 5x5:00 5x6:11 5x7:22 5x8:01 5x9:00 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  5: '2x2:11 2x3:01 2x4:44 2x5:34 2x6:20 2x7:21 2x8:12 2x9:43 3x3:00 3x4:00 3x5:23 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:33 4x6:00 4x7:22 4x8:00 4x9:00 5x5:33 5x6:43 5x7:44 5x8:23 5x9:33 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  6: '2x2:22 2x3:12 2x4:44 2x5:34 2x6:30 2x7:32 2x8:23 2x9:44 3x3:00 3x4:00 3x5:33 3x6:00 3x7:00 3x8:00 3x9:22 4x4:00 4x5:33 4x6:00 4x7:22 4x8:00 4x9:00 5x5:33 5x6:44 5x7:44 5x8:34 5x9:33 6x6:00 6x7:00 6x8:00 6x9:00 7x7:00 7x8:00 7x9:00 8x8:00 8x9:00 9x9:00',
+  20: '2x2:33 2x3:44 2x4:44 2x5:44 2x6:44 2x7:44 2x8:44 2x9:44 3x3:11 3x4:34 3x5:44 3x6:02 3x7:11 3x8:34 3x9:22 4x4:44 4x5:44 4x6:33 4x7:43 4x8:33 4x9:33 5x5:44 5x6:44 5x7:44 5x8:44 5x9:44 6x6:22 6x7:22 6x8:43 6x9:21 7x7:00 7x8:24 7x9:00 8x8:33 8x9:33 9x9:00',
+};
+const lire = s => Object.fromEntries(s.split(' ').map(x => { const [k, v] = x.split(':'); return [k, [Number(v[0]), Number(v[1])]]; }));
+const ETAT = Object.fromEntries(Object.entries(SIM).map(([n, s]) => [n, lire(s)]));
+const FAMILLES = [
+  { nom: 'Easy ones', tables: [5], paires: ['2x5', '3x5', '4x5', '5x5', '5x6', '5x7', '5x8', '5x9'] },
+  { nom: 'Doubles', tables: [2], paires: ['2x2', '2x3', '2x4', '2x6', '2x7', '2x8', '2x9'] },
+  { nom: 'Double doubles', tables: [4, 8], paires: ['3x4', '3x8', '4x4', '4x6', '4x7', '4x8', '4x9', '6x8', '7x8', '8x8', '8x9'] },
+  { nom: 'Double plus one', tables: [3, 6], paires: ['3x3', '3x6', '3x7', '3x9', '6x6', '6x7', '6x9'] },
+  { nom: 'Ten minus one', tables: [9], paires: ['7x9', '9x9'] },
+  { nom: 'Final boss', tables: [7], paires: ['7x7'] },
+];
+const ORDRE = FAMILLES.flatMap(f => f.paires);
+const famDe = k => FAMILLES.find(f => f.paires.includes(k));
+/* La table de la famille d'abord : « 5 × 7 », « 4 × 3 ». */
+function ecrit(k) {
+  let [a, b] = k.split('x').map(Number);
+  const tb = famDe(k).tables;
+  if (!tb.includes(a) && tb.includes(b)) [a, b] = [b, a];
+  return [a, b];
+}
+const total = e => Object.values(e).reduce((s, [x, y]) => s + x + y, 0);
+const nbOr = e => Object.values(e).filter(([x, y]) => x >= 4 && y >= 4).length;
+
+/* Une carte : quatre emplacements ; plein si les deux sens ont ce tampon, demi si un seul. */
+function carte(k, h, opts) {
+  opts = opts || {};
+  const [x, y] = h;
+  const [a, b] = ecrit(k);
+  const s = x + y;
+  const or = x >= 4 && y >= 4;
+  const avant = opts.avant || [9, 9];
+  let tps = '';
+  for (let i = 1; i <= 4; i++) {
+    const n = (x >= i) + (y >= i);
+    const cl = n === 2 ? 'plein' : n === 1 ? 'demi' : '';
+    // Chaque moitié : un sens. Une moitié gagnée aujourd'hui passe en or vif.
+    const g = x >= i, d = y >= i;
+    const gJ = opts.avant && g && avant[0] < i, dJ = opts.avant && d && avant[1] < i;
+    let style = '';
+    if (gJ || dJ) {
+      const c = (pris, jour) => (jour ? 'var(--or-vif)' : pris ? 'var(--e-700)' : 'var(--carte)');
+      style = ` style="background:linear-gradient(90deg,${c(g, gJ)} 50%,${c(d, dJ)} 50%)"`;
+    }
+    tps += `<span class="tp ${cl}${gJ || dJ ? ' du-jour' : ''}"${style}>${i === 4 ? KR.icone('etoile') : ''}</span>`;
+  }
+  const etat = or ? (opts.orAuj ? 'or or-auj' : 'or') : s === 0 ? 'neuf' : s >= 6 ? 'presque' : '';
+  const label = `${a} × ${b}`;
+  return `<div class="cf ${etat} ${opts.taille || ''}" role="img" aria-label="${label}, ${s} stamps of 8" lang="fr">
+    ${or ? `<span class="badge-or">${KR.icone('etoile')}</span>` : ''}
+    <span class="op">${a} × ${b}</span>${or ? `<span class="rep">= ${a * b}</span>` : ''}
+    <span class="tps">${tps}</span></div>`;
+}
+function nav(icone, nom) {
+  return `<div class="nav"><button type="button" class="rond" aria-label="${nom}">${KR.icone(icone)}</button><span class="nom" aria-hidden="true">${nom}</span></div>`;
+}
+function semaine(faits, auj) {
+  return KR.semaine(Array.from({ length: 7 }, (_, i) => ({ fait: i < faits, aujourdhui: i === auj, avenir: i > auj })));
+}
+
+/* ---------- A : accueil, lundi 9 novembre, état après la séance 5 ---------- */
+(function () {
+  const e = ETAT[5];
+  const proches = ORDRE.filter(k => { const [x, y] = e[k]; return !(x >= 4 && y >= 4); })
+    .sort((p, q) => (e[q][0] + e[q][1]) - (e[p][0] + e[p][1])).slice(0, 3);
+  const fams = FAMILLES.map((f, i) => {
+    const or = f.paires.filter(k => e[k][0] >= 4 && e[k][1] >= 4).length;
+    const ferme = i >= 2;
+    return `<div class="fam-mini${ferme ? ' ferme' : ''}"><span>${f.nom}</span><span class="n">${ferme ? 'Not open yet' : `${KR.icone('etoile')}${or} of ${f.paires.length}`}</span></div>`;
+  }).join('');
+  document.getElementById('ecran-a').innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My times tables</h1><p class="indice">Right on a new day: a new stamp</p></div></header>
+    <div class="acc">
+      <button type="button" class="carte-entrainement">
+        <span class="ce-haut"><span class="ce-masc">${KR.mascotte('attend')}</span>
+          <span class="ce-infos"><span class="ce-info">${KR.icone('ok')}<span>20 questions today</span></span>
+          <span class="ce-info">${KR.icone('etoile')}<span><b lang="fr">5 × 6</b> can turn gold today</span></span></span></span>
+        <span class="ce-semaine">${semaine(0, 0)}</span>
+        <span class="ce-texte"><b>Today's practice</b><span>A little every day</span></span>
+        <span class="ce-go">${KR.icone('jouer')}</span>
+      </button>
+      <button type="button" class="panneau-album">
+        <span class="pa-tete"><span class="tuile">${KR.icone('grille')}</span>
+          <span><b>My cards</b><span class="compteurs"><span class="compteur"><span class="tp plein"></span>${total(e)} stamps</span><span class="compteur or">${KR.icone('etoile')}${nbOr(e)} gold</span></span></span></span>
+        <span class="pa-sous">Nearly gold</span>
+        <span class="rang-cartes">${proches.map(k => carte(k, e[k], { taille: 'grand' })).join('')}</span>
+        <span class="pa-note">One more stamp each, on another day.</span>
+        <span class="pa-familles">${fams}</span>
+      </button>
+    </div>`;
+})();
+
+/* ---------- B : fin de la séance 6 ---------- */
+(function () {
+  const av = ETAT[5], ap = ETAT[6];
+  const changees = ORDRE.filter(k => ap[k][0] + ap[k][1] > av[k][0] + av[k][1]);
+  const dorees = changees.filter(k => ap[k][0] >= 4 && ap[k][1] >= 4 && !(av[k][0] >= 4 && av[k][1] >= 4));
+  const autres = changees.filter(k => !dorees.includes(k));
+  const gagnes = total(ap) - total(av);
+  const phrase = 'Stamps won over several days: you know them by heart now.';
+  document.getElementById('ecran-b').innerHTML = `
+    <div class="fin">
+      <div class="fin-g">${KR.mascotte('fete', 'rebondit')}<p class="nb">21 questions</p></div>
+      <div class="fin-d">
+        <h1>Well done, Henri!</h1>
+        <div class="bloc bloc-or"><p class="titre">${KR.icone('etoile')}${dorees.length} cards turned gold!</p>
+          <div class="contenu">${dorees.map(k => carte(k, ap[k], { taille: 'grand', orAuj: true })).join('')}<p class="phrase">${phrase}</p></div></div>
+        <div class="bloc"><p class="titre">${KR.icone('monte')}+${gagnes} stamps today<span class="total">${total(ap)} in all</span></p>
+          <div class="rangee">${autres.map(k => carte(k, ap[k], { taille: 'petit', avant: av[k] })).join('')}</div></div>
+        <div class="ligne-fin">${semaine(1, 0)}<p class="jours-n">1 day this week</p></div>
+        <p class="demain">${KR.icone('cal')}<span>Tomorrow, <b lang="fr">2 × 6</b> comes back for a stamp.</span></p>
+        <div class="actions"><button type="button" class="btn btn-secondaire">See my cards</button><button type="button" class="btn btn-primaire">Done for today</button></div>
+      </div>
+    </div>`;
+})();
+
+/* ---------- C : l'album, vendredi 27 novembre ---------- */
+(function () {
+  const e = ETAT[20];
+  const ouvertes = 4;
+  const page = 2;
+  const onglets = FAMILLES.map((f, i) => {
+    const or = f.paires.filter(k => e[k][0] >= 4 && e[k][1] >= 4).length;
+    const complet = or === f.paires.length;
+    if (i >= ouvertes) return `<button type="button" class="onglet ferme"><b>${f.nom}</b><span>Not open yet</span></button>`;
+    return `<button type="button" class="onglet${i === page ? ' actif' : ''}${complet && i !== page ? ' complet' : ''}">${complet ? `<span class="medaille">${KR.icone('etoile')}</span>` : ''}<b>${f.nom}</b><span>${KR.icone('etoile')}${or} of ${f.paires.length}</span></button>`;
+  }).join('');
+  const f = FAMILLES[page];
+  const or = f.paires.filter(k => e[k][0] >= 4 && e[k][1] >= 4).length;
+  const presque = f.paires.filter(k => e[k][0] + e[k][1] >= 6 && !(e[k][0] >= 4 && e[k][1] >= 4)).length;
+  document.getElementById('ecran-c').innerHTML = `
+    <header class="barre">${nav('retour', 'Back')}
+      <div class="titre"><h1 class="titre-ecran">My cards</h1><p class="indice">${total(e)} stamps · ${nbOr(e)} gold cards</p></div></header>
+    <nav class="onglets">${onglets}</nav>
+    <section class="page-album">
+      <div class="page-tete"><h2>Double doubles: <span lang="fr">×4 and ×8</span></h2><p>${or} gold · ${presque} nearly gold</p></div>
+      <div class="cartes-page">${f.paires.map(k => carte(k, e[k])).join('')}</div>
+      <div class="legende-tp">
+        <div><span class="tp"></span>No stamp yet</div>
+        <div><span class="tp demi"></span>One way round</div>
+        <div><span class="tp plein"></span>Both ways round</div>
+        <div><span class="tp plein">${KR.icone('etoile')}</span>4th stamp: gold</div>
+        <div><span class="tp du-jour" style="background:var(--or-vif)"></span>Won today</div>
+      </div>
+    </section>`;
+})();
+
+/* ---------- Ligne d'état ---------- */
+(function () {
+  const quand = { 1: ['Après 1 séance', 'lundi 2 novembre'], 5: ['Après 5 séances', 'vendredi 6 novembre'], 20: ['Après 20 séances', 'vendredi 27 novembre'] };
+  const aujourdhui = { 1: 0, 5: 2, 20: 15 };
+  const gagnes = { 1: 6, 5: 13, 20: 18 };
+  document.getElementById('etats').innerHTML = [1, 5, 20].map(n => {
+    const e = ETAT[n];
+    const minis = ORDRE.map(k => {
+      const [x, y] = e[k];
+      const s = x + y;
+      const cl = x >= 4 && y >= 4 ? 'or' : s === 0 ? 'neuf' : '';
+      return `<span class="mc ${cl}"><i style="height:${(s / 8 * 100).toFixed(0)}%"></i></span>`;
+    }).join('');
+    return `<article class="etat"><h3>${quand[n][0]}</h3><p class="date">${quand[n][1]}</p><div class="mini">${minis}</div>
+      <p class="chiffres"><b>${total(e)}</b> tampons sur 288, <b>${nbOr(e)}</b> cartes d'or&nbsp;; <b>+${gagnes[n]}</b> tampons ce jour-là.</p>
+      <p class="avant">L'app actuelle affiche «&nbsp;${aujourdhui[n]}&nbsp;of&nbsp;36 by&nbsp;heart&nbsp;».</p></article>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

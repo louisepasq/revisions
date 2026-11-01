@@ -1,0 +1,2478 @@
+{
+ "instantanes": {
+  "0": {
+   "seance": 0,
+   "familles": 2,
+   "cartes": [
+    {
+     "a": 2,
+     "b": 2,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 3,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 4,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 6,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 7,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 8,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 9,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 3,
+     "b": 3,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 6,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 7,
+     "famille": 2,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 6,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 7,
+     "famille": 0,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 5,
+     "b": 8,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 9,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 9,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 7,
+     "famille": 5,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 9,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    }
+   ],
+   "stations": [
+    {
+     "tables": [
+      5
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 2,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      2
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 2,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      4,
+      8
+     ],
+     "paires": 15,
+     "or": 0,
+     "tampons": 2,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      3,
+      6
+     ],
+     "paires": 15,
+     "or": 0,
+     "tampons": 2,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      9
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 4,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      7
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 4,
+     "versLaSuivante": 0
+    }
+   ],
+   "ligne": {}
+  },
+  "1": {
+   "seance": 1,
+   "familles": 2,
+   "cartes": [
+    {
+     "a": 2,
+     "b": 2,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 3,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 4,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 5,
+     "famille": 0,
+     "tampons": 1,
+     "or": false,
+     "h1": 0,
+     "h2": 1
+    },
+    {
+     "a": 2,
+     "b": 6,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 7,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 8,
+     "famille": 1,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 9,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 3,
+     "b": 3,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 6,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 7,
+     "famille": 2,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 5,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 6,
+     "famille": 0,
+     "tampons": 1,
+     "or": false,
+     "h1": 1,
+     "h2": 1
+    },
+    {
+     "a": 5,
+     "b": 7,
+     "famille": 0,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 5,
+     "b": 8,
+     "famille": 0,
+     "tampons": 1,
+     "or": false,
+     "h1": 0,
+     "h2": 1
+    },
+    {
+     "a": 5,
+     "b": 9,
+     "famille": 0,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 9,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 7,
+     "famille": 5,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 9,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    }
+   ],
+   "stations": [
+    {
+     "tables": [
+      5
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 5,
+     "versLaSuivante": 0.19607843137254902
+    },
+    {
+     "tables": [
+      2
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 5,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      4,
+      8
+     ],
+     "paires": 15,
+     "or": 0,
+     "tampons": 5,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      3,
+      6
+     ],
+     "paires": 15,
+     "or": 0,
+     "tampons": 3,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      9
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 4,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      7
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 4,
+     "versLaSuivante": 0
+    }
+   ],
+   "ligne": {
+    "n": 1,
+    "montees": 4,
+    "nouveauxOr": 0,
+    "familles": 2,
+    "orAuj": 0,
+    "auj": {
+     "gris": 26,
+     "bronze": 10,
+     "argent": 0,
+     "or": 0
+    },
+    "prop": {
+     "gris": 28,
+     "bronze": 8,
+     "argent": 0,
+     "or": 0
+    },
+    "marches": 22,
+    "pas": 6,
+    "rappels": 1,
+    "etoiles": 5,
+    "jour": "2026-11-02",
+    "tamponnees": [
+     "2x4:20",
+     "2x5:01",
+     "5x6:11",
+     "5x8:01"
+    ],
+    "tampons": 22
+   }
+  },
+  "5": {
+   "seance": 5,
+   "familles": 2,
+   "cartes": [
+    {
+     "a": 2,
+     "b": 2,
+     "famille": 1,
+     "tampons": 1,
+     "or": false,
+     "h1": 1,
+     "h2": 1
+    },
+    {
+     "a": 2,
+     "b": 3,
+     "famille": 1,
+     "tampons": 1,
+     "or": false,
+     "h1": 0,
+     "h2": 1
+    },
+    {
+     "a": 2,
+     "b": 4,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 6,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 7,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 1
+    },
+    {
+     "a": 2,
+     "b": 8,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 1,
+     "h2": 2
+    },
+    {
+     "a": 2,
+     "b": 9,
+     "famille": 1,
+     "tampons": 3,
+     "or": false,
+     "h1": 4,
+     "h2": 3
+    },
+    {
+     "a": 3,
+     "b": 3,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 2,
+     "h2": 3
+    },
+    {
+     "a": 3,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 4,
+     "b": 6,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 7,
+     "famille": 2,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 5,
+     "b": 6,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 4,
+     "h2": 3
+    },
+    {
+     "a": 5,
+     "b": 7,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 8,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 2,
+     "h2": 3
+    },
+    {
+     "a": 5,
+     "b": 9,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 6,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 9,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 7,
+     "famille": 5,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 9,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    }
+   ],
+   "stations": [
+    {
+     "tables": [
+      5
+     ],
+     "paires": 8,
+     "or": 1,
+     "tampons": 25,
+     "versLaSuivante": 0.5637254901960784
+    },
+    {
+     "tables": [
+      2
+     ],
+     "paires": 8,
+     "or": 1,
+     "tampons": 18,
+     "versLaSuivante": 0.38461538461538464
+    },
+    {
+     "tables": [
+      4,
+      8
+     ],
+     "paires": 15,
+     "or": 1,
+     "tampons": 14,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      3,
+      6
+     ],
+     "paires": 15,
+     "or": 0,
+     "tampons": 11,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      9
+     ],
+     "paires": 8,
+     "or": 0,
+     "tampons": 8,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      7
+     ],
+     "paires": 8,
+     "or": 1,
+     "tampons": 8,
+     "versLaSuivante": 0
+    }
+   ],
+   "ligne": {
+    "n": 5,
+    "montees": 11,
+    "nouveauxOr": 0,
+    "familles": 2,
+    "orAuj": 2,
+    "auj": {
+     "gris": 17,
+     "bronze": 11,
+     "argent": 6,
+     "or": 2
+    },
+    "prop": {
+     "gris": 19,
+     "bronze": 7,
+     "argent": 8,
+     "or": 2
+    },
+    "marches": 80,
+    "pas": 12,
+    "rappels": 8,
+    "etoiles": 12,
+    "jour": "2026-11-06",
+    "tamponnees": [
+     "2x2:11",
+     "2x3:01",
+     "2x5:34",
+     "2x6:20",
+     "2x7:21",
+     "2x8:12",
+     "3x5:23",
+     "4x5:33"
+    ],
+    "tampons": 84
+   }
+  },
+  "6": {
+   "seance": 6,
+   "familles": 2,
+   "cartes": [
+    {
+     "a": 2,
+     "b": 2,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 2,
+     "b": 3,
+     "famille": 1,
+     "tampons": 2,
+     "or": false,
+     "h1": 1,
+     "h2": 2
+    },
+    {
+     "a": 2,
+     "b": 4,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 6,
+     "famille": 1,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 0
+    },
+    {
+     "a": 2,
+     "b": 7,
+     "famille": 1,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 2
+    },
+    {
+     "a": 2,
+     "b": 8,
+     "famille": 1,
+     "tampons": 3,
+     "or": false,
+     "h1": 2,
+     "h2": 3
+    },
+    {
+     "a": 2,
+     "b": 9,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 3,
+     "b": 3,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 3,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 3,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 4,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 4,
+     "b": 6,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 7,
+     "famille": 2,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 4,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 5,
+     "b": 5,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 5,
+     "b": 6,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 7,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 8,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 9,
+     "famille": 0,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 6,
+     "b": 6,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 7,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 6,
+     "b": 9,
+     "famille": 3,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 7,
+     "famille": 5,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 8,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 9,
+     "famille": 2,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 9,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    }
+   ],
+   "stations": [
+    {
+     "tables": [
+      5
+     ],
+     "paires": 8,
+     "or": 2,
+     "tampons": 26,
+     "versLaSuivante": 0.6862745098039216
+    },
+    {
+     "tables": [
+      2
+     ],
+     "paires": 8,
+     "or": 2,
+     "tampons": 24,
+     "versLaSuivante": 0.673076923076923
+    },
+    {
+     "tables": [
+      4,
+      8
+     ],
+     "paires": 15,
+     "or": 1,
+     "tampons": 15,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      3,
+      6
+     ],
+     "paires": 15,
+     "or": 1,
+     "tampons": 14,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      9
+     ],
+     "paires": 8,
+     "or": 1,
+     "tampons": 9,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      7
+     ],
+     "paires": 8,
+     "or": 1,
+     "tampons": 9,
+     "versLaSuivante": 0
+    }
+   ],
+   "ligne": {
+    "n": 6,
+    "montees": 11,
+    "nouveauxOr": 2,
+    "familles": 2,
+    "orAuj": 4,
+    "auj": {
+     "gris": 15,
+     "bronze": 11,
+     "argent": 6,
+     "or": 4
+    },
+    "prop": {
+     "gris": 19,
+     "bronze": 4,
+     "argent": 9,
+     "or": 4
+    },
+    "marches": 93,
+    "pas": 13,
+    "rappels": 16,
+    "etoiles": 17,
+    "jour": "2026-11-09",
+    "tamponnees": [
+     "2x2:22",
+     "2x3:12",
+     "2x6:30",
+     "2x7:32",
+     "2x8:23",
+     "2x9:44",
+     "3x5:33",
+     "5x6:44",
+     "5x8:34"
+    ],
+    "tampons": 98
+   }
+  },
+  "20": {
+   "seance": 20,
+   "familles": 4,
+   "cartes": [
+    {
+     "a": 2,
+     "b": 2,
+     "famille": 1,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 2,
+     "b": 3,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 4,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 5,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 6,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 7,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 8,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 2,
+     "b": 9,
+     "famille": 1,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 3,
+     "b": 3,
+     "famille": 3,
+     "tampons": 1,
+     "or": false,
+     "h1": 1,
+     "h2": 1
+    },
+    {
+     "a": 3,
+     "b": 4,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 4
+    },
+    {
+     "a": 3,
+     "b": 5,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 3,
+     "b": 6,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 0,
+     "h2": 2
+    },
+    {
+     "a": 3,
+     "b": 7,
+     "famille": 3,
+     "tampons": 1,
+     "or": false,
+     "h1": 1,
+     "h2": 1
+    },
+    {
+     "a": 3,
+     "b": 8,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 4
+    },
+    {
+     "a": 3,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 4,
+     "b": 4,
+     "famille": 2,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 4,
+     "b": 5,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 4,
+     "b": 6,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 4,
+     "b": 7,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 4,
+     "h2": 3
+    },
+    {
+     "a": 4,
+     "b": 8,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 4,
+     "b": 9,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 5,
+     "b": 5,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 6,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 7,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 8,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 5,
+     "b": 9,
+     "famille": 0,
+     "tampons": 4,
+     "or": true,
+     "h1": 4,
+     "h2": 4
+    },
+    {
+     "a": 6,
+     "b": 6,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 6,
+     "b": 7,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 2
+    },
+    {
+     "a": 6,
+     "b": 8,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 4,
+     "h2": 3
+    },
+    {
+     "a": 6,
+     "b": 9,
+     "famille": 3,
+     "tampons": 2,
+     "or": false,
+     "h1": 2,
+     "h2": 1
+    },
+    {
+     "a": 7,
+     "b": 7,
+     "famille": 5,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 7,
+     "b": 8,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 2,
+     "h2": 4
+    },
+    {
+     "a": 7,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    },
+    {
+     "a": 8,
+     "b": 8,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 8,
+     "b": 9,
+     "famille": 2,
+     "tampons": 3,
+     "or": false,
+     "h1": 3,
+     "h2": 3
+    },
+    {
+     "a": 9,
+     "b": 9,
+     "famille": 4,
+     "tampons": 0,
+     "or": false,
+     "h1": 0,
+     "h2": 0
+    }
+   ],
+   "stations": [
+    {
+     "tables": [
+      5
+     ],
+     "paires": 8,
+     "or": 8,
+     "tampons": 32,
+     "versLaSuivante": 1
+    },
+    {
+     "tables": [
+      2
+     ],
+     "paires": 8,
+     "or": 7,
+     "tampons": 31,
+     "versLaSuivante": 1
+    },
+    {
+     "tables": [
+      4,
+      8
+     ],
+     "paires": 15,
+     "or": 5,
+     "tampons": 50,
+     "versLaSuivante": 1
+    },
+    {
+     "tables": [
+      3,
+      6
+     ],
+     "paires": 15,
+     "or": 4,
+     "tampons": 40,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      9
+     ],
+     "paires": 8,
+     "or": 2,
+     "tampons": 18,
+     "versLaSuivante": 0
+    },
+    {
+     "tables": [
+      7
+     ],
+     "paires": 8,
+     "or": 2,
+     "tampons": 17,
+     "versLaSuivante": 0
+    }
+   ],
+   "ligne": {
+    "n": 20,
+    "montees": 8,
+    "nouveauxOr": 2,
+    "familles": 4,
+    "orAuj": 15,
+    "auj": {
+     "gris": 1,
+     "bronze": 11,
+     "argent": 9,
+     "or": 15
+    },
+    "prop": {
+     "gris": 3,
+     "bronze": 7,
+     "argent": 11,
+     "or": 15
+    },
+    "marches": 194,
+    "pas": 14,
+    "rappels": 11,
+    "etoiles": 15,
+    "jour": "2026-11-27",
+    "tamponnees": [
+     "3x3:11",
+     "3x6:02",
+     "3x7:11",
+     "4x4:44",
+     "4x7:43",
+     "6x6:22",
+     "6x7:22",
+     "6x9:21"
+    ],
+    "tampons": 211
+   }
+  }
+ },
+ "semaines": [
+  {
+   "jours": 5,
+   "etoiles": 43,
+   "nouveauxOr": 2
+  },
+  {
+   "jours": 5,
+   "etoiles": 77,
+   "nouveauxOr": 6
+  },
+  {
+   "jours": 5,
+   "etoiles": 71,
+   "nouveauxOr": 5
+  },
+  {
+   "jours": 5,
+   "etoiles": 58,
+   "nouveauxOr": 3
+  }
+ ],
+ "lignes": [
+  {
+   "n": 1,
+   "jour": "2026-11-02",
+   "etoiles": 5,
+   "pas": 6,
+   "rappels": 1,
+   "orAuj": 0,
+   "montees": 4,
+   "tampons": 22,
+   "tamponnees": [
+    "2x4:20",
+    "2x5:01",
+    "5x6:11",
+    "5x8:01"
+   ]
+  },
+  {
+   "n": 2,
+   "jour": "2026-11-03",
+   "etoiles": 10,
+   "pas": 15,
+   "rappels": 6,
+   "orAuj": 0,
+   "montees": 13,
+   "tampons": 38,
+   "tamponnees": [
+    "2x4:32",
+    "2x5:02",
+    "2x9:33",
+    "4x5:10",
+    "5x5:11",
+    "5x6:22",
+    "5x7:33",
+    "5x8:02",
+    "5x9:11"
+   ]
+  },
+  {
+   "n": 3,
+   "jour": "2026-11-04",
+   "etoiles": 8,
+   "pas": 16,
+   "rappels": 4,
+   "orAuj": 1,
+   "montees": 14,
+   "tampons": 55,
+   "tamponnees": [
+    "2x4:43",
+    "2x5:13",
+    "3x5:01",
+    "4x5:21",
+    "5x5:22",
+    "5x6:33",
+    "5x7:44",
+    "5x8:13",
+    "5x9:22"
+   ]
+  },
+  {
+   "n": 4,
+   "jour": "2026-11-05",
+   "etoiles": 8,
+   "pas": 15,
+   "rappels": 5,
+   "orAuj": 2,
+   "montees": 12,
+   "tampons": 71,
+   "tamponnees": [
+    "2x4:44",
+    "2x5:24",
+    "2x6:10",
+    "2x8:01",
+    "2x9:43",
+    "3x5:12",
+    "4x5:32",
+    "5x5:33",
+    "5x6:43",
+    "5x8:23",
+    "5x9:33"
+   ]
+  },
+  {
+   "n": 5,
+   "jour": "2026-11-06",
+   "etoiles": 12,
+   "pas": 12,
+   "rappels": 8,
+   "orAuj": 2,
+   "montees": 11,
+   "tampons": 84,
+   "tamponnees": [
+    "2x2:11",
+    "2x3:01",
+    "2x5:34",
+    "2x6:20",
+    "2x7:21",
+    "2x8:12",
+    "3x5:23",
+    "4x5:33"
+   ]
+  },
+  {
+   "n": 6,
+   "jour": "2026-11-09",
+   "etoiles": 17,
+   "pas": 13,
+   "rappels": 16,
+   "orAuj": 4,
+   "montees": 11,
+   "tampons": 98,
+   "tamponnees": [
+    "2x2:22",
+    "2x3:12",
+    "2x6:30",
+    "2x7:32",
+    "2x8:23",
+    "2x9:44",
+    "3x5:33",
+    "5x6:44",
+    "5x8:34"
+   ]
+  },
+  {
+   "n": 7,
+   "jour": "2026-11-10",
+   "etoiles": 18,
+   "pas": 3,
+   "rappels": 18,
+   "orAuj": 4,
+   "montees": 14,
+   "tampons": 101,
+   "tamponnees": [
+    "2x6:32",
+    "4x5:43"
+   ]
+  },
+  {
+   "n": 8,
+   "jour": "2026-11-11",
+   "etoiles": 18,
+   "pas": 6,
+   "rappels": 18,
+   "orAuj": 6,
+   "montees": 14,
+   "tampons": 108,
+   "tamponnees": [
+    "2x2:33",
+    "2x3:22",
+    "2x5:44",
+    "3x5:34",
+    "4x5:44",
+    "5x9:34"
+   ]
+  },
+  {
+   "n": 9,
+   "jour": "2026-11-12",
+   "etoiles": 7,
+   "pas": 4,
+   "rappels": 7,
+   "orAuj": 5,
+   "montees": 4,
+   "tampons": 112,
+   "tamponnees": [
+    "2x3:23",
+    "2x6:33",
+    "2x7:33",
+    "2x8:33"
+   ]
+  },
+  {
+   "n": 10,
+   "jour": "2026-11-13",
+   "etoiles": 17,
+   "pas": 12,
+   "rappels": 13,
+   "orAuj": 7,
+   "montees": 11,
+   "tampons": 124,
+   "tamponnees": [
+    "2x3:33",
+    "2x7:43",
+    "3x5:44",
+    "3x8:02",
+    "4x6:11",
+    "4x7:33",
+    "5x8:44",
+    "6x8:10",
+    "7x8:01"
+   ]
+  },
+  {
+   "n": 11,
+   "jour": "2026-11-16",
+   "etoiles": 14,
+   "pas": 8,
+   "rappels": 11,
+   "orAuj": 9,
+   "montees": 10,
+   "tampons": 134,
+   "tamponnees": [
+    "3x4:01",
+    "3x8:03",
+    "4x4:11",
+    "4x6:12",
+    "4x9:01",
+    "5x5:44",
+    "5x9:44",
+    "7x8:02"
+   ]
+  },
+  {
+   "n": 12,
+   "jour": "2026-11-17",
+   "etoiles": 15,
+   "pas": 11,
+   "rappels": 11,
+   "orAuj": 10,
+   "montees": 7,
+   "tampons": 145,
+   "tamponnees": [
+    "2x6:34",
+    "2x7:44",
+    "2x8:43",
+    "3x4:02",
+    "3x8:23",
+    "4x6:22",
+    "4x8:01",
+    "4x9:11",
+    "6x8:11",
+    "8x9:10"
+   ]
+  },
+  {
+   "n": 13,
+   "jour": "2026-11-18",
+   "etoiles": 12,
+   "pas": 7,
+   "rappels": 10,
+   "orAuj": 12,
+   "montees": 6,
+   "tampons": 153,
+   "tamponnees": [
+    "2x3:43",
+    "2x6:44",
+    "2x8:44",
+    "3x4:12",
+    "4x9:12",
+    "6x8:21",
+    "8x8:11"
+   ]
+  },
+  {
+   "n": 14,
+   "jour": "2026-11-19",
+   "etoiles": 15,
+   "pas": 9,
+   "rappels": 15,
+   "orAuj": 12,
+   "montees": 2,
+   "tampons": 163,
+   "tamponnees": [
+    "4x4:22",
+    "4x6:23",
+    "4x8:22",
+    "6x8:22",
+    "7x8:23"
+   ]
+  },
+  {
+   "n": 15,
+   "jour": "2026-11-20",
+   "etoiles": 15,
+   "pas": 7,
+   "rappels": 15,
+   "orAuj": 12,
+   "montees": 3,
+   "tampons": 170,
+   "tamponnees": [
+    "3x4:13",
+    "3x8:33",
+    "4x9:22",
+    "6x8:32",
+    "8x9:22"
+   ]
+  },
+  {
+   "n": 16,
+   "jour": "2026-11-23",
+   "etoiles": 16,
+   "pas": 9,
+   "rappels": 16,
+   "orAuj": 13,
+   "montees": 9,
+   "tampons": 181,
+   "tamponnees": [
+    "2x3:44",
+    "3x4:23",
+    "3x8:34",
+    "4x4:33",
+    "4x8:33",
+    "4x9:23",
+    "6x8:33",
+    "8x8:22"
+   ]
+  },
+  {
+   "n": 17,
+   "jour": "2026-11-24",
+   "etoiles": 16,
+   "pas": 6,
+   "rappels": 16,
+   "orAuj": 13,
+   "montees": 6,
+   "tampons": 187,
+   "tamponnees": [
+    "3x4:24",
+    "4x9:33",
+    "6x8:43",
+    "7x8:24",
+    "8x9:33"
+   ]
+  },
+  {
+   "n": 18,
+   "jour": "2026-11-25",
+   "etoiles": 8,
+   "pas": 3,
+   "rappels": 8,
+   "orAuj": 13,
+   "montees": 3,
+   "tampons": 191,
+   "tamponnees": [
+    "3x4:34",
+    "4x6:33",
+    "8x8:33"
+   ]
+  },
+  {
+   "n": 19,
+   "jour": "2026-11-26",
+   "etoiles": 3,
+   "pas": 2,
+   "rappels": 1,
+   "orAuj": 13,
+   "montees": 3,
+   "tampons": 193,
+   "tamponnees": [
+    "6x7:01",
+    "6x9:10"
+   ]
+  },
+  {
+   "n": 20,
+   "jour": "2026-11-27",
+   "etoiles": 15,
+   "pas": 14,
+   "rappels": 11,
+   "orAuj": 15,
+   "montees": 8,
+   "tampons": 211,
+   "tamponnees": [
+    "3x3:11",
+    "3x6:02",
+    "3x7:11",
+    "4x4:44",
+    "4x7:43",
+    "6x6:22",
+    "6x7:22",
+    "6x9:21"
+   ]
+  }
+ ]
+}

@@ -6,3 +6,4 @@ henri/outils/captures/
 .env*
 .env*.local
 node_modules/
+docs/design-system/archive/2026-11-01_progression/*.png
