@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 · Calme et concentré</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ Jetons du système ============ */
+:root{
+  --papier:#F4F1EA;       /* fond des écrans */
+  --papier-2:#ECE8DF;     /* fond secondaire, touches neutres */
+  --surface:#FFFDF8;      /* cartes, champs, touches */
+  --encre:#1E2829;        /* texte principal, 13,4:1 sur papier */
+  --encre-2:#4D5A5C;      /* texte secondaire, 6,3:1 sur papier */
+  --trait:#DCD6C9;        /* filets */
+  --juste-700:#2F6B4B; --juste-100:#E2F0E6;      /* Mousse */
+  --revoir-700:#855716; --revoir-100:#F6E9D2; --revoir-50:#FAF3E6; --revoir-300:#E6C994; /* Sable */
+  --rayon-s:12px; --rayon-m:20px; --rayon-l:28px; --rayon-xl:36px;
+  --f-chiffre:"Lexend", system-ui, sans-serif;
+  --f-mot:"Andika", "Lexend", system-ui, sans-serif;
+  --ombre-touche:0 3px 0 #D3CCBD;
+}
+.th-henri{--t-50:#EEF4F8;--t-100:#DCE8F0;--t-300:#A9C3D5;--t-500:#5F89A6;--t-700:#2D5B7B;--t-800:#234A66;--t-900:#17344A;}
+.th-clara{--t-50:#F6F1F8;--t-100:#ECE2F1;--t-300:#CDB6D8;--t-500:#9673A8;--t-700:#6A4580;--t-800:#573868;--t-900:#3C2547;}
+.th-soir{--papier:#161B1D;--papier-2:#20282A;--surface:#20282A;--encre:#ECE8DF;--encre-2:#B5BDB9;--trait:#34403F;
+  --t-50:#1B2429;--t-100:#22323C;--t-300:#3D5A6C;--t-500:#7FA6C0;--t-700:#9EC2DA;--t-800:#B7D3E6;--t-900:#E3EEF5;}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#E7E3DA}
+body{font-family:var(--f-mot);color:var(--encre);background:#E7E3DA;padding:0 16px 80px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.ico{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ============ Bandeau de la direction ============ */
+.bandeau{position:sticky;top:0;z-index:50;margin:0 -16px 32px;padding:18px 32px;background:rgba(244,241,234,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--trait);display:flex;align-items:baseline;gap:18px}
+.bandeau .num{font:600 28px var(--f-chiffre);color:#2D5B7B}
+.bandeau .nom{font:600 28px var(--f-chiffre)}
+.bandeau .sous{font-size:17px;color:var(--encre-2);margin-left:auto}
+
+.page{width:1168px;margin:0 auto}
+.legende{font:500 20px var(--f-chiffre);color:var(--encre);margin:56px 0 16px;display:flex;gap:14px;align-items:baseline}
+.legende b{font-weight:600;color:var(--encre-2);min-width:24px}
+
+/* ============ Planche système ============ */
+.planche{background:var(--surface);border-radius:32px;padding:48px;box-shadow:0 1px 0 #d6d0c3}
+.planche h2{font:600 30px var(--f-chiffre);margin-bottom:8px}
+.planche h3{font:600 21px var(--f-chiffre);margin-bottom:18px;color:var(--encre)}
+.planche .chapo{font-size:20px;color:var(--encre-2);max-width:820px;line-height:1.45}
+.bloc{margin-top:48px;padding-top:40px;border-top:1px solid var(--trait)}
+.principes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+.principes div{background:var(--papier);border-radius:var(--rayon-m);padding:20px 22px}
+.principes b{display:block;font:600 19px var(--f-chiffre);margin-bottom:6px}
+.principes span{font-size:17px;color:var(--encre-2);line-height:1.4}
+
+.gamme{display:grid;grid-template-columns:190px 1fr;align-items:start;gap:16px;margin-bottom:22px}
+.gamme > p{font:600 18px var(--f-chiffre);padding-top:20px}
+.gamme > p small{display:block;font:400 16px var(--f-mot);color:var(--encre-2);margin-top:4px}
+.nuancier{display:flex;gap:12px;flex-wrap:wrap}
+.pastel{width:128px}
+.pastel i{display:block;height:64px;border-radius:14px;border:1px solid rgba(0,0,0,.06)}
+.pastel b{display:block;font:500 16px var(--f-chiffre);margin-top:8px}
+.pastel span{font-size:16px;color:var(--encre-2)}
+
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.typo-ligne{display:grid;grid-template-columns:240px 1fr;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--trait)}
+.typo-ligne:last-child{border-bottom:0}
+.typo-ligne > span:first-child{font-size:16px;color:var(--encre-2)}
+.etats{display:grid;grid-template-columns:repeat(2,auto);gap:18px 20px;justify-content:start;align-items:center}
+.etats .lab{font-size:16px;color:var(--encre-2);margin-top:8px}
+.mini-pave{display:flex;gap:12px;margin-top:8px}
+.mini-pave .touche{width:96px;height:96px}
+.mini-pave .touche .chiffre{font-size:40px}
+
+.compo{display:grid;grid-template-columns:1fr 1fr;gap:32px 48px}
+.compo > h3{grid-column:1 / -1}
+.compo > div > p.lab{font-size:16px;color:var(--encre-2);margin-bottom:10px}
+.theme-cote{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.theme-carte{border-radius:var(--rayon-l);padding:22px;background:var(--papier);display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.theme-carte .qui{display:flex;align-items:center;gap:12px;font:600 19px var(--f-chiffre);color:var(--encre)}
+.theme-carte .qui svg{width:48px;height:58px}
+.rampe{display:flex;gap:6px}
+.rampe .case{width:40px;height:40px;font-size:16px}
+
+/* ============ Cadres d'appareils ============ */
+.ipad{width:1168px;padding:26px 44px;background:#23272A;border-radius:52px;position:relative;box-shadow:0 30px 60px -30px rgba(30,40,41,.45)}
+.ipad::before{content:"";position:absolute;left:18px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#3a3f43}
+.ipad::after{content:"";position:absolute;right:9px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;border:2px solid #474c51}
+.ecran{width:1080px;height:810px;overflow:hidden;position:relative;background:var(--papier);border-radius:4px}
+.iphone{width:430px;padding:14px;background:#23272A;border-radius:68px;margin:0 auto;box-shadow:0 30px 60px -30px rgba(30,40,41,.45)}
+.ecran-tel{width:402px;height:874px;border-radius:55px;overflow:hidden;position:relative;background:var(--papier);display:flex;flex-direction:column}
+
+/* ============ Typographie ============ */
+.t-question{font:600 128px/1 var(--f-chiffre);letter-spacing:-.01em;color:var(--encre);font-variant-numeric:tabular-nums}
+.t-titre{font:600 40px/1.15 var(--f-chiffre);color:var(--encre)}
+.t-carte{font:600 28px/1.2 var(--f-chiffre);color:var(--encre)}
+.t-consigne{font:400 24px/1.35 var(--f-mot);color:var(--encre)}
+.t-texte{font:400 20px/1.4 var(--f-mot);color:var(--encre)}
+.t-detail{font:400 17px/1.4 var(--f-mot);color:var(--encre-2)}
+
+/* ============ Boutons ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:64px;padding:0 28px;border-radius:var(--rayon-m);
+  font:600 21px var(--f-chiffre);transition:transform .08s, box-shadow .08s;white-space:nowrap}
+.btn .ico{width:26px;height:26px}
+.btn-1{background:var(--t-700);color:#fff;box-shadow:0 4px 0 var(--t-900)}
+.btn-1.appuye{transform:translateY(4px);box-shadow:0 0 0 var(--t-900);background:var(--t-800)}
+.btn-2{background:var(--surface);color:var(--t-700);border:2px solid var(--t-300);box-shadow:0 3px 0 var(--t-100)}
+.btn-2.appuye{transform:translateY(3px);box-shadow:none;background:var(--t-50)}
+.btn-3{background:transparent;color:var(--encre-2);min-height:56px;padding:0 16px;font:500 18px var(--f-chiffre)}
+.btn.inactif{background:var(--papier-2);color:#5B6567;box-shadow:none;border-color:transparent}
+.btn.focus{outline:3px solid var(--encre);outline-offset:4px}
+.btn-icone{width:56px;height:56px;border-radius:50%;display:inline-grid;place-items:center;background:var(--surface);border:2px solid var(--trait);color:var(--encre)}
+.btn-icone .ico{width:28px;height:28px}
+.btn:active,.btn-icone:active,.touche:active{transform:translateY(3px)}
+
+/* ============ Pavé numérique ============ */
+.pave{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:20px;background:var(--t-50);border-radius:var(--rayon-xl)}
+.touche{height:128px;border-radius:24px;background:var(--surface);border:1.5px solid var(--trait);box-shadow:var(--ombre-touche);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--encre);transition:transform .08s}
+.touche .chiffre{font:500 50px/1 var(--f-chiffre)}
+.touche .mot{font:500 17px var(--f-chiffre)}
+.touche .ico{width:34px;height:34px}
+.touche.effacer{background:var(--papier-2);color:var(--encre-2);box-shadow:0 3px 0 #CFC8B9}
+.touche.valider{background:var(--t-700);border-color:var(--t-700);color:#fff;box-shadow:0 4px 0 var(--t-900)}
+.pave.repos{opacity:.42;filter:saturate(.6)}
+
+/* ============ Composants ============ */
+.semaine{list-style:none;display:flex;gap:10px}
+.semaine li{display:flex;flex-direction:column;align-items:center;gap:6px;width:46px}
+.semaine .rond{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--trait);background:var(--surface)}
+.semaine .rond .ico{width:22px;height:22px;stroke-width:2.8}
+.semaine .j{font:500 16px var(--f-chiffre);color:var(--encre-2)}
+.semaine .f .rond{background:var(--t-700);border-color:var(--t-700);color:#fff}
+.semaine .a .rond{border:3px solid var(--t-700);background:var(--t-50)}
+.semaine .a .j{color:var(--t-900);font-weight:600}
+.semaine .af .rond{background:var(--t-700);border-color:var(--t-700);color:#fff;box-shadow:0 0 0 4px var(--t-100)}
+.semaine .af .j{color:var(--t-900);font-weight:600}
+.semaine .v .rond{background:transparent;border-style:dashed}
+
+.avance{display:flex;align-items:center;gap:14px}
+.avance span{font:500 18px var(--f-chiffre);color:var(--encre-2);white-space:nowrap}
+.piste{width:220px;height:10px;border-radius:5px;background:var(--papier-2);overflow:hidden}
+.piste i{display:block;height:100%;border-radius:5px;background:var(--t-700)}
+
+.case{border-radius:12px;display:grid;place-items:center;font:500 18px var(--f-chiffre);background:var(--surface);border:1.5px solid var(--trait);color:var(--encre-2);font-variant-numeric:tabular-nums}
+.case.m1{background:linear-gradient(to top,var(--t-300) 0 33%,var(--surface) 33%);border-color:var(--t-300);color:var(--t-900)}
+.case.m2{background:linear-gradient(to top,var(--t-300) 0 66%,var(--surface) 66%);border-color:var(--t-300);color:var(--t-900)}
+.case.m3{background:var(--t-300);border-color:var(--t-300);color:var(--t-900);font-weight:600}
+
+.astuce{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border-radius:var(--rayon-m);padding:18px 20px;font:400 21px/1.4 var(--f-mot);color:var(--encre)}
+.astuce .ico{width:28px;height:28px;color:var(--revoir-700);margin-top:1px}
+.astuce b{font-family:var(--f-chiffre);font-weight:500}
+
+.champ{width:220px;height:132px;border-radius:var(--rayon-l);background:var(--surface);border:3px solid var(--t-700);
+  display:flex;align-items:center;justify-content:center;font:500 88px/1 var(--f-chiffre);color:var(--t-900);box-shadow:0 0 0 6px var(--t-100)}
+.curseur{display:inline-block;width:5px;height:72px;border-radius:3px;background:var(--t-700);margin-left:6px;animation:clignote 1.1s steps(1) infinite}
+@keyframes clignote{50%{opacity:0}}
+.champ.juste{border-color:var(--juste-700);background:var(--juste-100);color:var(--juste-700);box-shadow:0 0 0 6px rgba(47,107,75,.12)}
+
+.etiquette{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:20px;font:500 17px var(--f-chiffre)}
+
+/* ============ Écrans de séance ============ */
+.seance{position:absolute;inset:0;display:grid;grid-template-columns:1fr 432px;grid-template-rows:64px 1fr;column-gap:44px;row-gap:24px;padding:32px 40px 32px 40px}
+.barre{grid-column:1 / -1;display:flex;align-items:center;gap:24px}
+.barre .avance{margin-left:8px}
+.barre .btn-son{margin-left:auto;min-height:56px;padding:0 22px;font-size:19px}
+.travail{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;position:relative}
+.seance .pave{align-self:end}
+
+/* ============ Portail ============ */
+.portail{position:absolute;inset:0;padding:40px 48px;display:flex;flex-direction:column;justify-content:center;gap:52px}
+.portail-tete{display:flex;align-items:center;gap:36px}
+.portail-tete .masc{width:150px;height:180px;flex:none}
+.portail-tete .t-titre{font-size:46px;margin-bottom:22px}
+.semaine-bloc{display:flex;align-items:center;gap:24px}
+.coin-parent{position:absolute;top:24px;right:28px}
+.coin-parent .ico{width:22px;height:22px}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.module{background:var(--surface);border-radius:var(--rayon-l);border:1.5px solid var(--trait);padding:28px;height:340px;display:flex;flex-direction:column;box-shadow:0 2px 0 #E2DCCF;text-align:left}
+.module .tuile{width:84px;height:84px;border-radius:24px;background:var(--t-100);display:grid;place-items:center;color:var(--t-700)}
+.module .tuile .ico{width:46px;height:46px;stroke-width:2}
+.module .matiere{font-size:18px;color:var(--encre-2);margin-top:22px}
+.module .t-carte{margin-top:4px}
+.module .pied{margin-top:auto;display:flex;align-items:center;gap:14px}
+.module .prog{flex:1;display:flex;flex-direction:column;gap:10px}
+.module .prog .piste{width:100%}
+.module .prog .t-detail{white-space:nowrap}
+.module .aller{width:56px;height:56px;border-radius:50%;background:var(--t-700);color:#fff;display:grid;place-items:center;margin-left:auto;flex:none}
+.module .aller .ico{width:26px;height:26px}
+.module.bientot{background:transparent;border:2px dashed var(--trait);box-shadow:none}
+.module.bientot .tuile{background:var(--papier-2);color:var(--encre-2)}
+.badge-bientot{background:var(--papier-2);color:var(--encre-2)}
+
+/* ============ Grille ============ */
+.grille-ecran{position:absolute;inset:0;padding:32px 40px;display:grid;grid-template-columns:612px 1fr;grid-template-rows:64px 1fr;gap:20px 36px}
+.grille-ecran .barre{gap:20px}
+.grille{display:grid;grid-template-columns:repeat(11,52px);grid-auto-rows:52px;gap:4px;align-self:center}
+.grille .ent{display:grid;place-items:center;font:600 19px var(--f-chiffre);color:var(--encre-2);border-radius:12px}
+.grille .ent.on{background:var(--t-700);color:#fff}
+.grille .coin{color:var(--encre-2);font:500 22px var(--f-chiffre);display:grid;place-items:center}
+.grille .case.sel{outline:4px solid var(--encre);outline-offset:2px;position:relative;z-index:2}
+.detail{display:flex;flex-direction:column;gap:20px;align-self:center}
+.fiche{background:var(--surface);border-radius:var(--rayon-l);padding:28px;border:1.5px solid var(--trait);display:flex;flex-direction:column;gap:20px}
+.fiche .eq{font:600 54px/1 var(--f-chiffre)}
+.fiche .etat{display:flex;align-items:center;gap:12px;font:500 20px var(--f-chiffre);color:var(--t-900)}
+.fiche .etat .case{width:34px;height:34px}
+.fiche .astuce{background:var(--papier);font-size:20px;padding:16px 18px}
+.fiche .btn{width:100%}
+.legende-grille{list-style:none;display:grid;grid-template-columns:1fr;gap:10px;padding:0 6px}
+.legende-grille li{display:flex;align-items:center;gap:10px;font-size:17px;color:var(--encre)}
+.legende-grille .case{width:30px;height:30px;flex:none}
+
+/* ============ Fin de séance ============ */
+.fin{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+.fin .masc{width:132px;height:158px}
+.fin .t-titre{margin-top:18px}
+.montees{display:flex;gap:14px;margin-top:22px}
+.montee{display:flex;align-items:center;gap:12px;height:64px;padding:0 22px 0 14px;border-radius:32px;background:var(--surface);border:1.5px solid var(--trait)}
+.montee .fl{width:40px;height:40px;border-radius:50%;background:var(--t-100);color:var(--t-700);display:grid;place-items:center}
+.montee .fl .ico{width:22px;height:22px;stroke-width:2.6}
+.montee b{font:600 28px var(--f-chiffre);color:var(--encre)}
+.fin .semaine-bloc{margin-top:36px;flex-direction:column;gap:10px}
+.demain{display:inline-flex;align-items:center;gap:12px;margin-top:30px;padding:14px 24px;border-radius:30px;background:var(--t-50);font-size:22px;color:var(--encre)}
+.demain .ico{width:26px;height:26px;color:var(--t-700)}
+.demain b{font-family:var(--f-chiffre);font-weight:600}
+.fin .actions{display:flex;gap:18px;margin-top:40px}
+.fin .actions .btn{min-width:240px}
+
+/* ============ Retour doux (erreur) ============ */
+.retour-doux{width:100%;background:var(--revoir-50);border:1.5px solid #EEDDBE;border-radius:var(--rayon-l);padding:24px 26px;display:flex;flex-direction:column;gap:18px}
+.retour-doux .tete{display:flex;align-items:center;gap:18px}
+.retour-doux .tete svg{width:76px;height:91px;flex:none}
+.eq-moy{font:600 64px/1 var(--f-chiffre);color:var(--encre);white-space:nowrap}
+.surligne{display:inline-block;background:#F1DDB4;padding:6px 14px 8px;border-radius:18px}
+.ligne-saisie{display:flex;align-items:center;gap:20px}
+.champ.petit{width:168px;height:104px;font-size:64px}
+.champ.petit .curseur{height:56px;margin-left:0}
+.travail.erreur{justify-content:center;align-items:stretch;gap:26px}
+.travail.erreur .t-consigne{text-align:center;margin-top:6px}
+.travail.erreur .ligne-saisie{justify-content:center}
+
+/* ============ Juste ============ */
+.travail.bravo .t-question{color:var(--encre)}
+.reaction{display:flex;align-items:center;gap:14px;margin-top:-8px}
+.reaction svg.masc{width:64px;height:77px}
+.rapide{background:var(--juste-100);color:var(--juste-700)}
+.rapide .ico{width:20px;height:20px}
+.suite{display:flex;align-items:center;gap:10px;font:500 17px var(--f-chiffre);color:var(--encre-2)}
+.suite i{width:8px;height:8px;border-radius:50%;background:var(--t-300)}
+.suite i:first-of-type{background:var(--t-700)}
+.masc-coin{position:absolute;left:0;bottom:0;width:104px;height:125px}
+
+/* ============ iPhone ============ */
+.statut{height:54px;flex:none;position:relative;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 44px;font:600 17px var(--f-chiffre);color:var(--encre)}
+.ile{position:absolute;top:11px;left:50%;width:126px;height:37px;margin-left:-63px;border-radius:20px;background:#000}
+.statut .icones{display:flex;gap:6px;align-items:center}
+.statut .batt{width:26px;height:13px;border:1.5px solid var(--encre);border-radius:4px;padding:1.5px}
+.statut .batt i{display:block;height:100%;width:75%;background:var(--encre);border-radius:1.5px}
+.tel .barre{display:flex;align-items:center;gap:12px;padding:8px 16px;flex:none}
+.tel .avance .piste{width:120px}
+.tel .travail{flex:1;gap:28px}
+.tel .t-question{font-size:104px}
+.tel .champ{width:184px;height:110px;font-size:72px}
+.tel .champ .curseur{height:60px}
+.tel .pave{margin:0 12px;padding:12px;gap:10px;border-radius:30px}
+.tel .touche{height:76px;border-radius:20px}
+.tel .touche .chiffre{font-size:38px}
+.tel .touche .ico{width:28px;height:28px}
+.tel .touche .mot{font-size:16px}
+.tel .touche.effacer,.tel .touche.valider{flex-direction:row;gap:6px}
+.accueil-barre{height:34px;flex:none;position:relative}
+.accueil-barre::after{content:"";position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--encre)}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;animation:none !important}
+  .btn:active,.btn-icone:active,.touche:active{transform:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="bouclette" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="b"/>
+      <feDisplacementMap in="SourceGraphic" in2="b" scale="5"/>
+    </filter>
+    <symbol id="ours" viewBox="0 0 200 240">
+      <ellipse cx="78" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="122" cy="212" rx="17" ry="26" fill="#F1E3A0"/>
+      <ellipse cx="78" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="122" cy="234" rx="18" ry="7" fill="#E9D98F"/>
+      <ellipse cx="100" cy="176" rx="42" ry="40" fill="#F7EBB3"/>
+      <ellipse cx="42" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(25 42 158)"/>
+      <ellipse cx="158" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(-25 158 158)"/>
+      <path d="M58 138 Q100 126 142 138 L164 152 Q160 166 148 166 L144 176 Q100 186 56 176 L52 166 Q40 166 36 152 Z" fill="#D8392F"/>
+      <path d="M84 136 Q100 146 116 136" stroke="#B12A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="56" cy="40" r="17" fill="#EEDD93"/><circle cx="56" cy="42" r="9" fill="#E3CF7E"/>
+      <circle cx="144" cy="40" r="17" fill="#EEDD93"/><circle cx="144" cy="42" r="9" fill="#E3CF7E"/>
+      <ellipse cx="100" cy="80" rx="54" ry="56" fill="#F5E8A6"/>
+      <ellipse cx="100" cy="102" rx="30" ry="24" fill="#F9F0C6"/>
+      <path d="M90 90 Q100 84 110 90 Q112 100 100 104 Q88 100 90 90 Z" fill="#7A4A2E"/>
+      <path d="M80 108 Q100 124 120 108" stroke="#6B3B24" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="70" r="4.5" fill="#6B3B24"/><circle cx="120" cy="70" r="4.5" fill="#6B3B24"/>
+      <path d="M72 58 Q80 52 88 57" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M112 57 Q120 52 128 58" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <circle cx="68" cy="94" r="8" fill="#F2A07E" opacity=".35"/><circle cx="132" cy="94" r="8" fill="#F2A07E" opacity=".35"/>
+    </symbol>
+    <symbol id="koala" viewBox="0 0 200 240">
+      <g filter="url(#bouclette)">
+        <ellipse cx="80" cy="222" rx="20" ry="13" fill="#B3ADA3"/><ellipse cx="120" cy="222" rx="20" ry="13" fill="#B3ADA3"/>
+        <ellipse cx="100" cy="182" rx="44" ry="44" fill="#C2BDB3"/>
+        <ellipse cx="50" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(20 50 168)"/>
+        <ellipse cx="150" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(-20 150 168)"/>
+        <circle cx="46" cy="58" r="33" fill="#BDB7AD"/>
+        <circle cx="154" cy="58" r="33" fill="#BDB7AD"/>
+        <ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/>
+        <path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/>
+      </g>
+      <circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/>
+      <ellipse cx="100" cy="134" rx="15" ry="13" fill="#1E1E24"/>
+      <circle cx="95" cy="130" r="3.5" fill="#fff" opacity=".35"/>
+      <path d="M78 108 Q100 126 122 108" stroke="#4A4640" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="86" r="4" fill="#1E1E24"/><circle cx="120" cy="86" r="4" fill="#1E1E24"/>
+      <circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/>
+    </symbol>
+
+    <!-- Icônes au trait, grille de 24 -->
+    <symbol id="i-retour" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-aller" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-son" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-effacer" viewBox="0 0 24 24"><path d="M9 5h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6-7z"/><path d="M17 12h-6M13.5 9.5 11 12l2.5 2.5"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></symbol>
+    <symbol id="i-grille" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9.5h16M4 14.5h16M9.5 4v16M14.5 4v16"/></symbol>
+    <symbol id="i-crayon" viewBox="0 0 24 24"><path d="M15.5 4.5l4 4L9 19H5v-4z"/><path d="M13 7l4 4"/></symbol>
+    <symbol id="i-cadenas" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-ampoule" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-vent" viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 16h14a3 3 0 1 1-3 3M3 12h8"/></symbol>
+    <symbol id="i-monte" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+  </defs>
+</svg>
+
+<header class="bandeau">
+  <span class="num">2</span><span class="nom">Calme et concentré</span>
+  <span class="sous">Système de design de « Nos révisions » · iPad d’abord</span>
+</header>
+
+<main class="page">
+
+<!-- ================= 0. PLANCHE SYSTÈME ================= -->
+<p class="legende" style="margin-top:0"><b>0</b>Le système : une base commune, une seule teinte qui change d’un enfant à l’autre</p>
+<section class="planche th-henri">
+  <h2>Une chose à la fois, sur du papier calme</h2>
+  <p class="chapo">Fond clair et chaud, une encre presque noire, une teinte par enfant. Les chiffres en Lexend, conçue pour réduire la fatigue de lecture ; les mots en Andika, dessinée pour les lecteurs débutants (a et g comme à l’école).</p>
+  <div class="principes">
+    <div><b>Une seule chose</b><span>Un écran, une question, un geste attendu.</span></div>
+    <div><b>Le chiffre d’abord</b><span>La question occupe la place ; le reste se tait.</span></div>
+    <div><b>Jamais de rouge</b><span>La couleur dit à qui c’est, jamais que c’est faux.</span></div>
+    <div><b>Mouvement rare</b><span>Une pression qui s’enfonce, un curseur. Rien d’autre.</span></div>
+  </div>
+
+  <div class="bloc">
+    <h3>Palette : des teintes de nature, contrastes vérifiés (WCAG)</h3>
+    <div class="gamme"><p>Base commune<small>tous les écrans</small></p>
+      <div class="nuancier">
+        <div class="pastel"><i style="background:#F4F1EA"></i><b>Papier</b><span>#F4F1EA · fond</span></div>
+        <div class="pastel"><i style="background:#FFFDF8"></i><b>Surface</b><span>#FFFDF8 · cartes</span></div>
+        <div class="pastel"><i style="background:#ECE8DF"></i><b>Papier 2</b><span>#ECE8DF · neutre</span></div>
+        <div class="pastel"><i style="background:#DCD6C9"></i><b>Trait</b><span>#DCD6C9 · filets</span></div>
+        <div class="pastel"><i style="background:#4D5A5C"></i><b>Encre douce</b><span>#4D5A5C · 6,3:1</span></div>
+        <div class="pastel"><i style="background:#1E2829"></i><b>Encre</b><span>#1E2829 · 13,4:1</span></div>
+      </div></div>
+    <div class="gamme"><p>Henri · Fjord<small>bleu d’ardoise, Moussi</small></p>
+      <div class="nuancier">
+        <div class="pastel"><i style="background:#EEF4F8"></i><b>50</b><span> #EEF4F8</span></div>
+        <div class="pastel"><i style="background:#DCE8F0"></i><b>100</b><span> #DCE8F0</span></div>
+        <div class="pastel"><i style="background:#A9C3D5"></i><b>300</b><span> #A9C3D5</span></div>
+        <div class="pastel"><i style="background:#5F89A6"></i><b>500</b><span> #5F89A6</span></div>
+        <div class="pastel"><i style="background:#2D5B7B"></i><b>700 · action</b><span> blanc 7,3:1</span></div>
+        <div class="pastel"><i style="background:#17344A"></i><b>900 · texte</b><span> #17344A</span></div>
+      </div></div>
+    <div class="gamme"><p>Clara · Bruyère<small>mauve de lande, Pooh Bear</small></p>
+      <div class="nuancier">
+        <div class="pastel"><i style="background:#F6F1F8"></i><b>50</b><span> #F6F1F8</span></div>
+        <div class="pastel"><i style="background:#ECE2F1"></i><b>100</b><span> #ECE2F1</span></div>
+        <div class="pastel"><i style="background:#CDB6D8"></i><b>300</b><span> #CDB6D8</span></div>
+        <div class="pastel"><i style="background:#9673A8"></i><b>500</b><span> #9673A8</span></div>
+        <div class="pastel"><i style="background:#6A4580"></i><b>700 · action</b><span> blanc 7,6:1</span></div>
+        <div class="pastel"><i style="background:#3C2547"></i><b>900 · texte</b><span> #3C2547</span></div>
+      </div></div>
+    <div class="gamme" style="margin-bottom:0"><p>États<small>les mêmes pour les deux</small></p>
+      <div class="nuancier">
+        <div class="pastel"><i style="background:#2F6B4B"></i><b>Juste · Mousse</b><span>#2F6B4B · 5,4:1</span></div>
+        <div class="pastel"><i style="background:#E2F0E6"></i><b>Juste, fond</b><span>#E2F0E6</span></div>
+        <div class="pastel"><i style="background:#855716"></i><b>À revoir · Sable</b><span>#855716 · 5,2:1</span></div>
+        <div class="pastel"><i style="background:#FAF3E6;border-color:#EEDDBE"></i><b>À revoir, fond</b><span>#FAF3E6</span></div>
+        <div class="pastel" style="width:270px;padding-top:6px"><span style="font-size:17px;line-height:1.45;display:block">Aucun rouge, aucune croix. « À revoir » est un sable chaud, la couleur d’une astuce, pas d’une faute.</span></div>
+      </div></div>
+  </div>
+
+  <div class="bloc deux">
+    <div>
+      <h3>Typographie : deux familles, six tailles</h3>
+      <div class="typo-ligne"><span>Question · Lexend 600 · 128</span><span class="t-question" style="font-size:96px;color:var(--encre)">7 × 8</span></div>
+      <div class="typo-ligne"><span>Titre · Lexend 600 · 40</span><span class="t-titre" style="font-size:34px">Ma grille</span></div>
+      <div class="typo-ligne"><span>Carte · Lexend 600 · 28</span><span class="t-carte">Mes tables</span></div>
+      <div class="typo-ligne"><span>Consigne · Andika · 24</span><span class="t-consigne">À toi de le retaper</span></div>
+      <div class="typo-ligne"><span>Texte · Andika · 20</span><span class="t-texte">Demain, 9 × 7 revient te voir</span></div>
+      <div class="typo-ligne"><span>Détail · Andika · 17, minimum 16</span><span class="t-detail">3 jours cette semaine</span></div>
+    </div>
+    <div>
+      <h3>Boutons : pas de survol, une pression qui s’enfonce</h3>
+      <div class="etats">
+        <div><button class="btn btn-1">Voir ma grille</button><p class="lab">Principal · repos</p></div>
+        <div><button class="btn btn-1 appuye">Voir ma grille</button><p class="lab">Principal · appuyé</p></div>
+        <div><button class="btn btn-1 focus">Voir ma grille</button><p class="lab">Principal · clavier</p></div>
+        <div><button class="btn btn-1 inactif">Voir ma grille</button><p class="lab">Principal · inactif</p></div>
+        <div><button class="btn btn-2">Fini pour aujourd’hui</button><p class="lab">Secondaire · 64 de haut</p></div>
+        <div style="display:flex;gap:14px;align-items:center"><button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button><button class="btn btn-3"><svg class="ico" style="width:22px;height:22px"><use href="#i-cadenas"/></svg>Coin parent</button></div>
+      </div>
+      <p class="lab" style="font-size:16px;color:var(--encre-2);margin-top:22px">Touches du pavé · 121 × 128 sur iPad, toujours à droite (enfants droitiers)</p>
+      <div class="mini-pave">
+        <div class="touche"><span class="chiffre">7</span></div>
+        <div class="touche effacer"><svg class="ico"><use href="#i-effacer"/></svg><span class="mot">Effacer</span></div>
+        <div class="touche valider"><svg class="ico"><use href="#i-ok"/></svg><span class="mot">Valider</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloc">
+    <div class="compo">
+      <h3 style="margin-bottom:-12px">Composants partagés par tous les modules</h3>
+      <div><p class="lab">Semaine : les jours faits se remplissent, rien ne retombe à zéro</p>
+        <div style="display:flex;align-items:center;gap:20px"><ol class="semaine" data-s="f,f,n,f,a,v,v"></ol><span class="t-detail" style="white-space:nowrap">3 jours</span></div></div>
+      <div><p class="lab">Avancement de la séance</p><div class="avance"><span>7 sur 20</span><div class="piste"><i style="width:35%"></i></div></div></div>
+      <div><p class="lab">Maîtrise : la case se remplit comme un verre (forme et teinte, pas seulement la couleur)</p>
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+          <span style="display:flex;gap:8px;align-items:center"><span class="case" style="width:40px;height:40px">42</span><span class="t-detail" style="color:var(--encre)">Pas encore</span></span>
+          <span style="display:flex;gap:8px;align-items:center"><span class="case m1" style="width:40px;height:40px">42</span><span class="t-detail" style="color:var(--encre)">Je commence</span></span>
+          <span style="display:flex;gap:8px;align-items:center"><span class="case m2" style="width:40px;height:40px">42</span><span class="t-detail" style="color:var(--encre)">Presque</span></span>
+          <span style="display:flex;gap:8px;align-items:center"><span class="case m3" style="width:40px;height:40px">42</span><span class="t-detail" style="color:var(--encre)">Par cœur</span></span>
+        </div></div>
+      <div><p class="lab">Astuce : toujours sur fond calme, l’ampoule en sable</p><div class="astuce" style="background:var(--papier)"><svg class="ico"><use href="#i-ampoule"/></svg><span><b>6 × 6 = 36</b>, et encore 6</span></div></div>
+    </div>
+  </div>
+  <div class="bloc">
+    <div>
+      <h3>Thème : une variable change, la structure reste</h3>
+      <p class="t-detail" style="margin:-6px 0 18px">Chaque app pose sa classe à la racine (th-henri ou th-clara) ; les 7 nuances --t-50 à --t-900 suivent. Le mode soir réécrit aussi la base.</p>
+      <div class="theme-cote">
+        <div class="theme-carte th-henri"><span class="qui"><svg><use href="#koala"/></svg>Henri</span>
+          <button class="btn btn-1" style="min-height:56px;padding:0 20px;font-size:18px">Valider</button>
+          <div class="rampe"><span class="case">6</span><span class="case m1">6</span><span class="case m2">6</span><span class="case m3">6</span></div>
+          <div class="avance"><div class="piste" style="width:130px"><i style="width:60%"></i></div></div></div>
+        <div class="theme-carte th-clara"><span class="qui"><svg><use href="#ours"/></svg>Clara</span>
+          <button class="btn btn-1" style="min-height:56px;padding:0 20px;font-size:18px">Valider</button>
+          <div class="rampe"><span class="case">6</span><span class="case m1">6</span><span class="case m2">6</span><span class="case m3">6</span></div>
+          <div class="avance"><div class="piste" style="width:130px"><i style="width:60%"></i></div></div></div>
+        <div class="theme-carte th-soir"><span class="qui"><svg><use href="#koala"/></svg>Mode soir</span>
+          <button class="btn btn-1" style="min-height:56px;padding:0 20px;font-size:18px;color:#10222E">Valider</button>
+          <div class="rampe"><span class="case">6</span><span class="case m1">6</span><span class="case m2">6</span><span class="case m3">6</span></div>
+          <div class="avance"><div class="piste" style="width:130px"><i style="width:60%"></i></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1. PORTAIL HENRI ================= -->
+<p class="legende"><b>1</b>iPad paysage · App d’Henri : le portail, trois modules et la semaine</p>
+<div class="ipad"><div class="ecran th-henri">
+  <div class="portail">
+    <button class="btn btn-3 coin-parent"><svg class="ico"><use href="#i-cadenas"/></svg>Coin parent</button>
+    <header class="portail-tete">
+      <svg class="masc" role="img" aria-label="Moussi"><use href="#koala"/></svg>
+      <div>
+        <h1 class="t-titre">Les révisions d’Henri</h1>
+        <div class="semaine-bloc"><ol class="semaine" data-s="f,f,n,f,a,v,v"></ol><span class="t-detail">3 jours cette semaine</span></div>
+      </div>
+    </header>
+    <div class="modules">
+      <button class="module">
+        <span class="tuile"><svg class="ico"><use href="#i-globe"/></svg></span>
+        <span class="matiere">Géographie</span>
+        <span class="t-carte">Mon planisphère</span>
+        <span class="pied"><span class="aller"><svg class="ico"><use href="#i-aller"/></svg></span></span>
+      </button>
+      <button class="module">
+        <span class="tuile"><svg class="ico"><use href="#i-grille"/></svg></span>
+        <span class="matiere">Calcul</span>
+        <span class="t-carte">Mes tables</span>
+        <span class="pied"><span class="prog"><span class="t-detail">7 sur 36 par cœur</span><span class="piste"><i style="width:19.4%"></i></span></span><span class="aller"><svg class="ico"><use href="#i-aller"/></svg></span></span>
+      </button>
+      <div class="module bientot">
+        <span class="tuile"><svg class="ico"><use href="#i-crayon"/></svg></span>
+        <span class="matiere">Français</span>
+        <span class="t-carte" style="color:var(--encre-2)">Dictée</span>
+        <span class="pied"><span class="etiquette badge-bientot">Bientôt</span></span>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ================= 2. QUESTION CLARA ================= -->
+<p class="legende"><b>2</b>iPad paysage · App de Clara, tables : la question, le pavé à portée de main droite</p>
+<div class="ipad"><div class="ecran th-clara">
+  <div class="seance">
+    <div class="barre">
+      <button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+      <div class="avance"><span>7 sur 20</span><div class="piste"><i style="width:35%"></i></div></div>
+      <button class="btn btn-2 btn-son"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+    </div>
+    <div class="travail">
+      <p class="t-question">7 × 8</p>
+      <div class="champ">5<span class="curseur"></span></div>
+    </div>
+    <div class="pave" data-pave></div>
+  </div>
+</div></div>
+
+<!-- ================= 3. ERREUR HENRI ================= -->
+<p class="legende"><b>3</b>iPad paysage · App d’Henri, tables : il a tapé 54, la bonne réponse et son astuce, puis il la retape</p>
+<div class="ipad"><div class="ecran th-henri">
+  <div class="seance">
+    <div class="barre">
+      <button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+      <div class="avance"><span>12 sur 20</span><div class="piste"><i style="width:60%"></i></div></div>
+      <button class="btn btn-2 btn-son"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+    </div>
+    <div class="travail erreur">
+      <div class="retour-doux">
+        <div class="tete"><svg role="img" aria-label="Moussi"><use href="#koala"/></svg><p class="eq-moy">7 × 8 = <span class="surligne">56</span></p></div>
+        <div class="astuce"><svg class="ico"><use href="#i-ampoule"/></svg><span><b>7 × 4 = 28</b>, et le double de 28, c’est <b>56</b></span></div>
+      </div>
+      <p class="t-consigne">À toi de le retaper</p>
+      <div class="ligne-saisie"><span class="eq-moy">7 × 8 =</span><span class="champ petit"><span class="curseur"></span></span></div>
+    </div>
+    <div class="pave" data-pave></div>
+  </div>
+</div></div>
+
+<!-- ================= 4. JUSTE CLARA ================= -->
+<p class="legende"><b>4</b>iPad paysage · App de Clara, tables : c’est juste, un « Rapide ! » discret, puis on enchaîne</p>
+<div class="ipad"><div class="ecran th-clara">
+  <div class="seance">
+    <div class="barre">
+      <button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+      <div class="avance"><span>8 sur 20</span><div class="piste"><i style="width:40%"></i></div></div>
+      <button class="btn btn-2 btn-son"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+    </div>
+    <div class="travail bravo">
+      <p class="t-question">7 × 8</p>
+      <div class="champ juste">56</div>
+      <div class="reaction"><svg class="masc" role="img" aria-label="Pooh Bear"><use href="#ours"/></svg><span class="etiquette rapide"><svg class="ico"><use href="#i-vent"/></svg>Rapide !</span></div>
+      <p class="suite"><i></i><i></i><i></i><span style="margin-left:6px">La suivante arrive</span></p>
+    </div>
+    <div class="pave repos" data-pave></div>
+  </div>
+</div></div>
+
+<!-- ================= 5. GRILLE HENRI ================= -->
+<p class="legende"><b>5</b>iPad paysage · App d’Henri : « Ma grille », 6 × 7 sélectionnée</p>
+<div class="ipad"><div class="ecran th-henri">
+  <div class="grille-ecran">
+    <div class="barre" style="grid-column:1 / -1">
+      <button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+      <h1 class="t-titre" style="font-size:36px">Ma grille</h1>
+    </div>
+    <div class="grille" id="grille"></div>
+    <div class="detail">
+      <div class="fiche">
+        <p class="eq">6 × 7 = 42</p>
+        <p class="etat"><span class="case m2"></span>Presque</p>
+        <div class="astuce"><svg class="ico"><use href="#i-ampoule"/></svg><span><b>6 × 6 = 36</b>,<br>et encore 6</span></div>
+        <button class="btn btn-1">M’entraîner sur 6 × 7</button>
+      </div>
+      <ul class="legende-grille">
+        <li><span class="case"></span>Pas encore</li>
+        <li><span class="case m1"></span>Je commence</li>
+        <li><span class="case m2"></span>Presque</li>
+        <li><span class="case m3"></span>Je sais par cœur</li>
+      </ul>
+    </div>
+  </div>
+</div></div>
+
+<!-- ================= 6. FIN CLARA ================= -->
+<p class="legende"><b>6</b>iPad paysage · App de Clara : fin de séance, ce qui a monté et ce qui revient demain</p>
+<div class="ipad"><div class="ecran th-clara">
+  <div class="fin">
+    <svg class="masc" role="img" aria-label="Pooh Bear"><use href="#ours"/></svg>
+    <h1 class="t-titre">3 cases montent</h1>
+    <div class="montees">
+      <span class="montee"><span class="fl"><svg class="ico"><use href="#i-monte"/></svg></span><b>6 × 7</b></span>
+      <span class="montee"><span class="fl"><svg class="ico"><use href="#i-monte"/></svg></span><b>7 × 6</b></span>
+      <span class="montee"><span class="fl"><svg class="ico"><use href="#i-monte"/></svg></span><b>8 × 4</b></span>
+    </div>
+    <div class="semaine-bloc"><ol class="semaine" data-s="f,n,f,f,af,v,v"></ol><span class="t-detail">4 jours cette semaine</span></div>
+    <p class="demain"><svg class="ico"><use href="#i-cal"/></svg><span>Demain, <b>9 × 7</b> revient te voir</span></p>
+    <div class="actions">
+      <button class="btn btn-2">Voir ma grille</button>
+      <button class="btn btn-1">Fini pour aujourd’hui</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- ================= 7. IPHONE HENRI ================= -->
+<p class="legende"><b>7</b>iPhone portrait 402 × 874 · App d’Henri : la question, pavé en bas, île dynamique respectée</p>
+<div class="iphone"><div class="ecran-tel tel th-henri">
+  <div class="statut"><span>9:41</span><span class="ile"></span>
+    <span class="icones"><svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#1E2829"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#1E2829"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#1E2829"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#1E2829"/></svg><span class="batt"><i></i></span></span></div>
+  <div class="barre">
+    <button class="btn-icone" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div class="avance"><span>5 sur 20</span><div class="piste"><i style="width:25%"></i></div></div>
+    <button class="btn-icone" aria-label="Écouter la question" style="margin-left:auto"><svg class="ico"><use href="#i-son"/></svg></button>
+  </div>
+  <div class="travail">
+    <p class="t-question">6 × 9</p>
+    <div class="champ"><span class="curseur"></span></div>
+  </div>
+  <div class="pave" data-pave></div>
+  <div class="accueil-barre"></div>
+</div></div>
+
+</main>
+
+<script>
+/* Semaine : f fait, n pas fait (passé, neutre), a aujourd'hui, af aujourd'hui fait, v à venir */
+const JOURS=['L','M','M','J','V','S','D'];
+const NOMS=['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
+document.querySelectorAll('.semaine[data-s]').forEach(ol=>{
+  ol.dataset.s.split(',').forEach((s,i)=>{
+    const li=document.createElement('li');li.className=s;
+    const fait=(s==='f'||s==='af');
+    li.setAttribute('aria-label',NOMS[i]+(fait?', fait':''));
+    li.innerHTML='<span class="rond">'+(fait?'<svg class="ico"><use href="#i-ok"/></svg>':'')+'</span><span class="j">'+JOURS[i]+'</span>';
+    ol.appendChild(li);
+  });
+});
+
+/* Pavé numérique réutilisable : 1 à 9, effacer, 0, valider */
+document.querySelectorAll('[data-pave]').forEach(p=>{
+  let h='';
+  for(let n=1;n<=9;n++) h+='<button class="touche"><span class="chiffre">'+n+'</span></button>';
+  h+='<button class="touche effacer" aria-label="Effacer"><svg class="ico"><use href="#i-effacer"/></svg><span class="mot">Effacer</span></button>';
+  h+='<button class="touche"><span class="chiffre">0</span></button>';
+  h+='<button class="touche valider" aria-label="Valider"><svg class="ico"><use href="#i-ok"/></svg><span class="mot">Valider</span></button>';
+  p.innerHTML=h;
+});
+
+/* Grille de Pythagore */
+function etat(a,b){const f=[1,2,5,10];const d=['6x7','7x6','7x8','8x7','9x7','7x9','8x9','9x8','6x8','8x6','7x7','8x8'];if(f.includes(a)||f.includes(b))return 'or';if(d.includes(a+'x'+b))return (a+b)%3===0?'bronze':'gris';if(a===3||b===3||a===4||b===4)return (a*b)%2?'argent':'or';return a===9||b===9?'bronze':'argent'}
+const NIV={gris:'',bronze:'m1',argent:'m2',or:'m3'};
+const LIB={gris:'Pas encore',bronze:'Je commence',argent:'Presque',or:'Je sais par cœur'};
+const g=document.getElementById('grille');
+const SEL=[6,7];
+let h='<span class="coin">×</span>';
+for(let b=1;b<=10;b++) h+='<span class="ent'+(b===SEL[1]?' on':'')+'">'+b+'</span>';
+for(let a=1;a<=10;a++){
+  h+='<span class="ent'+(a===SEL[0]?' on':'')+'">'+a+'</span>';
+  for(let b=1;b<=10;b++){
+    let e=etat(a,b);
+    if(a===SEL[0]&&b===SEL[1]) e='argent'; /* la fiche affichée : 6 × 7, Presque */
+    const sel=(a===SEL[0]&&b===SEL[1])?' sel':'';
+    h+='<span class="case '+NIV[e]+sel+'" aria-label="'+a+' fois '+b+', '+LIB[e]+'">'+(a*b)+'</span>';
+  }
+}
+g.innerHTML=h;
+</script>
+</body>
+</html>

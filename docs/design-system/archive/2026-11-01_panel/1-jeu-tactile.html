@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 · Gros jeu tactile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ Jetons de base ============ */
+:root{
+  --encre:#1E2147;
+  --encre-2:#545878;
+  --toile:#FFF8EF;
+  --carte:#FFFFFF;
+  --trait:#EDE5D9;
+  --trait-fort:#DCD0BF;
+  --neutre-100:#F1EEF6;
+  --neutre-300:#D6D0E0;
+
+  --juste-100:#E2F7E6; --juste-300:#A9E2B5; --juste-500:#3BC456; --juste-600:#137A2F; --juste-700:#0F6526; --juste-800:#14702D;
+  --miel-100:#FFF1D6; --miel-300:#F6D49A; --miel-500:#FFB21E; --miel-700:#B87400; --miel-800:#8A5200;
+
+  --m-gris:#F1EEF6; --m-gris-trait:#B9B2C9;
+  --m-bronze:#F4B98E; --m-bronze-fonce:#8F4512;
+  --m-argent:#D3DCEA; --m-argent-fonce:#4E5A74;
+  --m-or:#FFCF3F; --m-or-fonce:#8A5C00;
+
+  --r-s:14px; --r-m:22px; --r-l:32px;
+  --relief:6px;
+  --f-jeu:'Baloo 2', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --f-texte:'Lexend', system-ui, -apple-system, sans-serif;
+}
+/* Un enfant = cinq variables et une mascotte */
+.theme-henri{ --e-50:#F2F8FF; --e-100:#E3F0FF; --e-200:#C8E0FF; --e-500:#2E8BFF; --e-600:#1668D6; --e-700:#0D4A9E; --e-800:#0F4FA8; }
+.theme-clara{ --e-50:#FAF5FF; --e-100:#F2E8FF; --e-200:#E3D0FF; --e-500:#B57AFF; --e-600:#7B34D1; --e-700:#5320A0; --e-800:#6526B5; }
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#E7E2EE;color:var(--encre);font-family:var(--f-texte);font-size:20px;line-height:1.4;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ico{width:1em;height:1em;flex:none}
+
+/* ============ Habillage de la page de revue ============ */
+.bandeau{position:sticky;top:0;z-index:50;background:var(--encre);color:#fff;display:flex;align-items:center;gap:18px;padding:14px 32px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.bandeau .num{font-family:var(--f-jeu);font-weight:800;font-size:28px;width:48px;height:48px;border-radius:14px;background:#FFCF3F;color:var(--encre);display:grid;place-items:center;box-shadow:0 4px 0 #B88A00}
+.bandeau h1{margin:0;font-family:var(--f-jeu);font-weight:800;font-size:30px;line-height:1}
+.bandeau p{margin:0;font-size:17px;color:#D9DAEC}
+.page{width:1168px;margin:0 auto;padding:32px 0 80px}
+.legende{font-family:var(--f-jeu);font-weight:700;font-size:24px;margin:56px 0 14px;display:flex;align-items:baseline;gap:12px}
+.legende span{font-family:var(--f-texte);font-weight:500;font-size:17px;color:var(--encre-2)}
+
+/* ============ Cadres d'appareils ============ */
+.ipad{width:1168px;padding:28px 44px;background:#23252F;border-radius:54px;position:relative;box-shadow:0 20px 40px rgba(30,33,71,.18)}
+.ipad::before{content:"";position:absolute;left:18px;top:50%;width:9px;height:9px;margin-top:-4px;border-radius:50%;background:#3C3F4D}
+.ipad::after{content:"";position:absolute;right:6px;top:50%;width:32px;height:32px;margin-top:-16px;border-radius:50%;border:3px solid #444858}
+.ecran{width:1080px;height:810px;position:relative;overflow:hidden;border-radius:6px;background:var(--toile)}
+.iphone{width:426px;padding:12px;background:#17181D;border-radius:66px;box-shadow:0 20px 40px rgba(30,33,71,.18);margin-left:371px}
+.iphone .ecran{width:402px;height:874px;border-radius:54px}
+.ile{position:absolute;top:11px;left:50%;width:126px;height:37px;margin-left:-63px;background:#000;border-radius:20px;z-index:5}
+.statut{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0 40px;font-family:-apple-system,system-ui,sans-serif;font-weight:600;font-size:17px;color:var(--encre)}
+
+/* ============ Composants ============ */
+/* Bouton en relief : il s'enfonce sous le doigt */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:72px;padding:0 32px;border-radius:var(--r-m);font-family:var(--f-jeu);font-weight:800;font-size:26px;line-height:1;transition:transform .08s, box-shadow .08s}
+.btn .ico{font-size:30px}
+.btn-primaire{background:var(--e-600);color:#fff;box-shadow:0 var(--relief) 0 var(--e-700)}
+.btn-secondaire{background:#fff;color:var(--e-800);border:3px solid var(--e-200);box-shadow:0 var(--relief) 0 var(--e-200)}
+.btn:active,.est-appuye{transform:translateY(var(--relief));box-shadow:0 0 0 transparent !important}
+.btn[disabled],.btn.desactive{background:var(--neutre-100);color:var(--encre-2);border:0;box-shadow:0 var(--relief) 0 var(--neutre-300);cursor:default}
+.btn-rond{width:64px;height:64px;border-radius:50%;background:#fff;border:3px solid var(--e-200);box-shadow:0 5px 0 var(--e-200);display:grid;place-items:center;color:var(--e-800);flex:none;transition:transform .08s, box-shadow .08s}
+.btn-rond .ico{font-size:30px}
+.btn-rond:active{transform:translateY(5px);box-shadow:none}
+.btn-pilule{flex:none;display:inline-flex;align-items:center;gap:10px;height:64px;padding:0 22px 0 18px;border-radius:99px;background:#fff;border:3px solid var(--e-200);box-shadow:0 5px 0 var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:22px;color:var(--e-800)}
+.btn-pilule .ico{font-size:28px}
+
+/* Barre du haut d'un exercice */
+.barre{position:absolute;left:0;right:0;top:0;height:104px;display:flex;align-items:center;gap:22px;padding:0 28px}
+.progres{flex:1;display:flex;align-items:center;gap:16px}
+.piste{flex:1;height:28px;border-radius:99px;background:var(--e-100);position:relative;overflow:hidden}
+.remplissage{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--e-500);box-shadow:inset 0 -7px 0 rgba(0,0,0,.14)}
+.remplissage::after{content:"";position:absolute;left:12px;right:12px;top:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.45)}
+.compte{font-family:var(--f-jeu);font-weight:800;font-size:26px;color:var(--e-800);white-space:nowrap}
+
+/* Pavé numérique, côté droit (enfants droitiers) */
+.pave{position:absolute;right:28px;top:164px;display:grid;grid-template-columns:repeat(4,108px);grid-template-rows:repeat(4,128px);gap:16px}
+.touche{background:#fff;border:3px solid var(--e-200);border-radius:var(--r-m);box-shadow:0 7px 0 var(--e-200);font-family:var(--f-jeu);font-weight:800;font-size:56px;line-height:1;color:var(--encre);display:grid;place-items:center;transition:transform .08s, box-shadow .08s}
+.touche:active,.touche.est-appuye{transform:translateY(7px);box-shadow:none !important}
+.touche.zero{grid-column:1 / span 3}
+.touche.effacer{color:var(--e-800);background:var(--e-50)}
+.touche.effacer .ico{font-size:40px}
+.touche.valider{grid-column:4;grid-row:2 / span 3;background:var(--e-600);border-color:var(--e-600);box-shadow:0 7px 0 var(--e-700);color:#fff;font-size:26px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}
+.touche.valider .ico{font-size:48px}
+.touche.valider.desactive{background:var(--neutre-100);border-color:var(--neutre-100);box-shadow:0 7px 0 var(--neutre-300);color:var(--encre-2)}
+
+/* Carte question et case réponse */
+.zone{position:absolute;left:28px;top:164px;width:508px;height:560px}
+.carte-q{position:relative;background:#fff;border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 5px 0 var(--trait);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fait{font-family:var(--f-jeu);font-weight:800;line-height:1;color:var(--encre);display:flex;align-items:center;gap:.22em;white-space:nowrap}
+.fait .x{color:var(--e-600)}
+.case-rep{min-width:1.6em;height:1.22em;padding:0 .2em;border-radius:24px;border:5px solid var(--e-500);background:var(--e-50);display:inline-flex;align-items:center;justify-content:center;color:var(--e-800);position:relative}
+.curseur{display:inline-block;width:6px;height:.72em;border-radius:3px;background:var(--e-500);margin-left:4px;animation:clignote 1.1s steps(1) infinite}
+.consigne{font-family:var(--f-texte);font-weight:600;font-size:24px;color:var(--encre)}
+@keyframes clignote{50%{opacity:0}}
+
+/* Semaine en jours faits (pas de série qui retombe à zéro) */
+.semaine{display:flex;gap:10px}
+.jour{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-jeu);font-weight:800;font-size:22px;background:var(--neutre-100);color:var(--encre-2);position:relative}
+.jour.fait{background:var(--e-600);color:#fff;box-shadow:0 4px 0 var(--e-700)}
+.jour.fait .ico{font-size:30px}
+.jour.auj{background:#fff;color:var(--e-800);border:4px solid var(--e-500)}
+.jour.auj::after{content:"";position:absolute;bottom:-12px;width:8px;height:8px;border-radius:50%;background:var(--e-500)}
+
+/* Pastilles */
+.pastille{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:99px;font-family:var(--f-texte);font-weight:600;font-size:18px;white-space:nowrap}
+
+/* États de maîtrise : couleur + nombre de points, lisibles sans la couleur */
+.m{position:relative}
+.m-gris{background:var(--m-gris);border:2px dashed var(--m-gris-trait)}
+.nuance.m{width:150px}
+.m-bronze{background:var(--m-bronze);box-shadow:0 4px 0 #D9925F}
+.m-argent{background:var(--m-argent);box-shadow:0 4px 0 #A9B6CC}
+.m-or{background:var(--m-or);box-shadow:0 4px 0 #E0A800}
+.points{display:flex;gap:4px;justify-content:center}
+.points i{width:8px;height:8px;border-radius:50%;display:block}
+.m-bronze .points i{background:var(--m-bronze-fonce)}
+.m-argent .points i{background:var(--m-argent-fonce)}
+.m-or .ico{color:var(--m-or-fonce)}
+
+/* ============ Planche système ============ */
+.planche{background:#fff;border-radius:40px;padding:44px 48px 52px;box-shadow:0 20px 40px rgba(30,33,71,.10)}
+.planche h2{font-family:var(--f-jeu);font-weight:800;font-size:30px;line-height:1.15;margin:0 0 6px}
+.planche h2 small{display:block;font-family:var(--f-texte);font-weight:500;font-size:18px;color:var(--encre-2);margin-top:6px;line-height:1.4}
+.planche section{padding:34px 0;border-top:3px dashed var(--trait)}
+.planche section:first-of-type{border-top:0;padding-top:0}
+.rangee{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px}
+.groupe-titre{font-weight:700;font-size:18px;margin:22px 0 0;color:var(--encre)}
+.nuance{width:118px;height:96px;border-radius:18px;padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:16px;line-height:1.25;font-weight:600}
+.nuance b{font-family:var(--f-jeu);font-weight:800;font-size:19px}
+.nuance.cadre{border:3px solid var(--trait)}
+.typo{display:grid;grid-template-columns:260px 1fr;gap:10px 28px;align-items:baseline;margin-top:22px}
+.typo .lbl{font-size:16px;color:var(--encre-2);font-weight:500}
+.typo .lbl b{display:block;color:var(--encre);font-size:17px}
+.etats{display:flex;flex-wrap:wrap;gap:30px 22px;align-items:flex-end;margin-top:24px}
+.etat{display:flex;flex-direction:column;align-items:center;gap:16px}
+.etat .lbl{font-size:16px;font-weight:600;color:var(--encre-2);text-align:center}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px}
+.theme-carte{border-radius:28px;padding:24px;background:var(--e-50);border:3px solid var(--e-100)}
+.theme-tete{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.theme-tete svg{width:76px;height:92px}
+.theme-tete b{font-family:var(--f-jeu);font-weight:800;font-size:28px;display:block;line-height:1.1}
+.theme-tete span{font-size:17px;color:var(--encre-2)}
+.mini-nuances{display:flex;gap:8px;margin-bottom:20px}
+.mini-nuances div{flex:1;height:52px;border-radius:12px;font-size:16px;font-weight:600;display:flex;align-items:flex-end;padding:6px 8px}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:16px;background:var(--neutre-100);border-radius:12px;padding:12px 16px;margin-top:18px;color:var(--encre)}
+.regles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.regle{background:var(--toile);border-radius:22px;padding:18px 20px;font-size:17px;line-height:1.4}
+.regle b{display:block;font-family:var(--f-jeu);font-weight:800;font-size:21px;margin-bottom:4px}
+
+/* ============ Écran 1 : portail ============ */
+.heros{position:absolute;left:0;right:0;top:0;height:356px;background:var(--e-600);overflow:hidden}
+.heros .bulle-deco{position:absolute;border-radius:50%}
+.heros .moussi{position:absolute;left:48px;bottom:-6px;width:230px;height:276px}
+.heros h2{position:absolute;left:300px;top:64px;margin:0;font-family:var(--f-jeu);font-weight:800;font-size:58px;line-height:1;color:#fff}
+.carte-semaine{position:absolute;left:300px;top:158px;background:#fff;border-radius:28px;padding:20px 26px 26px;box-shadow:0 6px 0 var(--e-700)}
+.carte-semaine .t{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.carte-semaine .t b{font-family:var(--f-jeu);font-weight:800;font-size:24px}
+.carte-semaine .t span{font-size:18px;font-weight:600;color:var(--e-800)}
+.coin-parent{position:absolute;right:24px;top:22px;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px;border-radius:99px;background:rgba(0,0,0,.18);color:#fff;font-weight:600;font-size:17px}
+.coin-parent .ico{font-size:22px}
+.modules{position:absolute;left:34px;right:34px;top:398px;display:flex;gap:32px}
+.module{flex:1;height:360px;background:#fff;border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 9px 0 var(--trait-fort);padding:28px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;transition:transform .08s, box-shadow .08s}
+.module:active{transform:translateY(9px);box-shadow:none}
+.module .tuile{width:120px;height:120px;border-radius:30px;display:grid;place-items:center;margin-bottom:22px}
+.module .tuile .ico{font-size:72px}
+.module b{font-family:var(--f-jeu);font-weight:800;font-size:34px;line-height:1.05}
+.module .sous{font-size:19px;color:var(--encre-2);margin-top:6px}
+.module .bas{margin-top:auto;width:100%}
+.mini-piste{height:16px;border-radius:99px;background:#FFF0C2;overflow:hidden;margin-bottom:10px}
+.mini-piste i{display:block;height:100%;border-radius:99px;background:var(--m-or);box-shadow:inset 0 -4px 0 #E0A800}
+.module.bientot{background:#F7F4FA;border:3px dashed var(--neutre-300);box-shadow:none;cursor:default}
+.module.bientot .tuile{background:var(--neutre-100)}
+.module.bientot .tuile .ico{color:#8E89A0}
+
+/* ============ Écran 3 : erreur ============ */
+.carte-rep{text-align:center;position:relative;background:var(--miel-100);border:3px solid var(--miel-300);border-radius:var(--r-l);box-shadow:0 5px 0 var(--miel-300);padding:20px 26px 24px}
+.etiq{font-family:var(--f-texte);font-weight:600;font-size:18px;color:var(--miel-800);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
+.carte-rep .fait{justify-content:center}
+.bulle .etiq{justify-content:flex-start}
+.surligne{background:var(--miel-500);border-radius:18px;padding:0 .18em;box-shadow:0 5px 0 var(--miel-700)}
+.astuce{display:flex;align-items:flex-end;gap:12px;margin:22px 0 0}
+.astuce svg.mascotte{width:96px;height:115px;flex:none}
+.bulle{position:relative;flex:1;background:#fff;border:3px solid var(--trait);border-radius:24px;padding:14px 20px 16px;font-size:22px;line-height:1.35;font-weight:500}
+.bulle::before{content:"";position:absolute;left:-14px;bottom:26px;width:22px;height:22px;background:#fff;border-left:3px solid var(--trait);border-bottom:3px solid var(--trait);transform:rotate(45deg)}
+.bulle .etiq{color:var(--miel-800);margin-bottom:2px}
+
+/* ============ Écran 4 : juste ============ */
+.carte-juste{background:var(--juste-100);border-color:var(--juste-300);box-shadow:0 5px 0 var(--juste-300)}
+.vert{background:var(--juste-600);color:#fff;border-radius:22px;padding:0 .2em;box-shadow:0 6px 0 var(--juste-700)}
+.badge-ok{position:absolute;right:22px;top:-30px;width:92px;height:92px;border-radius:50%;background:var(--juste-600);color:#fff;display:grid;place-items:center;box-shadow:0 6px 0 var(--juste-700);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.badge-ok .ico{font-size:56px}
+.eclat{position:absolute;right:68px;top:16px;width:0;height:0}
+.eclat i{position:absolute;left:-4px;top:-4px;width:8px;height:18px;border-radius:4px;background:var(--juste-500);transform-origin:4px 4px;animation:eclat .6s ease-out both}
+.rapide{position:absolute;left:22px;top:20px;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:99px;background:#fff;font-weight:600;font-size:17px;color:var(--encre)}
+.rapide .ico{color:var(--miel-500);font-size:22px}
+.suite{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:500;color:var(--encre-2)}
+.suite i{width:12px;height:12px;border-radius:50%;background:var(--e-500);display:block;animation:saute 1s ease-in-out infinite}
+.suite i:nth-child(2){animation-delay:.15s}.suite i:nth-child(3){animation-delay:.3s}
+@keyframes pop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+@keyframes eclat{0%{opacity:0;transform:rotate(var(--a)) translateY(-30px) scaleY(.3)}60%{opacity:1}100%{opacity:1;transform:rotate(var(--a)) translateY(-66px) scaleY(1)}}
+@keyframes saute{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes rebond{0%{transform:translateY(0)}40%{transform:translateY(-16px)}70%{transform:translateY(0)}85%{transform:translateY(-5px)}100%{transform:translateY(0)}}
+
+/* ============ Écran 5 : ma grille ============ */
+.grille{position:absolute;left:28px;top:118px;display:grid;grid-template-columns:44px repeat(10,56px);grid-template-rows:44px repeat(10,56px);gap:4px}
+.ent{display:grid;place-items:center;font-family:var(--f-jeu);font-weight:800;font-size:24px;color:var(--e-800);border-radius:12px}
+.ent.actif{background:var(--e-600);color:#fff}
+.cell{border-radius:12px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px}
+.cell.m-or{align-items:center;padding:0}
+.cell.m-or .ico{font-size:24px}
+.cell.choisie{outline:5px solid var(--e-600);outline-offset:2px;z-index:2;transform:scale(1.08);align-items:center;justify-content:center;padding:0}
+.cell.choisie b{font-family:var(--f-jeu);font-weight:800;font-size:26px;line-height:1}
+.panneau{position:absolute;left:712px;right:28px;top:118px}
+.detail{background:#fff;border:4px solid var(--e-500);border-radius:var(--r-l);box-shadow:0 6px 0 var(--e-200);padding:22px 24px 24px}
+.legende-m{margin-top:22px;background:#fff;border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 20px}
+.legende-m div{display:flex;align-items:center;gap:14px;height:52px;font-size:18px;font-weight:600}
+.legende-m .ech{width:40px;height:40px;border-radius:10px;flex:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.legende-m .ech.m-or{align-items:center;padding:0}
+.legende-m .ech .points i{width:6px;height:6px}
+.legende-m .n{margin-left:auto;font-family:var(--f-jeu);font-weight:800;font-size:24px}
+
+/* ============ Écran 6 : fin de séance ============ */
+.podium{position:absolute;left:56px;top:200px;width:330px;height:330px;border-radius:50%;background:var(--e-100)}
+.fin-ours{position:absolute;left:106px;top:170px;width:250px;height:300px;animation:rebond 1s ease-out .2s both}
+.confetti i{position:absolute;display:block;border-radius:3px;animation:tombe 1.2s ease-out both}
+@keyframes tombe{0%{opacity:0;transform:translateY(-40px) rotate(0)}100%{opacity:1;transform:translateY(0) rotate(var(--r))}}
+.fin{position:absolute;left:420px;right:44px;top:118px}
+.fin h2{margin:0 0 22px;font-family:var(--f-jeu);font-weight:800;font-size:54px;line-height:1}
+.montee{background:#fff;border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 5px 0 var(--trait);padding:20px 24px 24px}
+.montee .titre{display:flex;align-items:center;gap:10px;font-family:var(--f-jeu);font-weight:800;font-size:30px;line-height:1;margin-bottom:18px}
+.montee .titre .ico{color:var(--juste-600);font-size:34px}
+.jetons{display:flex;gap:14px}
+.jeton{flex:1;height:128px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.jeton b{font-family:var(--f-jeu);font-weight:800;font-size:38px;line-height:1;white-space:nowrap}
+.jeton span{font-size:17px;font-weight:600;display:flex;align-items:center;gap:6px}
+.jeton:nth-child(2){animation-delay:.12s}.jeton:nth-child(3){animation-delay:.24s}
+.ligne-fin{display:flex;align-items:center;gap:18px;margin-top:30px}
+.ligne-fin>div:last-child{white-space:nowrap;flex:none}
+.demain{display:flex;align-items:center;gap:12px;margin-top:30px;font-size:22px;font-weight:500}
+.demain .ico{font-size:30px;color:var(--e-600)}
+.demain b{font-family:var(--f-jeu);font-weight:800;font-size:26px}
+.actions-fin{display:flex;gap:20px;justify-content:flex-end;margin-top:44px}
+
+/* ============ Écran 7 : iPhone ============ */
+.iphone .barre{top:58px;height:72px;padding:0 16px;gap:12px}
+.iphone .btn-rond{width:56px;height:56px}
+.iphone .btn-rond .ico{font-size:26px}
+.iphone .piste{height:22px}
+.iphone .compte{font-size:22px}
+.iphone .pave{right:16px;top:auto;bottom:42px;grid-template-columns:repeat(4,83px);grid-template-rows:repeat(4,74px);gap:12px}
+.iphone .touche{font-size:40px;border-radius:18px;box-shadow:0 6px 0 var(--e-200)}
+.iphone .touche.valider{font-size:20px;box-shadow:0 6px 0 var(--e-700)}
+.iphone .touche.valider .ico{font-size:40px}
+.iphone .touche.valider.desactive{box-shadow:0 6px 0 var(--neutre-300)}
+.iphone .touche.effacer .ico{font-size:32px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- Mascottes : copiées telles quelles depuis docs/tables/archive/mockup_ecrans_2026-11-01.html -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="bouclette" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="b"/>
+      <feDisplacementMap in="SourceGraphic" in2="b" scale="5"/>
+    </filter>
+    <symbol id="ours" viewBox="0 0 200 240">
+      <ellipse cx="78" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="122" cy="212" rx="17" ry="26" fill="#F1E3A0"/>
+      <ellipse cx="78" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="122" cy="234" rx="18" ry="7" fill="#E9D98F"/>
+      <ellipse cx="100" cy="176" rx="42" ry="40" fill="#F7EBB3"/>
+      <ellipse cx="42" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(25 42 158)"/>
+      <ellipse cx="158" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(-25 158 158)"/>
+      <path d="M58 138 Q100 126 142 138 L164 152 Q160 166 148 166 L144 176 Q100 186 56 176 L52 166 Q40 166 36 152 Z" fill="#D8392F"/>
+      <path d="M84 136 Q100 146 116 136" stroke="#B12A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="56" cy="40" r="17" fill="#EEDD93"/><circle cx="56" cy="42" r="9" fill="#E3CF7E"/>
+      <circle cx="144" cy="40" r="17" fill="#EEDD93"/><circle cx="144" cy="42" r="9" fill="#E3CF7E"/>
+      <ellipse cx="100" cy="80" rx="54" ry="56" fill="#F5E8A6"/>
+      <ellipse cx="100" cy="102" rx="30" ry="24" fill="#F9F0C6"/>
+      <path d="M90 90 Q100 84 110 90 Q112 100 100 104 Q88 100 90 90 Z" fill="#7A4A2E"/>
+      <path d="M80 108 Q100 124 120 108" stroke="#6B3B24" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="70" r="4.5" fill="#6B3B24"/><circle cx="120" cy="70" r="4.5" fill="#6B3B24"/>
+      <path d="M72 58 Q80 52 88 57" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M112 57 Q120 52 128 58" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <circle cx="68" cy="94" r="8" fill="#F2A07E" opacity=".35"/><circle cx="132" cy="94" r="8" fill="#F2A07E" opacity=".35"/>
+    </symbol>
+    <symbol id="koala" viewBox="0 0 200 240">
+      <g filter="url(#bouclette)">
+        <ellipse cx="80" cy="222" rx="20" ry="13" fill="#B3ADA3"/><ellipse cx="120" cy="222" rx="20" ry="13" fill="#B3ADA3"/>
+        <ellipse cx="100" cy="182" rx="44" ry="44" fill="#C2BDB3"/>
+        <ellipse cx="50" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(20 50 168)"/>
+        <ellipse cx="150" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(-20 150 168)"/>
+        <circle cx="46" cy="58" r="33" fill="#BDB7AD"/>
+        <circle cx="154" cy="58" r="33" fill="#BDB7AD"/>
+        <ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/>
+        <path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/>
+      </g>
+      <circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/>
+      <ellipse cx="100" cy="134" rx="15" ry="13" fill="#1E1E24"/>
+      <circle cx="95" cy="130" r="3.5" fill="#fff" opacity=".35"/>
+      <path d="M78 108 Q100 126 122 108" stroke="#4A4640" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="86" r="4" fill="#1E1E24"/><circle cx="120" cy="86" r="4" fill="#1E1E24"/>
+      <circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Icônes du système : trait rond de 3, pleines quand elles portent un état -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-retour" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-son" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15.5 9.2a4 4 0 010 5.6M18.2 6.8a7.4 7.4 0 010 10.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-effacer" viewBox="0 0 24 24"><path d="M9 5h10a2 2 0 012 2v10a2 2 0 01-2 2H9l-6-7z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M11.5 9.5l5 5M16.5 9.5l-5 5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cadenas" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.8 9.5h16.4M3.8 14.5h16.4M12 3.5c-2.8 3-2.8 14 0 17M12 3.5c2.8 3 2.8 14 0 17" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-grille" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2" fill="currentColor"/><rect x="13.5" y="3.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14.6 14.6l4.8 4.8M19.4 14.6l-4.8 4.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-crayon" viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 013 3L8 18.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 7l3.5 3.5" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-ampoule" viewBox="0 0 24 24"><path d="M12 3a6 6 0 00-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0012 3z" fill="currentColor"/><path d="M9.5 18.5h5M10.5 21h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-eclair" viewBox="0 0 24 24"><path d="M13.5 2.5L5 13.5h6l-1.5 8 8.5-11h-6z" fill="currentColor"/></symbol>
+    <symbol id="i-etoile" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z" fill="currentColor"/></symbol>
+    <symbol id="i-monte" viewBox="0 0 24 24"><path d="M12 19V6M6 11.5L12 5.5l6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="15" r="1.8" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="bandeau">
+  <div class="num">1</div>
+  <div>
+    <h1>Gros jeu tactile</h1>
+    <p>Des boutons épais qui s'enfoncent, une couleur vive par enfant, l'erreur en miel et jamais en rouge</p>
+  </div>
+</header>
+
+<main class="page">
+
+<!-- ================= 0. PLANCHE SYSTÈME ================= -->
+<p class="legende">0 · Le système <span>Jetons, typographie, boutons et thème de chaque enfant, communs à tous les modules</span></p>
+<div class="planche">
+
+  <section>
+    <h2>Palette : un fond crème calme, une couleur vive par enfant, vert pour juste, miel pour « à revoir »
+      <small>Le rouge n'existe pas dans le système. Tout texte posé sur une couleur passe 4,5:1 ; les teintes 500 ne portent que du décor et des barres.</small></h2>
+
+    <p class="groupe-titre">Base, commune aux deux apps</p>
+    <div class="rangee">
+      <div class="nuance" style="background:var(--encre);color:#fff"><b>Encre</b>#1E2147</div>
+      <div class="nuance" style="background:var(--encre-2);color:#fff"><b>Encre douce</b>#545878</div>
+      <div class="nuance cadre" style="background:var(--toile)"><b>Toile</b>#FFF8EF</div>
+      <div class="nuance cadre" style="background:#fff"><b>Carte</b>#FFFFFF</div>
+      <div class="nuance" style="background:var(--trait)"><b>Trait</b>#EDE5D9</div>
+      <div class="nuance" style="background:var(--juste-600);color:#fff"><b>Juste</b>#137A2F</div>
+      <div class="nuance" style="background:var(--juste-100);color:var(--juste-800)"><b>Juste 100</b>#E2F7E6</div>
+      <div class="nuance" style="background:var(--miel-500)"><b>À revoir</b>#FFB21E</div>
+    </div>
+
+    <p class="groupe-titre">Couleur de chaque enfant : 100 fond, 500 décor, 600 bouton et texte blanc, 700 relief</p>
+    <div class="rangee">
+      <div class="nuance theme-henri" style="background:var(--e-100);color:var(--e-800)"><b>Lagon 100</b>#E3F0FF</div>
+      <div class="nuance theme-henri" style="background:var(--e-500);color:var(--encre)"><b>Lagon 500</b>#2E8BFF</div>
+      <div class="nuance theme-henri" style="background:var(--e-600);color:#fff"><b>Lagon 600</b>#1668D6</div>
+      <div class="nuance theme-henri" style="background:var(--e-700);color:#fff"><b>Lagon 700</b>#0D4A9E</div>
+      <div class="nuance theme-clara" style="background:var(--e-100);color:var(--e-800)"><b>Prune 100</b>#F2E8FF</div>
+      <div class="nuance theme-clara" style="background:var(--e-500);color:var(--encre)"><b>Prune 500</b>#B57AFF</div>
+      <div class="nuance theme-clara" style="background:var(--e-600);color:#fff"><b>Prune 600</b>#7B34D1</div>
+      <div class="nuance theme-clara" style="background:var(--e-700);color:#fff"><b>Prune 700</b>#5320A0</div>
+    </div>
+
+    <p class="groupe-titre">Maîtrise d'un fait : quatre médailles, lisibles aussi sans la couleur (0, 1, 2 points, puis l'étoile)</p>
+    <div class="rangee">
+      <div class="nuance m m-gris" style="justify-content:space-between"><span class="points" style="justify-content:flex-start;height:8px"></span><span><b>Pas encore</b></span></div>
+      <div class="nuance m m-bronze" style="justify-content:space-between;color:var(--encre)"><span class="points" style="justify-content:flex-start"><i></i></span><span><b>Je commence</b></span></div>
+      <div class="nuance m m-argent" style="justify-content:space-between;color:var(--encre)"><span class="points" style="justify-content:flex-start"><i></i><i></i></span><span><b>Presque</b></span></div>
+      <div class="nuance m m-or" style="justify-content:space-between;color:var(--encre)"><svg class="ico" style="font-size:22px;color:var(--m-or-fonce)"><use href="#i-etoile"/></svg><span><b>Par cœur</b></span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typographie : Baloo 2 pour jouer et compter, Lexend pour lire ; rien sous 16 px, consignes à 24 px
+      <small>Baloo 2 donne des chiffres ronds et massifs, impossibles à confondre. Lexend a été dessinée pour réduire l'effort de lecture : formes ouvertes, espacement généreux, utile au lecteur fragile.</small></h2>
+    <div class="typo">
+      <div class="lbl"><b>Fait à retenir</b>Baloo 2 · 800 · 120 px</div>
+      <div class="fait theme-clara" style="font-size:120px">7<span class="x">×</span>8</div>
+      <div class="lbl"><b>Titre d'écran</b>Baloo 2 · 800 · 54 px</div>
+      <div style="font-family:var(--f-jeu);font-weight:800;font-size:54px;line-height:1">Les révisions d'Henri</div>
+      <div class="lbl"><b>Titre de carte, bouton</b>Baloo 2 · 800 · 26 à 34 px</div>
+      <div style="font-family:var(--f-jeu);font-weight:800;font-size:32px;line-height:1.1">Mes tables</div>
+      <div class="lbl"><b>Consigne</b>Lexend · 600 · 24 px</div>
+      <div class="consigne">À toi de le retaper</div>
+      <div class="lbl"><b>Texte, astuce</b>Lexend · 500 · 20 à 22 px</div>
+      <div style="font-size:22px;font-weight:500">7 × 4 = 28, et le double de 28, c'est 56</div>
+      <div class="lbl"><b>Mention</b>Lexend · 500 · 16 px, le plancher</div>
+      <div style="font-size:16px;font-weight:500;color:var(--encre-2)">3 jours cette semaine</div>
+    </div>
+  </section>
+
+  <section class="theme-henri">
+    <h2>Boutons : épais, en relief de 6 px, ils s'enfoncent sous le doigt
+      <small>Le relief dit « appuie-moi » sans survol. Cible minimale 64 px, touches du pavé 108 × 128 px. Une carte d'information a un relief neutre de 5 px : elle ne s'enfonce pas.</small></h2>
+    <div class="etats">
+      <div class="etat"><button class="btn btn-primaire">Valider</button><span class="lbl">Primaire, au repos</span></div>
+      <div class="etat"><button class="btn btn-primaire est-appuye">Valider</button><span class="lbl">Primaire, appuyé</span></div>
+      <div class="etat"><button class="btn desactive">Valider</button><span class="lbl">Rien à valider</span></div>
+      <div class="etat"><button class="btn btn-secondaire">Voir ma grille</button><span class="lbl">Secondaire</span></div>
+      <div class="etat"><button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button><span class="lbl">Rond, 64 px</span></div>
+      <div class="etat"><button class="btn-pilule"><svg class="ico"><use href="#i-son"/></svg>Écouter</button><span class="lbl">Écouter, voix coupée</span></div>
+    </div>
+    <div class="etats">
+      <div class="etat"><div style="display:flex;gap:16px"><button class="touche" style="width:108px;height:128px">7</button><button class="touche est-appuye" style="width:108px;height:128px">8</button></div><span class="lbl">Touche, au repos puis appuyée</span></div>
+      <div class="etat"><div class="semaine"><div class="jour fait"><svg class="ico"><use href="#i-ok"/></svg></div><div class="jour auj">V</div><div class="jour">S</div></div><span class="lbl">Jour fait, aujourd'hui, à venir</span></div>
+      <div class="etat"><div class="progres" style="width:240px"><div class="piste"><div class="remplissage" style="width:35%"></div></div><span class="compte">7 / 20</span></div><span class="lbl">Avancement de la séance</span></div>
+      <div class="etat"><span class="pastille" style="background:var(--juste-100);color:var(--juste-800)"><svg class="ico"><use href="#i-ok"/></svg>Juste</span><span class="lbl">Pastille juste</span></div>
+      <div class="etat"><span class="pastille" style="background:var(--miel-100);color:var(--miel-800)"><svg class="ico"><use href="#i-ampoule"/></svg>Astuce</span><span class="lbl">Pastille à revoir</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Thème : un enfant change cinq variables et sa mascotte, rien d'autre
+      <small>Chaque app pose sa classe à la racine. Tous les composants lisent --e-*, donc le planisphère et la dictée hériteront du thème sans une ligne de plus.</small></h2>
+    <div class="themes">
+      <div class="theme-carte theme-henri">
+        <div class="theme-tete"><svg><use href="#koala"/></svg><div><b>Henri · Lagon</b><span>Moussi, CM1</span></div></div>
+        <div class="mini-nuances"><div style="background:var(--e-100);color:var(--e-800)">100</div><div style="background:var(--e-200);color:var(--e-800)">200</div><div style="background:var(--e-500);color:var(--encre)">500</div><div style="background:var(--e-600);color:#fff">600</div><div style="background:var(--e-700);color:#fff">700</div></div>
+        <div style="display:flex;gap:18px;align-items:center"><button class="btn btn-primaire">Valider</button><div class="progres"><div class="piste"><div class="remplissage" style="width:55%"></div></div></div></div>
+      </div>
+      <div class="theme-carte theme-clara">
+        <div class="theme-tete"><svg><use href="#ours"/></svg><div><b>Clara · Prune</b><span>Pooh Bear, CM2</span></div></div>
+        <div class="mini-nuances"><div style="background:var(--e-100);color:var(--e-800)">100</div><div style="background:var(--e-200);color:var(--e-800)">200</div><div style="background:var(--e-500);color:var(--encre)">500</div><div style="background:var(--e-600);color:#fff">600</div><div style="background:var(--e-700);color:#fff">700</div></div>
+        <div style="display:flex;gap:18px;align-items:center"><button class="btn btn-primaire">Valider</button><div class="progres"><div class="piste"><div class="remplissage" style="width:55%"></div></div></div></div>
+      </div>
+    </div>
+    <div class="code">&lt;body class="theme-henri"&gt; · --e-50 · --e-100 · --e-200 · --e-500 · --e-600 · --e-700 · --e-800</div>
+    <div class="regles">
+      <div class="regle"><b>Une chose par écran</b>Le fait à retenir est toujours le plus gros objet de l'écran.</div>
+      <div class="regle"><b>La main droite agit</b>Pavé et bouton principal à droite, retour en haut à gauche.</div>
+      <div class="regle"><b>Le corps récompense</b>Rebond et éclat sur le juste ; rien ne bouge si le réglage « réduire les animations » est actif.</div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= 1. PORTAIL D'HENRI ================= -->
+<p class="legende">1 · Portail d'Henri <span>iPad paysage 1080 × 810 · trois modules, la semaine en jours faits</span></p>
+<div class="ipad"><div class="ecran theme-henri">
+  <div class="heros">
+    <div class="bulle-deco" style="width:420px;height:420px;right:-120px;top:-180px;background:var(--e-500)"></div>
+    <div class="bulle-deco" style="width:260px;height:260px;left:10px;top:120px;background:var(--e-500)"></div>
+    <svg class="moussi" role="img" aria-label="Moussi"><use href="#koala"/></svg>
+    <h2>Les révisions d'Henri</h2>
+    <div class="carte-semaine">
+      <div class="t"><b>Ma semaine</b><span>3 jours faits</span></div>
+      <div class="semaine" role="list" aria-label="Ma semaine">
+        <div class="jour fait" role="listitem" aria-label="Lundi, fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour fait" role="listitem" aria-label="Mardi, fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour" role="listitem" aria-label="Mercredi">M</div>
+        <div class="jour fait" role="listitem" aria-label="Jeudi, fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour auj" role="listitem" aria-label="Vendredi, aujourd'hui">V</div>
+        <div class="jour" role="listitem" aria-label="Samedi">S</div>
+        <div class="jour" role="listitem" aria-label="Dimanche">D</div>
+      </div>
+    </div>
+    <button class="coin-parent"><svg class="ico"><use href="#i-cadenas"/></svg>Coin parent</button>
+  </div>
+  <div class="modules">
+    <button class="module">
+      <div class="tuile" style="background:#DDF5EF"><svg class="ico" style="color:#0E7A66"><use href="#i-globe"/></svg></div>
+      <b>Mon planisphère</b><span class="sous">Géographie</span>
+      <div class="bas"><span class="pastille" style="background:var(--e-100);color:var(--e-800)">Continents et océans</span></div>
+    </button>
+    <button class="module">
+      <div class="tuile" style="background:var(--e-100)"><svg class="ico" style="color:var(--e-600)"><use href="#i-grille"/></svg></div>
+      <b>Mes tables</b><span class="sous">Multiplications</span>
+      <div class="bas">
+        <div class="mini-piste"><i style="width:19.4%"></i></div>
+        <div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:19px"><svg class="ico" style="color:var(--m-or-fonce);font-size:24px"><use href="#i-etoile"/></svg>7 en or sur 36</div>
+      </div>
+    </button>
+    <div class="module bientot" aria-disabled="true">
+      <div class="tuile"><svg class="ico"><use href="#i-crayon"/></svg></div>
+      <b style="color:var(--encre-2)">Dictée</b><span class="sous">Orthographe</span>
+      <div class="bas"><span class="pastille" style="background:var(--neutre-100);color:var(--encre-2)">Bientôt</span></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ================= 2. QUESTION, CLARA ================= -->
+<p class="legende">2 · Question, Clara <span>iPad paysage · le fait au centre, le pavé sous la main droite</span></p>
+<div class="ipad"><div class="ecran theme-clara">
+  <div class="barre">
+    <button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div class="progres" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="20" aria-label="Question 7 sur 20"><div class="piste"><div class="remplissage" style="width:35%"></div></div><span class="compte">7 / 20</span></div>
+    <button class="btn-pilule" aria-label="Lire la question à voix haute"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+  </div>
+  <div class="zone">
+    <div class="carte-q" style="height:560px">
+      <div class="fait" style="font-size:128px">7<span class="x">×</span>8</div>
+      <div class="fait" style="font-size:112px;margin-top:22px"><span style="color:var(--encre-2)">=</span><span class="case-rep">5<span class="curseur"></span></span></div>
+      <svg style="position:absolute;left:18px;bottom:-4px;width:84px;height:101px" aria-hidden="true"><use href="#ours"/></svg>
+    </div>
+  </div>
+  <div class="pave" aria-label="Pavé numérique">
+    <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+    <button class="touche effacer" aria-label="Effacer"><svg class="ico"><use href="#i-effacer"/></svg></button>
+    <button class="touche">4</button><button class="touche">5</button><button class="touche">6</button>
+    <button class="touche valider"><svg class="ico"><use href="#i-ok"/></svg>Valider</button>
+    <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+    <button class="touche zero">0</button>
+  </div>
+</div></div>
+
+<!-- ================= 3. ERREUR, HENRI ================= -->
+<p class="legende">3 · À revoir, Henri <span>iPad paysage · il a tapé 54 : la bonne réponse, l'astuce de Moussi, puis il retape</span></p>
+<div class="ipad"><div class="ecran theme-henri">
+  <div class="barre">
+    <button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div class="progres" aria-label="Question 12 sur 20"><div class="piste"><div class="remplissage" style="width:60%"></div></div><span class="compte">12 / 20</span></div>
+    <button class="btn-pilule" aria-label="Lire à voix haute"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+  </div>
+  <div class="zone" style="display:flex;flex-direction:column">
+    <div class="carte-rep">
+      <div class="etiq">Regarde bien</div>
+      <div class="fait" style="font-size:92px">7<span class="x">×</span>8<span style="color:var(--encre-2)">=</span><span class="surligne">56</span></div>
+    </div>
+    <div class="astuce">
+      <svg class="mascotte" role="img" aria-label="Moussi"><use href="#koala"/></svg>
+      <div class="bulle"><div class="etiq"><svg class="ico" style="font-size:22px"><use href="#i-ampoule"/></svg>Astuce</div>7&nbsp;×&nbsp;4&nbsp;=&nbsp;28, et le double de 28, c'est&nbsp;56</div>
+    </div>
+    <div style="margin-top:24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#fff;border:3px solid var(--trait);border-radius:var(--r-l);box-shadow:0 5px 0 var(--trait);padding:20px 22px 24px">
+      <div class="consigne">À toi de le retaper</div>
+      <div class="fait" style="font-size:72px;gap:.18em">7<span class="x">×</span>8<span style="color:var(--encre-2)">=</span><span class="case-rep" style="border-radius:20px;border-width:5px;min-width:1.7em"><span class="curseur" style="margin:0"></span></span></div>
+    </div>
+  </div>
+  <div class="pave" aria-label="Pavé numérique">
+    <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+    <button class="touche effacer" aria-label="Effacer"><svg class="ico"><use href="#i-effacer"/></svg></button>
+    <button class="touche">4</button><button class="touche">5</button><button class="touche">6</button>
+    <button class="touche valider desactive" disabled><svg class="ico"><use href="#i-ok"/></svg>Valider</button>
+    <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+    <button class="touche zero">0</button>
+  </div>
+</div></div>
+
+<!-- ================= 4. JUSTE, CLARA ================= -->
+<p class="legende">4 · Juste, Clara <span>iPad paysage · éclat vert, un « Rapide ! » discret, la suivante arrive seule</span></p>
+<div class="ipad"><div class="ecran theme-clara">
+  <div class="barre">
+    <button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div class="progres" aria-label="Question 8 sur 20"><div class="piste"><div class="remplissage" style="width:40%"></div></div><span class="compte">8 / 20</span></div>
+    <button class="btn-pilule" aria-label="Lire à voix haute"><svg class="ico"><use href="#i-son"/></svg>Écouter</button>
+  </div>
+  <div class="zone">
+    <div class="carte-q carte-juste" style="height:470px">
+      <span class="rapide"><svg class="ico"><use href="#i-eclair"/></svg>Rapide&#8239;!</span>
+      <div class="eclat" aria-hidden="true">
+        <i style="--a:0deg"></i><i style="--a:45deg"></i><i style="--a:90deg"></i><i style="--a:135deg"></i><i style="--a:180deg"></i><i style="--a:225deg"></i><i style="--a:270deg"></i><i style="--a:315deg"></i>
+      </div>
+      <div class="badge-ok" aria-label="Juste"><svg class="ico"><use href="#i-ok"/></svg></div>
+      <div class="fait" style="font-size:112px;animation:rebond .7s ease-out both">7<span class="x">×</span>8<span style="color:var(--encre-2)">=</span><span class="vert">56</span></div>
+      <svg style="position:absolute;left:18px;bottom:-4px;width:84px;height:101px;animation:rebond .9s ease-out .15s both" aria-hidden="true"><use href="#ours"/></svg>
+    </div>
+    <div class="suite" style="margin-top:34px;justify-content:center"><i></i><i></i><i></i><span style="margin-left:6px">La suivante arrive</span></div>
+  </div>
+  <div class="pave" aria-label="Pavé numérique" aria-disabled="true">
+    <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+    <button class="touche effacer" aria-label="Effacer"><svg class="ico"><use href="#i-effacer"/></svg></button>
+    <button class="touche">4</button><button class="touche">5</button><button class="touche">6</button>
+    <button class="touche valider"><svg class="ico"><use href="#i-ok"/></svg>Valider</button>
+    <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+    <button class="touche zero">0</button>
+  </div>
+</div></div>
+
+<!-- ================= 5. MA GRILLE, HENRI ================= -->
+<p class="legende">5 · Ma grille, Henri <span>iPad paysage · cent médailles, 6 × 7 ouverte</span></p>
+<div class="ipad"><div class="ecran theme-henri">
+  <div class="barre" style="height:100px">
+    <button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div style="font-family:var(--f-jeu);font-weight:800;font-size:42px;line-height:1">Ma grille</div>
+  </div>
+  <div class="grille" id="grille" role="grid" aria-label="Table de Pythagore"></div>
+  <div class="panneau">
+    <div class="detail">
+      <div class="fait" style="font-size:72px;gap:.18em">6<span class="x">×</span>7<span style="color:var(--encre-2)">=</span>42</div>
+      <span class="pastille m-argent" style="margin-top:14px;color:var(--encre)"><span class="points"><i></i><i></i></span>Presque</span>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:21px;font-weight:500;line-height:1.35">
+        <svg class="ico" style="font-size:26px;color:var(--miel-700);margin-top:2px"><use href="#i-ampoule"/></svg>
+        <span>6 × 6 = 36, et encore 6</span>
+      </div>
+      <button class="btn btn-primaire" style="width:100%;margin-top:20px">Je m'entraîne</button>
+    </div>
+    <div class="legende-m" id="legende-m"></div>
+  </div>
+</div></div>
+
+<!-- ================= 6. FIN DE SÉANCE, CLARA ================= -->
+<p class="legende">6 · Fin de séance, Clara <span>iPad paysage · ce qui a progressé, la semaine, le rendez-vous de demain</span></p>
+<div class="ipad"><div class="ecran theme-clara">
+  <div class="podium"></div>
+  <div class="confetti" aria-hidden="true" style="position:absolute;left:0;top:50px">
+    <i style="left:78px;top:118px;width:14px;height:14px;background:var(--m-or);--r:30deg"></i>
+    <i style="left:350px;top:96px;width:12px;height:22px;background:var(--e-500);--r:-25deg;animation-delay:.1s"></i>
+    <i style="left:390px;top:250px;width:16px;height:16px;border-radius:50%;background:var(--juste-500);--r:0deg;animation-delay:.2s"></i>
+    <i style="left:56px;top:330px;width:12px;height:20px;background:var(--e-500);--r:40deg;animation-delay:.15s"></i>
+    <i style="left:250px;top:70px;width:14px;height:14px;border-radius:50%;background:var(--miel-500);--r:0deg;animation-delay:.05s"></i>
+    <i style="left:150px;top:500px;width:18px;height:10px;background:var(--m-or);--r:-15deg;animation-delay:.25s"></i>
+    <i style="left:340px;top:470px;width:12px;height:12px;background:var(--e-600);--r:45deg;animation-delay:.3s"></i>
+  </div>
+  <svg class="fin-ours" role="img" aria-label="Pooh Bear"><use href="#ours"/></svg>
+  <div style="position:absolute;left:56px;top:590px;width:330px;text-align:center;font-family:var(--f-jeu);font-weight:800;font-size:28px;color:var(--e-800)">20 questions, 5 minutes</div>
+
+  <div class="fin">
+    <h2>Bien joué, Clara&#8239;!</h2>
+    <div class="montee">
+      <div class="titre"><svg class="ico"><use href="#i-monte"/></svg>3 cases montent</div>
+      <div class="jetons">
+        <div class="jeton m-argent"><b>6 × 7</b><span><span class="points"><i></i><i></i></span>Presque</span></div>
+        <div class="jeton m-argent"><b>7 × 6</b><span><span class="points"><i></i><i></i></span>Presque</span></div>
+        <div class="jeton m-or"><b>8 × 4</b><span><svg class="ico"><use href="#i-etoile"/></svg>Par cœur</span></div>
+      </div>
+    </div>
+    <div class="ligne-fin">
+      <div class="semaine" aria-label="Ma semaine, 4 jours faits">
+        <div class="jour fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour">M</div>
+        <div class="jour fait"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour fait" style="animation:pop .5s cubic-bezier(.3,1.6,.5,1) .5s both"><svg class="ico"><use href="#i-ok"/></svg></div>
+        <div class="jour">S</div>
+        <div class="jour">D</div>
+      </div>
+      <div style="font-weight:600;font-size:20px;color:var(--e-800)">4 jours<br>cette semaine</div>
+    </div>
+    <div class="demain"><svg class="ico"><use href="#i-cal"/></svg><span>Demain, <b>9 × 7</b> revient te voir</span></div>
+    <div class="actions-fin">
+      <button class="btn btn-secondaire">Voir ma grille</button>
+      <button class="btn btn-primaire">Fini pour aujourd'hui</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- ================= 7. IPHONE, HENRI ================= -->
+<p class="legende">7 · Question sur iPhone, Henri <span>402 × 874 · Dynamic Island en haut, pavé sous le pouce</span></p>
+<div class="iphone"><div class="ecran theme-henri">
+  <div class="ile"></div>
+  <div class="statut"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="9" rx="2" fill="currentColor"/><rect x="24.5" y="4.5" width="2" height="4" rx="1" fill="currentColor" opacity=".4"/></svg></span></div>
+  <div class="barre">
+    <button class="btn-rond" aria-label="Retour"><svg class="ico"><use href="#i-retour"/></svg></button>
+    <div class="progres"><div class="piste"><div class="remplissage" style="width:20%"></div></div><span class="compte">4 / 20</span></div>
+    <button class="btn-rond" aria-label="Lire la question à voix haute"><svg class="ico"><use href="#i-son"/></svg></button>
+  </div>
+  <div class="carte-q" style="position:absolute;left:16px;right:16px;top:148px;height:300px">
+    <div class="fait" style="font-size:104px">6<span class="x">×</span>9</div>
+    <div class="fait" style="font-size:84px;margin-top:16px"><span style="color:var(--encre-2)">=</span><span class="case-rep" style="border-radius:20px;border-width:4px"><span class="curseur" style="margin:0"></span></span></div>
+  </div>
+  <div class="pave" aria-label="Pavé numérique">
+    <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+    <button class="touche effacer" aria-label="Effacer"><svg class="ico"><use href="#i-effacer"/></svg></button>
+    <button class="touche">4</button><button class="touche">5</button><button class="touche">6</button>
+    <button class="touche valider desactive" disabled><svg class="ico"><use href="#i-ok"/></svg>Valider</button>
+    <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+    <button class="touche zero">0</button>
+  </div>
+  <div style="position:absolute;bottom:8px;left:50%;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:var(--encre)"></div>
+</div></div>
+
+</main>
+
+<script>
+// État de maîtrise de chaque case (règle fournie)
+function etat(a,b){const f=[1,2,5,10];const d=['6x7','7x6','7x8','8x7','9x7','7x9','8x9','9x8','6x8','8x6','7x7','8x8'];if(f.includes(a)||f.includes(b))return 'or';if(d.includes(a+'x'+b))return (a+b)%3===0?'bronze':'gris';if(a===3||b===3||a===4||b===4)return (a*b)%2?'argent':'or';return a===9||b===9?'bronze':'argent'}
+const NOMS={gris:'Pas encore',bronze:'Je commence',argent:'Presque',or:'Par cœur'};
+const POINTS={gris:0,bronze:1,argent:2};
+const CHOIX=[6,7];
+(function(){
+  const g=document.getElementById('grille');
+  const compte={gris:0,bronze:0,argent:0,or:0};
+  let h='<div></div>';
+  for(let b=1;b<=10;b++) h+='<div class="ent'+(b===CHOIX[1]?' actif':'')+'" role="columnheader">'+b+'</div>';
+  for(let a=1;a<=10;a++){
+    h+='<div class="ent'+(a===CHOIX[0]?' actif':'')+'" role="rowheader">'+a+'</div>';
+    for(let b=1;b<=10;b++){
+      const choisie=(a===CHOIX[0]&&b===CHOIX[1]);
+      // La case ouverte est à l'état « Presque », comme le veut le scénario
+      const e=choisie?'argent':etat(a,b);
+      compte[e]++;
+      const label=a+' × '+b+', '+NOMS[e];
+      let inner='';
+      if(choisie){inner='<b>42</b>';}
+      else if(e==='or'){inner='<svg class="ico"><use href="#i-etoile"/></svg>';}
+      else if(POINTS[e]){inner='<span class="points">'+'<i></i>'.repeat(POINTS[e])+'</span>';}
+      h+='<button class="cell m m-'+e+(choisie?' choisie':'')+'" role="gridcell" aria-label="'+label+'"'+(choisie?' aria-selected="true"':'')+'>'+inner+'</button>';
+    }
+  }
+  g.innerHTML=h;
+  const ordre=['or','argent','bronze','gris'];
+  document.getElementById('legende-m').innerHTML=ordre.map(e=>{
+    const pts=e==='or'?'<svg class="ico" style="font-size:20px"><use href="#i-etoile"/></svg>':'<span class="points">'+'<i></i>'.repeat(POINTS[e]||0)+'</span>';
+    return '<div><span class="ech m m-'+e+'">'+pts+'</span>'+NOMS[e]+'<span class="n">'+compte[e]+'</span></div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

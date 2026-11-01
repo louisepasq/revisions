@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 · Carnet d'écolier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Playwrite+FR+Moderne:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ============ JETONS DU SYSTEME ============ */
+:root{
+  /* papier et encre, communs aux deux apps */
+  --papier:#FFFCF5;
+  --feuille:#FFFFFF;
+  --carreau:rgba(64,96,168,.085);
+  --seyes-fin:rgba(64,96,168,.10);
+  --seyes-fort:rgba(64,96,168,.20);
+  --encre-texte:#1F2440;
+  --texte-doux:#555B76;
+  --trait:#D6DAE6;
+  --trait-fort:#AEB3C7;
+  /* etats */
+  --juste:#1C7A4A;
+  --juste-fonce:#145C37;
+  --juste-pale:#E2F4E9;
+  --surligneur:#FFE55C;
+  --or:#F4C430;
+  --or-bord:#B8890B;
+  --or-texte:#3A2A00;
+  /* rythme */
+  --r-s:12px; --r-m:20px; --r-l:28px;
+  --ombre-carte:0 3px 0 rgba(31,36,64,.10), 0 10px 24px rgba(31,36,64,.06);
+  /* polices */
+  --f-texte:'Andika', 'Trebuchet MS', system-ui, sans-serif;
+  --f-main:'Playwrite FR Moderne', 'Andika', cursive;
+}
+/* un seul jeu de variables change d'un enfant a l'autre */
+.theme-henri{--encre:#1F5FAD;--encre-fonce:#15457F;--encre-pale:#E4EEFB;--encre-moyen:#B9D0F0;--marge:#A8C3EA}
+.theme-clara{--encre:#7A3B98;--encre-fonce:#5A2A72;--encre-pale:#F3E8F8;--encre-moyen:#DCC2EA;--marge:#D3B2E3}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:#E7E9EF;color:var(--encre-texte);font-family:var(--f-texte);font-size:18px;line-height:1.4}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg.ic{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ============ PAGE DE PRESENTATION ============ */
+.bandeau{position:sticky;top:0;z-index:50;background:#1F2440;color:#fff;padding:14px 24px;display:flex;align-items:baseline;gap:16px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.bandeau b{font-size:24px}
+.bandeau span{font-size:16px;color:#D9DCEB}
+.page{max-width:1200px;margin:0 auto;padding:28px 21px 80px}
+.legende{font-size:18px;color:#3A3F58;margin:56px 0 14px 4px}
+.legende b{display:inline-block;min-width:30px;height:30px;line-height:30px;text-align:center;border-radius:50%;background:#1F2440;color:#fff;font-size:16px;margin-right:10px}
+
+/* ============ APPAREILS ============ */
+.ipad{width:1158px;padding:22px 56px 22px 22px;background:#26282E;border-radius:46px;position:relative;margin:0 auto;box-shadow:0 18px 40px rgba(20,24,40,.22)}
+.ipad::after{content:"";position:absolute;right:13px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;border:2px solid #4A4D56}
+.ecran{width:1080px;height:810px;border-radius:6px;overflow:hidden;position:relative}
+.statut{position:absolute;top:0;left:0;right:0;height:20px;display:flex;justify-content:space-between;align-items:center;padding:0 14px;font:700 13px/1 -apple-system,system-ui,sans-serif;color:#1F2440;z-index:5}
+.batt{display:inline-block;width:24px;height:11px;border:1.5px solid #1F2440;border-radius:3px;position:relative}
+.batt::before{content:"";position:absolute;inset:1.5px;right:5px;background:#1F2440;border-radius:1px}
+.app{position:absolute;inset:20px 0 0 0}
+
+.iphone{width:426px;padding:12px;background:#26282E;border-radius:66px;margin:0 auto;box-shadow:0 18px 40px rgba(20,24,40,.22)}
+.iphone .ecran{width:402px;height:874px;border-radius:54px}
+.ilot{position:absolute;top:11px;left:50%;width:126px;height:37px;margin-left:-63px;background:#000;border-radius:20px;z-index:6}
+.iphone .statut{height:54px;padding:0 34px 0 46px;font-size:16px}
+.barre-accueil{position:absolute;bottom:8px;left:50%;width:140px;height:5px;margin-left:-70px;background:#1F2440;border-radius:3px}
+
+/* ============ LE CAHIER (fond) ============ */
+.cahier{background-color:var(--papier);
+  background-image:linear-gradient(var(--carreau) 1px,transparent 1px),linear-gradient(90deg,var(--carreau) 1px,transparent 1px);
+  background-size:32px 32px;background-position:0 20px}
+.cahier .app::before{content:"";position:absolute;top:0;bottom:0;left:96px;width:2px;background:var(--marge)}
+.cahier.sans-marge .app::before{display:none}
+
+/* ============ COMPOSANTS ============ */
+/* bouton d'icone (marge) */
+.btn-icone{display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;padding:4px 0}
+.btn-icone .rond{width:64px;height:64px;border-radius:50%;background:var(--feuille);border:2px solid var(--trait);box-shadow:0 4px 0 var(--trait);display:flex;align-items:center;justify-content:center;color:var(--encre-fonce)}
+.btn-icone span{font-size:16px;font-weight:700;color:var(--texte-doux)}
+.btn-icone:active .rond,.btn-icone.is-appuye .rond{transform:translateY(3px);box-shadow:0 1px 0 var(--trait);background:var(--encre-pale)}
+.marge-nav{position:absolute;left:0;top:0;bottom:0;width:96px;display:flex;flex-direction:column;align-items:center;padding-top:22px;gap:18px}
+.marge-nav .mascotte-marge{margin-top:auto;margin-bottom:22px;width:72px}
+
+/* boutons texte */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:72px;padding:0 32px;border-radius:var(--r-m);font-size:22px;font-weight:700;letter-spacing:.01em;transition:transform .08s}
+.btn--principal{background:var(--encre);color:#fff;box-shadow:0 5px 0 var(--encre-fonce)}
+.btn--second{background:var(--feuille);color:var(--encre-fonce);border:3px solid var(--encre-moyen);box-shadow:0 5px 0 var(--encre-moyen)}
+.btn:active,.btn.is-appuye{transform:translateY(4px);box-shadow:0 1px 0 var(--encre-fonce)}
+.btn--second:active,.btn--second.is-appuye{box-shadow:0 1px 0 var(--encre-moyen)}
+.btn:focus-visible,.btn.is-focus,.touche.is-focus{outline:4px solid var(--encre-texte);outline-offset:4px}
+.btn[aria-disabled="true"],.btn.is-off{background:transparent;color:var(--texte-doux);border:3px dashed var(--trait-fort);box-shadow:none}
+
+/* pave numerique */
+.pave{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.touche{height:92px;border-radius:var(--r-m);background:var(--feuille);border:2px solid var(--trait);box-shadow:0 5px 0 var(--encre-moyen);font-size:46px;font-weight:700;color:var(--encre-texte);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.touche:active,.touche.is-appuye{transform:translateY(4px);box-shadow:0 1px 0 var(--encre-moyen);background:var(--encre-pale);border-color:var(--encre-moyen)}
+.touche--effacer{color:var(--encre-fonce);gap:4px}
+.touche--effacer svg.ic{width:34px;height:34px}
+.touche--effacer small{font-size:16px;font-weight:700;color:var(--texte-doux)}
+.touche--zero{grid-column:span 2}
+.touche--valider{grid-column:1/-1;background:var(--encre);border-color:var(--encre-fonce);color:#fff;box-shadow:0 5px 0 var(--encre-fonce);flex-direction:row;gap:12px;font-size:26px}
+.touche--valider svg.ic{width:34px;height:34px;stroke-width:3}
+.touche--valider.is-off{background:var(--papier);color:var(--texte-doux);border:3px dashed var(--trait-fort);box-shadow:none}
+.pave.is-repos{opacity:.4}
+
+/* avancement en petits carreaux */
+.avancement{display:flex;align-items:center;gap:16px}
+.carreaux{display:flex;gap:5px;list-style:none}
+.carreaux li{width:18px;height:18px;border:2px solid var(--encre-moyen);border-radius:4px;background:var(--feuille)}
+.carreaux li.fait{background:var(--encre);border-color:var(--encre)}
+.carreaux li.ici{border:3px solid var(--encre-fonce)}
+.avancement span{font-size:20px;font-weight:700;color:var(--texte-doux)}
+
+/* operation et champ reponse */
+.operation{display:flex;align-items:center;gap:22px;font-weight:700;color:var(--encre-texte);line-height:1;white-space:nowrap}
+.op-100{font-size:100px}
+.op-80{font-size:80px}
+.op-64{font-size:64px}
+.champ{position:relative;min-width:150px;height:128px;padding:0 20px;border:4px solid var(--encre);border-radius:var(--r-m);background:var(--feuille);display:inline-flex;align-items:center;justify-content:center;color:var(--encre-fonce)}
+.op-64 .champ{min-width:120px;height:96px}
+.caret{display:inline-block;width:5px;height:.78em;background:var(--encre);border-radius:3px;margin-left:6px}
+.champ.is-vide .caret{margin-left:0}
+.champ.is-juste{border-color:var(--juste);background:var(--juste-pale);color:var(--juste-fonce)}
+.gommette-juste{position:absolute;top:-24px;right:-24px;width:60px;height:60px;border-radius:50%;background:var(--juste);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--juste-fonce);transform:rotate(-8deg)}
+.gommette-juste svg.ic{width:36px;height:36px;stroke-width:3.4}
+
+/* surligneur : la bonne reponse a retenir, jamais de rouge */
+.surligne{background:linear-gradient(100deg,transparent 1%,var(--surligneur) 3%,var(--surligneur) 97%,transparent 99%) no-repeat 0 70%/100% 62%;padding:0 .14em;border-radius:6px 14px 8px 16px}
+
+/* fiche astuce (papier Seyes) */
+.astuce{position:relative;background-color:var(--feuille);
+  background-image:linear-gradient(var(--seyes-fort) 1px,transparent 1px),linear-gradient(var(--seyes-fin) 1px,transparent 1px);
+  background-size:100% 32px,100% 8px;background-position:0 15px,0 7px;
+  border-radius:var(--r-m);box-shadow:var(--ombre-carte);padding:18px 24px 18px 24px;display:flex;gap:16px;align-items:center}
+.astuce .pastille-ic{width:52px;height:52px;border-radius:50%;background:var(--encre-pale);color:var(--encre-fonce);display:flex;align-items:center;justify-content:center;flex:none}
+.astuce p{font-size:24px;line-height:1.35;font-weight:700;color:var(--encre-texte)}
+.astuce small{display:block;font-size:18px;font-weight:700;color:var(--texte-doux);letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+
+/* consignes */
+.consigne{font-size:22px;font-weight:700;color:var(--texte-doux)}
+.consigne--forte{font-size:24px;color:var(--encre-fonce)}
+.main{font-family:var(--f-main);font-weight:400}
+
+/* semaine en tampons */
+.semaine{display:flex;gap:10px;list-style:none}
+.jour{display:flex;flex-direction:column;align-items:center;gap:6px;width:56px}
+.jour .p{position:relative;width:52px;height:52px;border-radius:50%;border:2px dashed var(--trait-fort);display:flex;align-items:center;justify-content:center;background:var(--feuille)}
+.jour .j{font-size:16px;font-weight:700;color:var(--texte-doux)}
+.jour.fait .p{border:0;background:var(--encre);color:#fff;transform:rotate(-6deg);box-shadow:inset 0 0 0 4px var(--encre),inset 0 0 0 6px rgba(255,255,255,.55)}
+.jour.fait .p svg.ic{fill:#fff;stroke:none;width:26px;height:26px}
+.jour.fait:nth-child(2n) .p{transform:rotate(5deg)}
+.jour.aujourdhui .j{color:var(--encre-fonce)}
+.jour.aujourdhui .p{border:0;background:transparent}
+.jour.fait.aujourdhui .p{background:var(--encre);transform:rotate(-8deg)}
+.jour .anneau{position:absolute;inset:-7px;width:66px;height:66px;color:var(--encre)}
+.semaine--demo .jour{width:auto;min-width:56px}
+.semaine-legende{font-size:20px;font-weight:700;color:var(--encre-fonce);margin-top:10px}
+
+/* etiquette de module (comme l'etiquette d'un cahier) */
+.etiquette{position:relative;background:var(--feuille);border-radius:var(--r-l);box-shadow:var(--ombre-carte);padding:12px;display:block;text-align:left;width:100%}
+.etiquette .cadre{border:2px solid var(--encre-moyen);border-radius:20px;height:100%;padding:28px 22px 22px;display:flex;flex-direction:column;align-items:flex-start}
+.etiquette .pastille{width:112px;height:112px;border-radius:50%;background:var(--encre-pale);display:flex;align-items:center;justify-content:center;color:var(--encre-fonce);margin-bottom:22px}
+.etiquette .pastille svg.ic{width:60px;height:60px;stroke-width:2.2}
+.etiquette h3{font-size:32px;line-height:1.15;color:var(--encre-texte)}
+.etiquette .matiere{font-size:18px;font-weight:700;color:var(--texte-doux);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.etiquette .pied{margin-top:auto;font-size:20px;font-weight:700;color:var(--encre-fonce);display:flex;align-items:center;gap:10px}
+.etiquette.is-suggeree{box-shadow:0 0 0 4px var(--encre),0 6px 0 4px var(--encre-fonce),0 16px 30px rgba(31,36,64,.12)}
+.etiquette.is-suggeree .cadre{border-color:var(--encre)}
+.marque-page{position:absolute;top:-4px;right:28px;width:56px;height:70px;background:var(--encre);clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%);display:flex;justify-content:center;padding-top:14px;color:#fff}
+.marque-page svg.ic{fill:#fff;stroke:none;width:24px;height:24px}
+.etiquette.is-bientot{background:transparent;box-shadow:none;border:3px dashed var(--trait-fort)}
+.etiquette.is-bientot .cadre{border-color:transparent}
+.etiquette.is-bientot .pastille{background:#EEF0F5;color:var(--texte-doux)}
+.etiquette.is-bientot h3{color:var(--texte-doux)}
+.tag{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:18px;background:#EEF0F5;color:var(--texte-doux);font-size:16px;font-weight:700}
+
+.mini-grille{display:grid;grid-template-columns:repeat(12,14px);gap:4px}
+.mini-grille i{width:14px;height:14px;border-radius:3px;border:1.5px dashed var(--trait-fort);background:var(--feuille)}
+.mini-grille i.o{background:#F9DC7A;border:1.5px solid #C99A12}
+/* gommette doree (je sais par coeur) */
+.gommette-or{width:30px;height:30px;border-radius:50%;background:var(--or);border:2px solid var(--or-bord);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.gommette-or svg{width:18px;height:18px;fill:var(--or-texte)}
+
+/* cases de la grille : quatre etats, jamais distingues par la seule couleur */
+.case{display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--encre-texte);border-radius:10px;position:relative}
+.c-gris{background:var(--feuille);border:2px dashed var(--trait-fort);color:var(--texte-doux)}
+.c-bronze{background:var(--feuille) repeating-linear-gradient(135deg,var(--encre-moyen) 0 3px,transparent 3px 9px);border:2px solid var(--encre-moyen)}
+.c-argent{background:var(--encre-moyen);border:2px solid var(--encre-moyen)}
+.c-or{background:#F9DC7A;border:2px solid #C99A12;color:var(--or-texte)}
+.c-or::after{content:"";position:absolute;top:3px;right:3px;width:9px;height:9px;background:var(--or-texte);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.c-bronze span,.c-gris span{background:var(--feuille);border-radius:6px;padding:0 3px}
+
+.etat-pill{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 8px;border-radius:22px;background:var(--feuille);border:2px solid var(--trait);font-size:20px;font-weight:700}
+.etat-pill .case{width:28px;height:28px;border-radius:7px}
+
+/* bulle de la mascotte */
+.bulle{position:relative;background:var(--feuille);border-radius:var(--r-m);box-shadow:var(--ombre-carte);padding:20px 26px;font-size:24px;font-weight:700;line-height:1.3}
+.bulle::before{content:"";position:absolute;left:-14px;bottom:26px;width:28px;height:28px;background:var(--feuille);transform:rotate(45deg);border-radius:4px}
+
+/* animations : uniquement si l'enfant ne demande pas moins de mouvement */
+@media (prefers-reduced-motion:no-preference){
+  .caret{animation:clignote 1.1s steps(1) infinite}
+  @keyframes clignote{50%{opacity:0}}
+  .anime-pose{animation:pose .45s cubic-bezier(.3,1.6,.5,1) both}
+  @keyframes pose{from{transform:scale(.4) rotate(-30deg);opacity:0}to{transform:rotate(-8deg);opacity:1}}
+  .trait-crayon i{animation:trace 1.4s linear both}
+  @keyframes trace{from{width:0}to{width:100%}}
+}
+
+/* ============ PLANCHE SYSTEME ============ */
+.planche{background:var(--papier);border-radius:24px;padding:40px 44px 44px;box-shadow:0 10px 30px rgba(20,24,40,.10)}
+.planche h1{font-size:36px;line-height:1.15}
+.planche .chapeau{font-size:20px;color:var(--texte-doux);margin-top:8px;max-width:900px}
+.planche h2{font-size:22px;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--trait);display:flex;justify-content:space-between;align-items:baseline}
+.planche h2 small{font-size:16px;color:var(--texte-doux);font-weight:400}
+.sw-groupe{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.sw{background:var(--feuille);border-radius:14px;box-shadow:0 2px 0 var(--trait);overflow:hidden}
+.sw i{display:block;height:68px;border-bottom:1px solid var(--trait)}
+.sw div{padding:10px 12px;font-size:16px;line-height:1.3}
+.sw b{display:block;font-size:16px}
+.sw code{font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--texte-doux)}
+.sw-titre{font-size:16px;font-weight:700;color:var(--texte-doux);text-transform:uppercase;letter-spacing:.06em;margin:22px 0 10px}
+.typo-ligne{display:grid;grid-template-columns:210px 1fr;align-items:baseline;gap:20px;padding:10px 0;border-bottom:1px dashed var(--trait)}
+.typo-ligne small{font-size:16px;color:var(--texte-doux)}
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.boite{background:var(--feuille);border-radius:18px;padding:22px;box-shadow:0 2px 0 var(--trait)}
+.etats{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+.etats figure{display:flex;flex-direction:column;align-items:center;gap:10px}
+.etats figcaption{font-size:16px;color:var(--texte-doux);font-weight:700}
+.note{font-size:16px;color:var(--texte-doux);margin-top:14px;line-height:1.45}
+.theme-demo{border-radius:18px;padding:22px;position:relative;overflow:hidden}
+.theme-demo .tete{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.theme-demo .tete svg{width:58px;height:70px}
+.theme-demo .tete b{font-size:20px}
+.ardoise{background:#1E2430;color:#F3F1EA;border-radius:18px;padding:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ardoise .sw{background:#2A3142;box-shadow:none}
+.ardoise .sw div,.ardoise .sw b{color:#F3F1EA}
+.ardoise .sw code{color:#C9CCD8}
+.ardoise .sw i{border-color:#3A4256}
+</style>
+</head>
+<body>
+
+<!-- ============ MASCOTTES ET ICONES ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="bouclette" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="b"/>
+      <feDisplacementMap in="SourceGraphic" in2="b" scale="5"/>
+    </filter>
+    <symbol id="ours" viewBox="0 0 200 240">
+      <ellipse cx="78" cy="212" rx="17" ry="26" fill="#F1E3A0"/><ellipse cx="122" cy="212" rx="17" ry="26" fill="#F1E3A0"/>
+      <ellipse cx="78" cy="234" rx="18" ry="7" fill="#E9D98F"/><ellipse cx="122" cy="234" rx="18" ry="7" fill="#E9D98F"/>
+      <ellipse cx="100" cy="176" rx="42" ry="40" fill="#F7EBB3"/>
+      <ellipse cx="42" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(25 42 158)"/>
+      <ellipse cx="158" cy="158" rx="13" ry="22" fill="#F1E3A0" transform="rotate(-25 158 158)"/>
+      <path d="M58 138 Q100 126 142 138 L164 152 Q160 166 148 166 L144 176 Q100 186 56 176 L52 166 Q40 166 36 152 Z" fill="#D8392F"/>
+      <path d="M84 136 Q100 146 116 136" stroke="#B12A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="56" cy="40" r="17" fill="#EEDD93"/><circle cx="56" cy="42" r="9" fill="#E3CF7E"/>
+      <circle cx="144" cy="40" r="17" fill="#EEDD93"/><circle cx="144" cy="42" r="9" fill="#E3CF7E"/>
+      <ellipse cx="100" cy="80" rx="54" ry="56" fill="#F5E8A6"/>
+      <ellipse cx="100" cy="102" rx="30" ry="24" fill="#F9F0C6"/>
+      <path d="M90 90 Q100 84 110 90 Q112 100 100 104 Q88 100 90 90 Z" fill="#7A4A2E"/>
+      <path d="M80 108 Q100 124 120 108" stroke="#6B3B24" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="70" r="4.5" fill="#6B3B24"/><circle cx="120" cy="70" r="4.5" fill="#6B3B24"/>
+      <path d="M72 58 Q80 52 88 57" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M112 57 Q120 52 128 58" stroke="#6B3B24" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <circle cx="68" cy="94" r="8" fill="#F2A07E" opacity=".35"/><circle cx="132" cy="94" r="8" fill="#F2A07E" opacity=".35"/>
+    </symbol>
+    <symbol id="koala" viewBox="0 0 200 240">
+      <g filter="url(#bouclette)">
+        <ellipse cx="80" cy="222" rx="20" ry="13" fill="#B3ADA3"/><ellipse cx="120" cy="222" rx="20" ry="13" fill="#B3ADA3"/>
+        <ellipse cx="100" cy="182" rx="44" ry="44" fill="#C2BDB3"/>
+        <ellipse cx="50" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(20 50 168)"/>
+        <ellipse cx="150" cy="168" rx="12" ry="22" fill="#B3ADA3" transform="rotate(-20 150 168)"/>
+        <circle cx="46" cy="58" r="33" fill="#BDB7AD"/>
+        <circle cx="154" cy="58" r="33" fill="#BDB7AD"/>
+        <ellipse cx="100" cy="92" rx="58" ry="54" fill="#C6C1B8"/>
+        <path d="M70 100 Q100 88 130 100 Q118 138 100 142 Q82 138 70 100 Z" fill="#CFCAC1"/>
+      </g>
+      <circle cx="48" cy="60" r="21" fill="#F2EBDD"/><circle cx="152" cy="60" r="21" fill="#F2EBDD"/>
+      <ellipse cx="100" cy="134" rx="15" ry="13" fill="#1E1E24"/>
+      <circle cx="95" cy="130" r="3.5" fill="#fff" opacity=".35"/>
+      <path d="M78 108 Q100 126 122 108" stroke="#4A4640" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="80" cy="86" r="4" fill="#1E1E24"/><circle cx="120" cy="86" r="4" fill="#1E1E24"/>
+      <circle cx="66" cy="110" r="8" fill="#E9A3A3" opacity=".3"/><circle cx="134" cy="110" r="8" fill="#E9A3A3" opacity=".3"/>
+    </symbol>
+
+    <symbol id="i-retour" viewBox="0 0 24 24"><path d="M20 12H5M11 5l-7 7 7 7"/></symbol>
+    <symbol id="i-son" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19.3 5.8a9 9 0 0 1 0 12.4"/></symbol>
+    <symbol id="i-effacer" viewBox="0 0 24 24"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M18 12h-7m3-3-3 3 3 3"/></symbol>
+    <symbol id="i-valider" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-cadenas" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-etoile" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></symbol>
+    <symbol id="i-haut" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></symbol>
+    <symbol id="i-tables" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-plume" viewBox="0 0 24 24"><path d="M5 19l2.5-7.5L16 3l5 5-8.5 8.5z"/><path d="M5 19l5-5"/><circle cx="11.5" cy="12.5" r="1.3"/></symbol>
+    <symbol id="i-crayon" viewBox="0 0 24 24"><path d="M4 20l1-4.5L16 4.5l3.5 3.5L8.5 19z"/><path d="M14 7l3.5 3.5"/></symbol>
+    <symbol id="i-grille" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9.2h17M3.5 14.8h17M9.2 3.5v17M14.8 3.5v17"/></symbol>
+    <symbol id="anneau" viewBox="0 0 66 66"><path d="M34 5.5C51 4.5 61.5 17 60.5 34 59.5 51 46 61 31 60.5 15 60 5 47.5 5.5 32 6 16.5 18 7 37 6.8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="bandeau"><b>3 · Carnet d'écolier</b><span>Le cahier de l'école, net et moderne : papier à petits carreaux, encre de l'enfant, tampons et gommettes.</span></header>
+
+<div class="page">
+
+<!-- ============ 0. PLANCHE SYSTEME ============ -->
+<p class="legende" style="margin-top:8px"><b>0</b>La planche système : ce que toutes les apps de « Nos révisions » partagent</p>
+<section class="planche theme-henri">
+  <h1>Un cahier par enfant, une seule encre qui change</h1>
+  <p class="chapeau">Le papier, l'encre bleu-noir du texte et les états sont communs. Chaque enfant a la couleur de son protège-cahier, qui teinte la marge, les boutons, les tampons et la grille. Rien d'autre ne change, pour que les deux apps se lisent pareil.</p>
+
+  <h2>Palette <small>contrastes mesurés selon WCAG, seuil 4,5:1 pour le texte</small></h2>
+  <p class="sw-titre">Le papier et l'encre, communs</p>
+  <div class="sw-groupe">
+    <div class="sw"><i style="background:#FFFCF5"></i><div><b>Papier</b><code>#FFFCF5</code><br>fond de tous les écrans</div></div>
+    <div class="sw"><i style="background-color:#FFFCF5;background-image:linear-gradient(rgba(64,96,168,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(64,96,168,.2) 1px,transparent 1px);background-size:16px 16px"></i><div><b>Petits carreaux</b><code>bleu 8,5 %</code><br>décor, jamais porteur de sens</div></div>
+    <div class="sw"><i style="background:#1F2440"></i><div><b>Encre du texte</b><code>#1F2440</code><br>14,8:1 sur papier</div></div>
+    <div class="sw"><i style="background:#555B76"></i><div><b>Texte doux</b><code>#555B76</code><br>6,5:1 sur papier</div></div>
+    <div class="sw"><i style="background:#D6DAE6"></i><div><b>Trait</b><code>#D6DAE6</code><br>bords et ombres</div></div>
+    <div class="sw"><i style="background:#FFFFFF"></i><div><b>Feuille</b><code>#FFFFFF</code><br>cartes, touches</div></div>
+  </div>
+  <p class="sw-titre">L'encre de chaque enfant (couleur du protège-cahier)</p>
+  <div class="sw-groupe">
+    <div class="sw"><i style="background:#1F5FAD"></i><div><b>Henri · Bleu cartable</b><code>#1F5FAD</code><br>blanc dessus 6,4:1</div></div>
+    <div class="sw"><i style="background:#15457F"></i><div><b>Henri · foncé</b><code>#15457F</code><br>titres, 9,4:1</div></div>
+    <div class="sw"><i style="background:#E4EEFB;box-shadow:inset 0 -18px 0 #B9D0F0"></i><div><b>Henri · pâle et moyen</b><code>#E4EEFB · #B9D0F0</code></div></div>
+    <div class="sw"><i style="background:#7A3B98"></i><div><b>Clara · Prune</b><code>#7A3B98</code><br>blanc dessus 7,2:1</div></div>
+    <div class="sw"><i style="background:#5A2A72"></i><div><b>Clara · foncé</b><code>#5A2A72</code><br>titres, 10,2:1</div></div>
+    <div class="sw"><i style="background:#F3E8F8;box-shadow:inset 0 -18px 0 #DCC2EA"></i><div><b>Clara · pâle et moyen</b><code>#F3E8F8 · #DCC2EA</code></div></div>
+  </div>
+  <p class="sw-titre">Les états : juste, à retenir, par cœur. Aucun rouge, aucune croix.</p>
+  <div class="sw-groupe">
+    <div class="sw"><i style="background:#1C7A4A"></i><div><b>Juste · gommette verte</b><code>#1C7A4A</code><br>blanc dessus 5,3:1</div></div>
+    <div class="sw"><i style="background:#E2F4E9"></i><div><b>Juste · fond</b><code>#E2F4E9</code><br>texte #145C37, 7,0:1</div></div>
+    <div class="sw"><i style="background:#FFE55C"></i><div><b>À retenir · surligneur</b><code>#FFE55C</code><br>la bonne réponse, surlignée</div></div>
+    <div class="sw"><i style="background:#F4C430"></i><div><b>Par cœur · gommette dorée</b><code>#F4C430</code><br>texte #3A2A00, 8,5:1</div></div>
+    <div class="sw" style="grid-column:span 2"><i style="background:linear-gradient(90deg,#1E2430 50%,#2A3142 50%)"></i><div><b>Le soir · mode ardoise</b><code>fond #1E2430 · craie #F3F1EA (13,8:1)</code><br>encres de nuit : Henri #8FB8F2, Clara #D0A6E6 (7,6:1)</div></div>
+  </div>
+
+  <h2>Typographie <small>Andika (SIL), dessinée pour les lecteurs débutants · Playwrite FR Moderne, l'écriture de l'école française</small></h2>
+  <div class="typo-ligne"><small>Opération · Andika 700 · 100 px</small><span style="font-size:100px;font-weight:700;line-height:1">7 × 8 = 56</span></div>
+  <div class="typo-ligne"><small>Titre d'écran · 700 · 36 px</small><span style="font-size:36px;font-weight:700">Ma grille</span></div>
+  <div class="typo-ligne"><small>Titre de carte · 700 · 30 px</small><span style="font-size:30px;font-weight:700">Mes tables</span></div>
+  <div class="typo-ligne"><small>Consigne · 700 · 22 à 24 px</small><span style="font-size:24px;font-weight:700;color:#15457F">À toi de le retaper</span></div>
+  <div class="typo-ligne"><small>Texte courant · 400 · 20 px</small><span style="font-size:20px">Touche une case pour la revoir.</span></div>
+  <div class="typo-ligne"><small>Mention · 700 · 16 px, minimum</small><span style="font-size:16px;font-weight:700;color:#555B76">lun. mar. mer. · Coin parent</span></div>
+  <div class="typo-ligne"><small>Écriture · Playwrite · 40 px<br>prénom et annotations seulement</small><span class="main" style="font-size:40px;color:#15457F">Les révisions d'Henri <span style="font-size:28px;color:#1F5FAD;margin-left:24px">Rapide !</span></span></div>
+  <p class="note">Andika a un « a » et un « g » d'une seule boucle, des chiffres très distincts (1 et 7, 6 et 9) et une approche large : c'est la police des manuels de lecture. L'écriture cursive ne porte jamais une consigne ni un chiffre à lire : elle signe l'app de l'enfant et imite l'annotation de la maîtresse.</p>
+
+  <h2>Boutons et leurs états <small>aucun état ne dépend du survol ; l'appui s'enfonce de 4 px</small></h2>
+  <div class="deux">
+    <div class="boite">
+      <div class="etats">
+        <figure><span class="btn btn--principal">Valider</span><figcaption>Principal</figcaption></figure>
+        <figure><span class="btn btn--principal is-appuye">Valider</span><figcaption>Appuyé</figcaption></figure>
+        <figure><span class="btn btn--principal is-focus">Valider</span><figcaption>Focus clavier</figcaption></figure>
+      </div>
+      <div class="etats" style="margin-top:20px">
+        <figure><span class="btn btn--second">Voir ma grille</span><figcaption>Secondaire</figcaption></figure>
+        <figure><span class="btn is-off" aria-disabled="true">Valider</span><figcaption>En attente</figcaption></figure>
+      </div>
+      <p class="note">Hauteur 72 px, texte 22 px gras. Le bouton désactivé n'est pas grisé en transparence : il devient pointillé, lisible à 6,5:1.</p>
+    </div>
+    <div class="boite">
+      <div class="etats">
+        <figure><span class="touche" style="width:116px">7</span><figcaption>Touche</figcaption></figure>
+        <figure><span class="touche is-appuye" style="width:116px">7</span><figcaption>Appuyée</figcaption></figure>
+        <figure><span class="touche touche--effacer" style="width:116px"><svg class="ic"><use href="#i-effacer"/></svg><small>Effacer</small></span><figcaption>Effacer</figcaption></figure>
+        <figure><span class="btn-icone"><span class="rond"><svg class="ic"><use href="#i-son"/></svg></span><span>Écouter</span></span><figcaption>Icône 64 px</figcaption></figure>
+      </div>
+      <p class="note">Touche du pavé : 116 × 92 px sur iPad, 112 × 68 px sur iPhone. L'icône d'effacer est une flèche, jamais une croix.</p>
+    </div>
+  </div>
+
+  <h2>Les quatre états d'une case <small>motif et couleur ensemble, lisibles sans voir les couleurs</small></h2>
+  <div class="deux">
+    <div class="boite">
+      <div class="etats">
+        <figure><span class="case c-gris" style="width:72px;height:72px;font-size:24px"><span>42</span></span><figcaption>Pas encore</figcaption></figure>
+        <figure><span class="case c-bronze" style="width:72px;height:72px;font-size:24px"><span>42</span></span><figcaption>Je commence</figcaption></figure>
+        <figure><span class="case c-argent" style="width:72px;height:72px;font-size:24px">42</span><figcaption>Presque</figcaption></figure>
+        <figure><span class="case c-or" style="width:72px;height:72px;font-size:24px">42</span><figcaption>Je sais par cœur</figcaption></figure>
+      </div>
+      <p class="note">Case vide en pointillé, puis hachurée au crayon, puis coloriée, puis la gommette dorée avec son étoile. On colorie son cahier au fil des séances.</p>
+    </div>
+    <div class="boite">
+      <div class="etats" style="align-items:center">
+        <ol class="semaine semaine--demo" aria-label="Ma semaine">
+          <li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">Fait</span></li>
+          <li class="jour aujourdhui"><span class="p"><svg class="anneau"><use href="#anneau"/></svg></span><span class="j">Aujourd'hui</span></li>
+          <li class="jour"><span class="p"></span><span class="j">Libre</span></li>
+        </ol>
+        <span class="champ is-juste" style="height:72px;min-width:96px;font-size:40px;font-weight:700;margin-left:28px">56<span class="gommette-juste" style="width:40px;height:40px;top:-16px;right:-16px"><svg class="ic" style="width:24px;height:24px"><use href="#i-valider"/></svg></span></span>
+        <span class="surligne" style="font-size:40px;font-weight:700;margin-left:16px">56</span>
+      </div>
+      <p class="note">Un jour fait reçoit un tampon à l'encre de l'enfant ; un jour libre reste un rond vide, jamais barré. Juste : gommette verte. À retenir : surligneur jaune.</p>
+    </div>
+  </div>
+
+  <h2>Le thème change d'un enfant à l'autre <small>même composant, cinq variables : encre, foncé, pâle, moyen, marge</small></h2>
+  <div class="deux">
+    <div class="theme-demo cahier theme-henri" style="background-position:0 0">
+      <div class="tete"><svg><use href="#koala"/></svg><b class="main" style="color:var(--encre-fonce);font-size:24px">Henri</b></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span class="touche" style="width:96px;height:80px;font-size:40px">8</span>
+        <span class="btn btn--principal">Valider</span>
+        <span class="case c-argent" style="width:56px;height:56px;font-size:20px">42</span>
+        <ol class="semaine"><li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span></li></ol>
+      </div>
+    </div>
+    <div class="theme-demo cahier theme-clara" style="background-position:0 0">
+      <div class="tete"><svg><use href="#ours"/></svg><b class="main" style="color:var(--encre-fonce);font-size:24px">Clara</b></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span class="touche" style="width:96px;height:80px;font-size:40px">8</span>
+        <span class="btn btn--principal">Valider</span>
+        <span class="case c-argent" style="width:56px;height:56px;font-size:20px">42</span>
+        <ol class="semaine"><li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span></li></ol>
+      </div>
+    </div>
+  </div>
+  <p class="note">Mise en page fixe pour les deux droitiers : navigation dans la marge à gauche, pavé et bouton d'action à droite, sous la main qui écrit. Les modules à venir (planisphère, dictée) reprennent le même squelette : marge, zone de travail, zone d'action à droite, avancement en petits carreaux.</p>
+</section>
+
+<!-- ============ 1. PORTAIL HENRI ============ -->
+<p class="legende"><b>1</b>iPad paysage · app d'Henri : le portail, avec la semaine et ses trois modules</p>
+<div class="ipad"><div class="ecran cahier theme-henri">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <button style="position:absolute;top:18px;right:28px;height:56px;padding:0 18px;border-radius:28px;border:2px solid var(--trait);background:var(--papier);display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:var(--texte-doux)"><svg class="ic" style="width:22px;height:22px"><use href="#i-cadenas"/></svg>Coin parent</button>
+
+    <div style="position:absolute;left:128px;top:34px;display:flex;align-items:flex-end;gap:28px">
+      <svg style="width:150px;height:180px;flex:none" role="img" aria-label="Moussi"><use href="#koala"/></svg>
+      <div style="padding-bottom:6px">
+        <h1 class="main" style="font-size:42px;line-height:1.5;color:var(--encre-fonce)">Les révisions d'Henri</h1>
+        <ol class="semaine" aria-label="Ma semaine : 3 jours faits" style="margin-top:12px">
+          <li class="jour fait" aria-label="lundi, fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">lun.</span></li>
+          <li class="jour fait" aria-label="mardi, fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">mar.</span></li>
+          <li class="jour" aria-label="mercredi"><span class="p"></span><span class="j">mer.</span></li>
+          <li class="jour fait" aria-label="jeudi, fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">jeu.</span></li>
+          <li class="jour aujourdhui" aria-label="vendredi, aujourd'hui"><span class="p"><svg class="anneau"><use href="#anneau"/></svg></span><span class="j">ven.</span></li>
+          <li class="jour" aria-label="samedi"><span class="p"></span><span class="j">sam.</span></li>
+          <li class="jour" aria-label="dimanche"><span class="p"></span><span class="j">dim.</span></li>
+        </ol>
+      </div>
+      <p class="semaine-legende" style="padding-bottom:34px;margin-left:4px">3 jours<br>cette semaine</p>
+    </div>
+
+    <div style="position:absolute;left:128px;right:32px;top:300px;bottom:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+      <button class="etiquette"><div class="cadre">
+        <span class="pastille"><svg class="ic"><use href="#i-globe"/></svg></span>
+        <h3>Mon planisphère</h3><p class="matiere">Géographie</p>
+        <p class="pied" style="color:var(--texte-doux)">Prêt quand tu veux</p>
+      </div></button>
+      <button class="etiquette is-suggeree" aria-label="Mes tables, à faire aujourd'hui"><span class="marque-page"><svg class="ic"><use href="#i-etoile"/></svg></span><div class="cadre">
+        <span class="pastille" style="background:var(--encre);color:#fff"><svg class="ic"><use href="#i-tables"/></svg></span>
+        <h3>Mes tables</h3><p class="matiere">Calcul</p>
+        <div class="pied" style="flex-direction:column;align-items:flex-start;gap:14px"><span class="mini-grille" aria-hidden="true"><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span><span style="display:flex;align-items:center;gap:10px"><span class="gommette-or"><svg viewBox="0 0 24 24"><use href="#i-etoile"/></svg></span>7 sur 36 par cœur</span></div>
+      </div></button>
+      <div class="etiquette is-bientot" aria-disabled="true"><div class="cadre">
+        <span class="pastille"><svg class="ic"><use href="#i-plume"/></svg></span>
+        <h3>Dictée</h3><p class="matiere">Français</p>
+        <p class="pied"><span class="tag">Bientôt</span></p>
+      </div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ 2. QUESTION CLARA ============ -->
+<p class="legende"><b>2</b>iPad paysage · app de Clara, tables : la question, réponse en cours de saisie</p>
+<div class="ipad"><div class="ecran cahier theme-clara">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <nav class="marge-nav">
+      <button class="btn-icone" aria-label="Retour au portail"><span class="rond"><svg class="ic"><use href="#i-retour"/></svg></span><span>Retour</span></button>
+      <button class="btn-icone" aria-label="Lire la question à voix haute"><span class="rond"><svg class="ic"><use href="#i-son"/></svg></span><span>Écouter</span></button>
+      <svg class="mascotte-marge" style="height:86px" aria-hidden="true"><use href="#ours"/></svg>
+    </nav>
+    <main style="position:absolute;left:128px;top:0;right:436px;bottom:0;display:flex;flex-direction:column;padding-top:30px">
+      <div class="avancement" aria-label="Question 7 sur 20">
+        <ol class="carreaux"><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="ici"></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+      </div>
+      <p class="consigne" style="margin-top:6px">7 sur 20</p>
+      <div style="flex:1;display:flex;align-items:center;padding-bottom:60px">
+        <p class="operation op-100" aria-live="polite">7 × 8 = <span class="champ">5<i class="caret"></i></span></p>
+      </div>
+    </main>
+    <div class="pave" style="position:absolute;right:32px;bottom:36px;width:372px">
+      <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+      <button class="touche">4</button><button class="touche is-appuye">5</button><button class="touche">6</button>
+      <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+      <button class="touche touche--effacer" aria-label="Effacer"><svg class="ic"><use href="#i-effacer"/></svg><small>Effacer</small></button><button class="touche touche--zero">0</button>
+      <button class="touche touche--valider"><svg class="ic"><use href="#i-valider"/></svg>Valider</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ 3. ERREUR HENRI ============ -->
+<p class="legende"><b>3</b>iPad paysage · app d'Henri, tables : il a tapé 54, on montre la bonne réponse et son astuce</p>
+<div class="ipad"><div class="ecran cahier theme-henri">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <nav class="marge-nav">
+      <button class="btn-icone" aria-label="Retour au portail"><span class="rond"><svg class="ic"><use href="#i-retour"/></svg></span><span>Retour</span></button>
+      <button class="btn-icone" aria-label="Lire à voix haute"><span class="rond"><svg class="ic"><use href="#i-son"/></svg></span><span>Écouter</span></button>
+    </nav>
+    <main style="position:absolute;left:128px;top:0;right:436px;bottom:0;display:flex;flex-direction:column;padding-top:30px">
+      <div class="avancement" aria-label="Question 12 sur 20">
+        <ol class="carreaux"><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="ici"></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+      </div>
+      <p class="consigne" style="margin-top:44px">On regarde ensemble :</p>
+      <p class="operation op-80" style="margin-top:14px">7 × 8 = <span class="surligne">56</span></p>
+      <div class="astuce" style="margin-top:30px;padding-right:18px">
+        <span class="pastille-ic"><svg class="ic"><use href="#i-crayon"/></svg></span>
+        <p><small>Astuce</small>7 × 4 = 28, et le double de 28, c'est 56</p>
+        <svg style="width:62px;height:74px;flex:none;align-self:flex-end;margin:-20px 0 -12px" aria-hidden="true"><use href="#koala"/></svg>
+      </div>
+      <p class="consigne consigne--forte" style="margin-top:40px">À toi de le retaper</p>
+      <p class="operation op-64" style="margin-top:14px">7 × 8 = <span class="champ is-vide"><i class="caret"></i></span></p>
+    </main>
+    <div class="pave" style="position:absolute;right:32px;bottom:36px;width:372px">
+      <button class="touche">1</button><button class="touche">2</button><button class="touche">3</button>
+      <button class="touche">4</button><button class="touche">5</button><button class="touche">6</button>
+      <button class="touche">7</button><button class="touche">8</button><button class="touche">9</button>
+      <button class="touche touche--effacer" aria-label="Effacer"><svg class="ic"><use href="#i-effacer"/></svg><small>Effacer</small></button><button class="touche touche--zero">0</button>
+      <button class="touche touche--valider is-off" aria-disabled="true"><svg class="ic"><use href="#i-valider"/></svg>Valider</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ 4. JUSTE CLARA ============ -->
+<p class="legende"><b>4</b>iPad paysage · app de Clara, tables : la bonne réponse, la gommette, et on enchaîne</p>
+<div class="ipad"><div class="ecran cahier theme-clara">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <nav class="marge-nav">
+      <button class="btn-icone" aria-label="Retour au portail"><span class="rond"><svg class="ic"><use href="#i-retour"/></svg></span><span>Retour</span></button>
+      <button class="btn-icone" aria-label="Lire la question à voix haute"><span class="rond"><svg class="ic"><use href="#i-son"/></svg></span><span>Écouter</span></button>
+      <svg class="mascotte-marge" style="height:86px" aria-hidden="true"><use href="#ours"/></svg>
+    </nav>
+    <main style="position:absolute;left:128px;top:0;right:436px;bottom:0;display:flex;flex-direction:column;padding-top:30px">
+      <div class="avancement" aria-label="Question 7 sur 20, juste">
+        <ol class="carreaux"><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li class="fait"></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+      </div>
+      <p class="consigne" style="margin-top:6px">7 sur 20</p>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:60px">
+        <p class="operation op-100" role="status">7 × 8 = <span class="champ is-juste">56<span class="gommette-juste anime-pose"><svg class="ic"><use href="#i-valider"/></svg></span></span></p>
+        <p class="main" style="font-size:30px;color:var(--encre);margin:30px 0 0 300px;transform:rotate(-4deg);display:flex;align-items:center;gap:10px">Rapide ! <svg class="ic" style="fill:var(--or);stroke:var(--or-bord);stroke-width:1.4;width:30px;height:30px"><use href="#i-etoile"/></svg></p>
+      </div>
+      <p class="consigne" style="font-size:20px;position:absolute;bottom:44px;left:0">La suivante arrive</p>
+      <div class="trait-crayon" style="position:absolute;bottom:34px;left:0;width:220px;height:5px;border-radius:3px;background:var(--encre-pale)"><i style="display:block;height:100%;width:100%;background:var(--encre);border-radius:3px"></i></div>
+    </main>
+    <div class="pave is-repos" aria-hidden="true" style="position:absolute;right:32px;bottom:36px;width:372px">
+      <span class="touche">1</span><span class="touche">2</span><span class="touche">3</span>
+      <span class="touche">4</span><span class="touche">5</span><span class="touche">6</span>
+      <span class="touche">7</span><span class="touche">8</span><span class="touche">9</span>
+      <span class="touche touche--effacer"><svg class="ic"><use href="#i-effacer"/></svg><small>Effacer</small></span><span class="touche touche--zero">0</span>
+      <span class="touche touche--valider"><svg class="ic"><use href="#i-valider"/></svg>Valider</span>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ 5. MA GRILLE HENRI ============ -->
+<p class="legende"><b>5</b>iPad paysage · app d'Henri : « Ma grille », la table de Pythagore coloriée, case 6 × 7 ouverte</p>
+<div class="ipad"><div class="ecran cahier theme-henri">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <nav class="marge-nav">
+      <button class="btn-icone" aria-label="Retour au portail"><span class="rond"><svg class="ic"><use href="#i-retour"/></svg></span><span>Retour</span></button>
+    </nav>
+    <div style="position:absolute;left:128px;top:22px;display:flex;align-items:baseline;gap:20px">
+      <h1 style="font-size:36px;line-height:1.1;color:var(--encre-fonce)">Ma grille</h1>
+      <p style="font-size:20px;color:var(--texte-doux)">Touche une case pour la revoir</p>
+    </div>
+    <div id="grille" role="grid" aria-label="Table de Pythagore" style="position:absolute;left:128px;top:84px;display:grid;grid-template-columns:repeat(11,56px);grid-auto-rows:56px;gap:6px"></div>
+    <aside style="position:absolute;left:822px;right:28px;top:84px;bottom:28px;display:flex;flex-direction:column;gap:18px">
+      <div class="astuce" style="flex-direction:column;align-items:flex-start;gap:14px;padding:22px 20px 22px">
+        <p class="operation" style="font-size:44px;gap:12px">6 × 7 = 42</p>
+        <span class="etat-pill"><span class="case c-argent"></span>Presque</span>
+        <p style="font-size:20px;line-height:1.35"><small>Astuce</small>6 × 6 = 36, et encore 6</p>
+        <span class="btn btn--principal" style="min-height:64px;padding:0 22px;font-size:20px;align-self:stretch">La revoir</span>
+      </div>
+      <ul id="legende-grille" style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:auto"></ul>
+    </aside>
+  </div>
+</div></div>
+
+<!-- ============ 6. FIN DE SEANCE CLARA ============ -->
+<p class="legende"><b>6</b>iPad paysage · app de Clara : fin de séance, ce qui a monté et ce qui revient demain</p>
+<div class="ipad"><div class="ecran cahier theme-clara">
+  <div class="statut"><span>9:41</span><span>100 % <i class="batt"></i></span></div>
+  <div class="app">
+    <div style="position:absolute;left:128px;right:32px;top:40px">
+      <h1 style="font-size:44px;line-height:1.1;color:var(--encre-fonce)">3 cases montent</h1>
+      <div style="display:flex;gap:28px;margin-top:32px">
+        <figure style="display:flex;flex-direction:column;align-items:center;gap:10px"><span class="case c-argent" style="width:160px;height:128px;font-size:40px;border-radius:20px">6 × 7<span class="gommette-juste" style="width:44px;height:44px;top:-16px;left:-16px;background:var(--encre);box-shadow:0 3px 0 var(--encre-fonce)"><svg class="ic" style="width:26px;height:26px"><use href="#i-haut"/></svg></span></span><figcaption style="font-size:18px;font-weight:700;color:var(--texte-doux)">Presque</figcaption></figure>
+        <figure style="display:flex;flex-direction:column;align-items:center;gap:10px"><span class="case c-argent" style="width:160px;height:128px;font-size:40px;border-radius:20px">7 × 6<span class="gommette-juste" style="width:44px;height:44px;top:-16px;left:-16px;background:var(--encre);box-shadow:0 3px 0 var(--encre-fonce)"><svg class="ic" style="width:26px;height:26px"><use href="#i-haut"/></svg></span></span><figcaption style="font-size:18px;font-weight:700;color:var(--texte-doux)">Presque</figcaption></figure>
+        <figure style="display:flex;flex-direction:column;align-items:center;gap:10px"><span class="case c-or" style="width:160px;height:128px;font-size:40px;border-radius:20px">8 × 4<span class="gommette-juste" style="width:44px;height:44px;top:-16px;left:-16px;background:var(--encre);box-shadow:0 3px 0 var(--encre-fonce)"><svg class="ic" style="width:26px;height:26px"><use href="#i-haut"/></svg></span></span><figcaption style="font-size:18px;font-weight:700;color:var(--texte-doux)">Je sais par cœur</figcaption></figure>
+      </div>
+    </div>
+
+    <div style="position:absolute;left:128px;top:390px;display:flex;align-items:center;gap:26px">
+      <ol class="semaine" aria-label="Ma semaine : 4 jours faits">
+        <li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">lun.</span></li>
+        <li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">mar.</span></li>
+        <li class="jour fait"><span class="p"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">mer.</span></li>
+        <li class="jour"><span class="p"></span><span class="j">jeu.</span></li>
+        <li class="jour fait aujourdhui"><span class="p anime-pose"><svg class="ic"><use href="#i-etoile"/></svg></span><span class="j">ven.</span></li>
+        <li class="jour"><span class="p"></span><span class="j">sam.</span></li>
+        <li class="jour"><span class="p"></span><span class="j">dim.</span></li>
+      </ol>
+      <p class="semaine-legende" style="margin:0 0 26px">4 jours cette semaine</p>
+    </div>
+
+    <div style="position:absolute;left:128px;bottom:36px;display:flex;align-items:flex-end;gap:12px">
+      <svg style="width:180px;height:216px;flex:none" aria-hidden="true"><use href="#ours"/></svg>
+      <p class="bulle" style="margin-bottom:96px">Demain, 9 × 7<br>revient te voir</p>
+    </div>
+    <div style="position:absolute;right:32px;bottom:44px;display:flex;flex-direction:column;gap:20px;width:330px">
+      <button class="btn btn--second"><svg class="ic"><use href="#i-grille"/></svg>Voir ma grille</button>
+      <button class="btn btn--principal">Fini pour aujourd'hui</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- ============ 7. IPHONE HENRI ============ -->
+<p class="legende"><b>7</b>iPhone portrait 402 × 874 · app d'Henri, tables : la question, pavé sous le pouce</p>
+<div class="iphone"><div class="ecran cahier sans-marge theme-henri" style="background-position:0 0">
+  <span class="ilot"></span>
+  <div class="statut"><span>9:41</span><span><i class="batt"></i></span></div>
+  <div class="app" style="inset:0">
+    <div style="position:absolute;top:62px;left:14px;right:14px;height:60px;display:flex;align-items:center;justify-content:space-between">
+      <button aria-label="Retour au portail" class="btn-icone" style="width:56px"><span class="rond" style="width:56px;height:56px"><svg class="ic"><use href="#i-retour"/></svg></span></button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px" aria-label="Question 3 sur 20">
+        <ol class="carreaux" style="gap:3px"><li class="fait" style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li class="fait" style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li class="ici" style="width:9px;height:9px;border-radius:2px;border-width:2px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li><li style="width:9px;height:9px;border-radius:2px;border-width:1.5px"></li></ol>
+        <span style="font-size:16px;font-weight:700;color:var(--texte-doux)">3 sur 20</span>
+      </div>
+      <button aria-label="Lire la question à voix haute" class="btn-icone" style="width:56px"><span class="rond" style="width:56px;height:56px"><svg class="ic"><use href="#i-son"/></svg></span></button>
+    </div>
+    <div style="position:absolute;top:150px;left:0;right:0;height:250px;display:flex;align-items:center;justify-content:center">
+      <p class="operation" style="font-size:66px;gap:14px">6 × 9 = <span class="champ is-vide" style="min-width:100px;height:92px"><i class="caret"></i></span></p>
+    </div>
+    <div class="pave" style="position:absolute;left:16px;right:16px;bottom:42px;gap:10px">
+      <button class="touche" style="height:68px;font-size:38px">1</button><button class="touche" style="height:68px;font-size:38px">2</button><button class="touche" style="height:68px;font-size:38px">3</button>
+      <button class="touche" style="height:68px;font-size:38px">4</button><button class="touche" style="height:68px;font-size:38px">5</button><button class="touche" style="height:68px;font-size:38px">6</button>
+      <button class="touche" style="height:68px;font-size:38px">7</button><button class="touche" style="height:68px;font-size:38px">8</button><button class="touche" style="height:68px;font-size:38px">9</button>
+      <button class="touche touche--effacer" style="height:68px" aria-label="Effacer"><svg class="ic" style="width:30px;height:30px"><use href="#i-effacer"/></svg><small>Effacer</small></button><button class="touche touche--zero" style="height:68px;font-size:38px">0</button>
+      <button class="touche touche--valider is-off" style="height:68px;font-size:24px" aria-disabled="true"><svg class="ic"><use href="#i-valider"/></svg>Valider</button>
+    </div>
+    <span class="barre-accueil"></span>
+  </div>
+</div></div>
+
+</div>
+
+<script>
+function etat(a,b){const f=[1,2,5,10];const d=['6x7','7x6','7x8','8x7','9x7','7x9','8x9','9x8','6x8','8x6','7x7','8x8'];if(f.includes(a)||f.includes(b))return 'or';if(d.includes(a+'x'+b))return (a+b)%3===0?'bronze':'gris';if(a===3||b===3||a===4||b===4)return (a*b)%2?'argent':'or';return a===9||b===9?'bronze':'argent'}
+const NOMS={gris:'Pas encore',bronze:'Je commence',argent:'Presque',or:'Je sais par cœur'};
+const g=document.getElementById('grille');
+const compte={gris:0,bronze:0,argent:0,or:0};
+const SEL=[6,7];
+function el(cls,txt,style){const d=document.createElement('div');d.className=cls;d.innerHTML=txt;if(style)d.style.cssText=style;return d}
+const hBase='display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border-radius:10px;';
+g.appendChild(el('',' ×',hBase+'color:var(--texte-doux)'));
+for(let b=1;b<=10;b++){const on=b===SEL[1];g.appendChild(el('',String(b),hBase+(on?'background:var(--encre);color:#fff':'background:var(--encre-pale);color:var(--encre-fonce)')))}
+for(let a=1;a<=10;a++){
+  const on=a===SEL[0];
+  g.appendChild(el('',String(a),hBase+(on?'background:var(--encre);color:#fff':'background:var(--encre-pale);color:var(--encre-fonce)')));
+  for(let b=1;b<=10;b++){
+    const e=(a===SEL[0]&&b===SEL[1])?'argent':etat(a,b); /* la case ouverte est Presque, comme le dit sa fiche */compte[e]++;
+    const n=a*b;const lab=(e==='gris'||e==='bronze')?'<span>'+n+'</span>':String(n);
+    const c=el('case c-'+e,lab,'font-size:20px');
+    c.setAttribute('role','gridcell');c.setAttribute('aria-label',a+' fois '+b+', '+NOMS[e]);
+    if(a===SEL[0]&&b===SEL[1]){c.style.boxShadow='0 0 0 4px var(--papier),0 0 0 8px var(--encre-fonce)';c.style.zIndex='2';c.setAttribute('aria-selected','true')}
+    g.appendChild(c);
+  }
+}
+const lg=document.getElementById('legende-grille');
+['or','argent','bronze','gris'].forEach(k=>{
+  const li=document.createElement('li');li.style.cssText='display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--encre-texte)';
+  li.innerHTML='<span class="case c-'+k+'" style="width:30px;height:30px;border-radius:7px;flex:none"></span><span style="flex:1">'+NOMS[k]+'</span><span style="color:var(--texte-doux)">'+compte[k]+'</span>';
+  lg.appendChild(li);
+});
+</script>
+</body>
+</html>
