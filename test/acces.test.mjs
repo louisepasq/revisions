@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliser, jetonRole, roleDuCookie, empreinteCode, autorise, enfantDuChemin, COOKIE } from '../lib/acces.mjs';
+import acces from '../lib/acces.js';
+const { normaliser, jetonRole, roleDuCookie, empreinteCode, autorise, enfantDuChemin, COOKIE } = acces;
 
 const PARENT = 'Code-Parent-Test';
 

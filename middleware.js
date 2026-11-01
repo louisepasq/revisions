@@ -1,5 +1,5 @@
 import { next } from '@vercel/edge';
-import { COOKIE, normaliser, roleDuCookie, enfantDuChemin, autorise } from './lib/acces.mjs';
+import { COOKIE, normaliser, roleDuCookie, enfantDuChemin, autorise } from './lib/acces.js';
 
 // Rien n'est servi (pages, voix, API) sans un code. Le middleware ne fait que vérifier le cookie et montrer
 // la page de code ; la saisie du code est vérifiée par api/entrer.js. Code parent : variable CODE_PARENT du

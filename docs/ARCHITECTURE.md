@@ -41,7 +41,7 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 | `commun/polices/` | Baloo 2 et Andika, hébergées (licences OFL à côté) |
 | `commun/outils/` | Outils de fabrication : `voix.py` et `phrases.js` (voix), générateur d'icônes |
 | `modules/tables/` | Module des tables : `moteur.js` (logique pure, testée), `seance.js` (déroulé), `tables.js` et `tables.css` (interface), `README.md` |
-| `middleware.js`, `lib/acces.mjs` | Contrôle d'accès (section 4) |
+| `middleware.js`, `lib/acces.js` | Contrôle d'accès (section 4) |
 | `api/`, `lib/serveur.js`, `lib/fusion.js` | Fonctions serveur (sections 4 et 5) |
 | `test/` | Tests node du serveur, de la fusion et des accès |
 | `outils/essais/` | Essais de bout en bout contre le site local, avec une base factice |
@@ -57,7 +57,7 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 
 ## 4. Accès : un code parent qui ouvre tout, un code par enfant qui n'ouvre que son app
 
-- **Trois rôles** : `parent`, `henri`, `clara`. Règles dans `lib/acces.mjs` (`autorise`), testées dans `test/acces.test.mjs` :
+- **Trois rôles** : `parent`, `henri`, `clara`. Règles dans `lib/acces.js` (`autorise`), testées dans `test/acces.test.mjs` :
   - parent : tout ;
   - un enfant : son dossier, les ressources communes (`commun/`, `modules/`), sa propre progression ; jamais l'app de l'autre, ni `/`, ni `/parents`, ni `/docs`, ni `/api/codes`.
 - **Le code parent** est la variable d'environnement `CODE_PARENT` du projet Vercel, posée par Louis. Il n'est écrit nulle part dans le dépôt ni dans une conversation.

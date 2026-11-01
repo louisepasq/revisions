@@ -25,7 +25,7 @@ async function lireJson(req) {
 }
 
 module.exports = async function handler(req, res) {
-  const acces = await import('../lib/acces.mjs');
+  const acces = require('../lib/acces.js');
   const redis = lireRedis(process.env);
   if (!redis) return repondre(res, 503, { erreur: 'base non branchée' });
   try {

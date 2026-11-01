@@ -29,7 +29,7 @@ function revenir(res, suite, erreur, cookie) {
 }
 
 module.exports = async function handler(req, res) {
-  const acces = await import('../lib/acces.mjs');
+  const acces = require('../lib/acces.js');
   const url = new URL(req.url, 'http://local');
   const suite = url.searchParams.get('suite') || '/';
   if (req.method !== 'POST') return revenir(res, suite);
