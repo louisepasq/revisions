@@ -16,6 +16,11 @@ export default async function middleware(request) {
   const codeParent = process.env.CODE_PARENT;
   if (!normaliser(codeParent)) return new Response('Site en cours de configuration.', { status: 503 });
   const url = new URL(request.url);
+  // « /clara » sans barre finale : la page s'affichait, mais ses liens relatifs (tables.html, icône,
+  // manifeste) partaient à la racine et rendaient 404 (02/11/2026, app de Clara cassée et sans mascotte).
+  if (url.pathname === '/henri' || url.pathname === '/clara') {
+    return new Response(null, { status: 308, headers: { Location: url.pathname + '/' + url.search } });
+  }
   if (url.pathname === '/api/entrer') return next();
   if (url.pathname === '/sortir') {
     return new Response(null, { status: 303, headers: { Location: '/', 'Set-Cookie': `${COOKIE}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax` } });
