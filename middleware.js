@@ -4,11 +4,12 @@ import { COOKIE, normaliser, roleDuCookie, enfantDuChemin, autorise } from './li
 // Rien n'est servi (pages, voix, API) sans un code. Le middleware ne fait que vérifier le cookie et montrer
 // la page de code ; la saisie du code est vérifiée par api/entrer.js. Code parent : variable CODE_PARENT du
 // projet Vercel ; codes des enfants : empreintes dans la base. Détail : docs/ARCHITECTURE.md, « Accès ».
-// Les icônes de l'écran d'accueil passent sans code : l'iPad les demande au moment d'« Ajouter à l'écran
-// d'accueil », souvent depuis la page de code, avant que l'enfant ait tapé le sien (01/11/2026 : Clara
-// a eu un « C » au lieu de Pooh Bear). Elles ne montrent que la mascotte, ni prénom ni progression.
+// Les icônes et le manifeste de l'écran d'accueil passent sans code : l'iPad les demande au moment
+// d'« Ajouter à l'écran d'accueil » sans envoyer le cookie (le manifeste se charge sans identifiants,
+// c'est la norme), et sans eux il pose une lettre (02/11/2026 : Clara avait un « C » au lieu de Pooh Bear).
+// Ils ne montrent que la mascotte, les couleurs et le prénom déjà présent dans l'adresse.
 export const config = {
-  matcher: '/((?!_vercel/|favicon.ico|henri/icone-|clara/icone-).*)',
+  matcher: '/((?!_vercel/|favicon.ico|henri/icone-|clara/icone-|henri/manifest.webmanifest|clara/manifest.webmanifest).*)',
 };
 
 export default async function middleware(request) {
@@ -61,7 +62,8 @@ function page(suite, enfant, erreur) {
 <title>${titre}</title>${prenom ? `
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="${prenom}">
-<link rel="apple-touch-icon" href="/${enfant}/icone-180.png">` : ''}
+<link rel="apple-touch-icon" href="/${enfant}/icone-180.png?v=2">
+<link rel="manifest" href="/${enfant}/manifest.webmanifest?v=2">` : ''}
 <style>
   :root { --fond:#FFF8EF; --carte:#fff; --encre:#1E2147; --douce:#545878; --trait:#EADFCB; --acc:#1668D6; --relief:#0D4A9E; }
   :root[data-enfant="clara"] { --acc:#7B34D1; --relief:#5320A0; }
