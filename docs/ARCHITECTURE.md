@@ -9,7 +9,7 @@ iPad (app d'Henri, app de Clara, posées sur l'écran d'accueil)
    │  https://nos-revisions.vercel.app/henri/ …
    ▼
 Vercel, projet « revisions » (compte perso de Louis, équipe louispasquier-9288s-projects)
-   ├─ middleware.js          vérifie le cookie d'accès sur TOUTE requête (pages, sons, API)
+   ├─ middleware.js          vérifie le cookie d'accès sur toute requête (pages, sons, API), sauf icônes et manifeste
    ├─ api/entrer.js          vérifie un code saisi, pose le cookie (seule route ouverte)
    ├─ api/codes.js           codes secrets des enfants (rôle parent seulement)
    ├─ api/progression.js     sauvegarde en ligne de la progression (lib/serveur.js, lib/fusion.js)
@@ -68,6 +68,7 @@ Upstash Redis (plan gratuit, région Francfort), branché par l'intégration Ver
 - **Les codes des enfants** sont choisis par eux sur la page parents ; la base ne garde que leur empreinte, `sha256("code|" + codeParent + "|" + enfant + "|" + code)` (codes comparés sans majuscules, espaces, accents ni ponctuation).
 - **Le cookie** `revisions_acces = <rôle>.<jeton>`, avec `jeton = sha256("acces|" + codeParent + "|" + rôle)` : impossible à fabriquer sans le code parent, valable un an, inchangé d'un déploiement à l'autre. **Changer `CODE_PARENT` déconnecte tout le monde et invalide les codes des enfants** (à rechoisir).
 - **Le flux** : `middleware.js` sert la page de code (401) tant que le cookie manque ; le formulaire poste vers `api/entrer.js`, qui vérifie le code, compte les essais (20 par quart d'heure et par adresse) et pose le cookie. `/sortir` efface le cookie. Pourquoi une fonction et pas le middleware : le serveur de développement de Vercel ne transmet pas le corps d'un formulaire au middleware.
+- **Seules exceptions au code : les icônes et le manifeste de chaque app** (`henri/icone-*`, `clara/icone-*`, `*/manifest.webmanifest`, liste dans le `matcher` de `middleware.js`). L'iPad les lit au moment d'« Ajouter à l'écran d'accueil » sans envoyer le cookie (le manifeste se charge sans identifiants, c'est la norme) ; derrière le code, il posait une lettre au lieu de la mascotte (Clara, 02/11/2026). Ils ne portent que la mascotte, les couleurs et le prénom déjà présent dans l'adresse. Leur adresse porte `?v=2` : à changer en `?v=3` si une icône change, sinon l'iPad garde l'ancienne.
 - **Sans `CODE_PARENT`, tout le site répond 503** « Site en cours de configuration ».
 
 ## 5. Sauvegarde en ligne : le local fait foi, la base suit et réconcilie
