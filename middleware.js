@@ -4,10 +4,9 @@ import { COOKIE, normaliser, roleDuCookie, enfantDuChemin, autorise } from './li
 // Rien n'est servi (pages, voix, API) sans un code. Le middleware ne fait que vérifier le cookie et montrer
 // la page de code ; la saisie du code est vérifiée par api/entrer.js. Code parent : variable CODE_PARENT du
 // projet Vercel ; codes des enfants : empreintes dans la base. Détail : docs/ARCHITECTURE.md, « Accès ».
-// Les icônes et le manifeste de l'écran d'accueil passent sans code : l'iPad les demande au moment
-// d'« Ajouter à l'écran d'accueil » sans envoyer le cookie (le manifeste se charge sans identifiants,
-// c'est la norme), et sans eux il pose une lettre (02/11/2026 : Clara avait un « C » au lieu de Pooh Bear).
-// Ils ne montrent que la mascotte, les couleurs et le prénom déjà présent dans l'adresse.
+// Les icônes et le manifeste de l'écran d'accueil passent sans code, par précaution : le manifeste se
+// charge sans identifiants selon la norme, et l'iPad peut les demander avant que l'enfant ait tapé son
+// code. Ils ne montrent que la mascotte, les couleurs et le prénom déjà présent dans l'adresse.
 export const config = {
   matcher: '/((?!_vercel/|favicon.ico|henri/icone-|clara/icone-|henri/manifest.webmanifest|clara/manifest.webmanifest).*)',
 };
