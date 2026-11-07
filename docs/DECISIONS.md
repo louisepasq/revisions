@@ -113,6 +113,7 @@ Format : numéro, date, qui, la décision, la raison, la source.
   6. Le cockpit est un dessin original et simplifié, vu de côté, avec trois commandes à leur vraie place, sans photo et sans crash possible.
 
   La construction attend un feu vert distinct de Louis.
+- **D-25, 07/11/2026, Louis : le module se construit en entier, et le brevet est fun et partagé.** Feu vert de construction donné (« go full on »). Le brevet de pilote se passe à deux : Moussi et Henri le passent ensemble, Moussi se trompe parfois et Henri lui montre (l'enfant devient l'instructeur). Un vrai carnet de pilote, des tampons animés et sonores, de petits objets à collectionner (ailes, écusson de la mission, autocollant de l'Écureuil). Les garde-fous de D-24 restent : rien ne s'échange, rien n'ouvre l'atelier, aucune perte, ni score affiché ni chrono.
 
 ## Écarté, avec la raison
 
