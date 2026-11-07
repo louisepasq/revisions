@@ -206,3 +206,37 @@ test('zoom : rien de dû ni de nouveau, la prochaine révision est annoncée à 
   assert.equal(r.du.des, '2026-11-11');
   assert.equal(r.du.phrase.en, '1 place comes back');
 });
+
+/* Module des hélicoptères (D-23 à D-25) : le cahier de sciences montre sa jauge, le « Today » le propose. */
+{
+  const gh = charger(['commun/textes.js', 'modules/zoom/moteur.js', 'modules/helicopteres/contenu.js',
+    'modules/helicopteres/moteur.js', 'modules/helicopteres/resume.js', 'commun/portail.js']);
+  const HH = gh.Helico;
+  const heli = e => gh.HeliResume.resume(e, MERCREDI);
+
+  test('hélicoptères : jamais ouvert, une découverte', () => {
+    const r = heli(HH.etatNeuf());
+    verifierForme(r);
+    assert.equal(r.du.nature, 'decouverte');
+    assert.equal(r.du.des, '2026-11-04');
+  });
+
+  test('hélicoptères : des cartes dues passent avant l étape suivante, et une étape finie renvoie à demain', () => {
+    const e = HH.etatNeuf();
+    HH.finirEtape(e, 'helico', new Date(2026, 10, 2, 17));
+    e.cartes['p-pales|q'] = { boite: 1, vu: true, prochain: '2026-11-03', justesJours: ['2026-11-02'], erreurs: 0 };
+    let r = heli(e);
+    verifierForme(r);
+    assert.equal(r.du.nature, 'revision');
+    assert.equal(r.du.phrase.en, '1 card comes back');
+    e.cartes['p-pales|q'].prochain = '2026-11-08';
+    HH.finirEtape(e, 'vol', MERCREDI);
+    HH.finirSeance(e, MERCREDI);
+    r = heli(e);
+    verifierForme(r);
+    assert.equal(r.du.nature, 'decouverte', 'le cockpit');
+    assert.equal(r.du.des, '2026-11-05');
+    assert.equal(copie(r.fini).jour, '2026-11-04');
+    assert.ok(/étapes faites, 2 sur 7/.test(r.parent));
+  });
+}

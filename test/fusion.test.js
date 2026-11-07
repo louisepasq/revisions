@@ -175,3 +175,42 @@ for (const [nom, impl] of [['serveur', serveur.fusionner], ['client', (m, a, b) 
     assert.equal(impl('carte', b, a).resume.ecritLe, vieux.ecritLe);
   });
 }
+
+/* Module des hélicoptères (D-23 à D-25) : rien de ce qui est gagné ne se perd d'un appareil à l'autre. */
+for (const [nom, impl] of [['serveur', serveur.fusionner], ['client', (m, a, b) => JSON.parse(JSON.stringify(client.fusionner(m, a, b)))]]) {
+  const ipadH = {
+    version: 1, langue: 'fr', mission: 'feux', couleur: 'orange', conception: 'oui',
+    etapes: { helico: '2026-11-07', vol: '2026-11-08' }, objets: { ecusson: '2026-11-07', autocollant: '2026-11-08' },
+    brevet: { collectif: '2026-11-20' }, tampons: ['collectif'], parties: ['pales', 'queue'], trouves: [],
+    cartes: { 'p-pales|q': fait(3, '2026-11-12', ['2026-11-07', '2026-11-08']) }, jours: ['2026-11-07', '2026-11-08'],
+    experience: { hypothese: 'lent', verifs: ['papier', 'hauteur'], mesures: { court: [12, 13, 11] }, conclusion: null },
+  };
+  const iphoneH = {
+    version: 1, mission: null, etapes: { helico: '2026-11-09', cockpit: '2026-11-09' }, objets: { ecusson: '2026-11-09', ailes: '2026-11-09' },
+    brevet: {}, tampons: [], parties: ['patins'], trouves: ['pales'],
+    cartes: { 'p-pales|q': fait(1, '2026-11-09', [], { erreurs: 1 }), 'c-monter|q': fait(1, '2026-11-10', ['2026-11-09']) }, jours: ['2026-11-09'],
+    experience: { hypothese: null, verifs: ['trombone'], mesures: { court: [12], long: [20, 21, 19] }, conclusion: 'surpris' },
+  };
+  test(`${nom} : hélicoptères, deux appareils se réunissent sans rien perdre`, () => {
+    for (const [a, b] of [[ipadH, iphoneH], [iphoneH, ipadH]]) {
+      const f = impl('helicopteres', JSON.parse(JSON.stringify(a)), JSON.parse(JSON.stringify(b)));
+      assert.deepEqual(f.etapes, { helico: '2026-11-07', vol: '2026-11-08', cockpit: '2026-11-09' }, 'étapes réunies, première date gardée');
+      assert.deepEqual(Object.keys(f.objets).sort(), ['ailes', 'autocollant', 'ecusson']);
+      assert.deepEqual(f.brevet, { collectif: '2026-11-20' }, 'un tampon ne se perd jamais');
+      assert.deepEqual(f.tampons, ['collectif']);
+      assert.deepEqual(f.parties, ['pales', 'patins', 'queue']);
+      assert.equal(f.cartes['p-pales|q'].boite, 3, 'la carte la plus avancée');
+      assert.ok(f.cartes['c-monter|q']);
+      assert.deepEqual(f.jours, ['2026-11-07', '2026-11-08', '2026-11-09']);
+      assert.equal(f.mission, 'feux', 'une mission choisie ne s efface pas');
+      assert.equal(f.langue, 'fr', 'le choix de langue survit');
+      assert.equal(f.experience.hypothese, 'lent');
+      assert.equal(f.experience.conclusion, 'surpris');
+      assert.deepEqual(f.experience.mesures.court, [12, 13, 11], 'la liste de mesures la plus remplie');
+      assert.deepEqual(f.experience.mesures.long, [20, 21, 19]);
+      assert.deepEqual(f.experience.verifs, ['hauteur', 'papier', 'trombone']);
+      assert.ok(!('etages' in f) && !('intro' in f), 'rien du zoom ne s ajoute');
+    }
+    assert.deepEqual(impl('helicopteres', ipadH, {}), ipadH);
+  });
+}

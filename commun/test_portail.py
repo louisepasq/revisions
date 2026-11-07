@@ -141,6 +141,10 @@ ETATS = {
         "henri.cible": {"version": 1, "jours": [jour(-1)], "resume": resume(
             None, deux("8 targets hit", "8 cibles atteintes"), None, [jour(-1)],
             parent="Le nombre cible : 8 cibles atteintes en 3 jours, dont 1 coup parfait.")},
+        # Le projet hélicoptères (D-23) : le cahier de sciences n'est plus vide pour Henri.
+        "henri.helicopteres": {"version": 1, "jours": [jour(-3), jour(-1)], "resume": resume(
+            0.38, deux("4 of 7 steps · 1 stamp", "4 étapes sur 7 · 1 tampon"), du(1, "revision", deux("3 cards come back", "3 cartes reviennent")),
+            [jour(-3), jour(-1)], parent="Les hélicoptères : étapes faites, 4 sur 7 ; cartes retrouvées, 12 sur 22 ; tampons du carnet de pilote, 1 sur 3.")},
     },
     ("clara", "riche"): {
         "clara.tables": {"version": 2, "jours": [jour(-1), jour()], "resume": resume(
@@ -165,6 +169,10 @@ ETATS = {
             fini=fini(0, "revision"))},
         "henri.cible": {"version": 1, "jours": [jour(-6)], "resume": resume(
             None, deux("2 targets hit", "2 cibles atteintes"), None, [jour(-6)], fini=fini(-6, "decouverte"))},
+        # La découverte du jour : une étape des hélicoptères, finie (D-22, point 3).
+        "henri.helicopteres": {"version": 1, "jours": [jour()], "resume": resume(
+            0.07, deux("1 of 7 steps", "1 étape sur 7"), du(1, "decouverte", deux("A new step", "Une nouvelle étape"), 8), [jour()],
+            aujourdhui=deux("+1 step", "+1 étape"), fini=fini(0, "decouverte", 8))},
     },
     # Le tout premier jour : aucun résumé ; les tables sont la découverte « New! » du jour (D-22,
     # points 2 et 3), le voyage attend demain.
@@ -311,10 +319,17 @@ def parcours(navigateur, base, enfant, cas, fmt, schema="light"):
     page.click(".page-semaine .rond")
     page.wait_for_selector(".cahiers")
 
-    # Un cahier « Coming soon » ne s'ouvre pas.
+    # Le cahier de sciences : les hélicoptères chez Henri (D-23) ; « Coming soon » chez Clara, qui ne s'ouvre pas.
     page.click(".cahier[data-matiere='sciences']")
     page.wait_for_timeout(150)
-    if not page.locator(".cahiers").count():
+    if enfant == "henri":
+        page.wait_for_selector(".page-matiere .mod")
+        capture(page, f"{nom}_3b-sciences", err)
+        if page.locator(".mod[data-module='helicopteres']").get_attribute("href") != "helicopteres.html":
+            PROBLEMES.append(f"{nom} : la carte des hélicoptères ne mène pas à helicopteres.html")
+        page.go_back()
+        page.wait_for_selector(".cahiers")
+    elif not page.locator(".cahiers").count():
         PROBLEMES.append(f"{nom} : le cahier de sciences s'ouvre alors qu'il est à venir")
 
     if fmt == "ipad-paysage" and schema == "light":

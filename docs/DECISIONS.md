@@ -113,7 +113,14 @@ Format : numéro, date, qui, la décision, la raison, la source.
   6. Le cockpit est un dessin original et simplifié, vu de côté, avec trois commandes à leur vraie place, sans photo et sans crash possible.
 
   La construction attend un feu vert distinct de Louis.
-- **D-25, 07/11/2026, Louis : le module se construit en entier, et le brevet est fun et partagé.** Feu vert de construction donné (« go full on »). Le brevet de pilote se passe à deux : Moussi et Henri le passent ensemble, Moussi se trompe parfois et Henri lui montre (l'enfant devient l'instructeur). Un vrai carnet de pilote, des tampons animés et sonores, de petits objets à collectionner (ailes, écusson de la mission, autocollant de l'Écureuil). Les garde-fous de D-24 restent : rien ne s'échange, rien n'ouvre l'atelier, aucune perte, ni score affiché ni chrono.
+- **D-25, 07/11/2026, Louis : le feu vert de la construction, et un carnet de pilote vraiment fun, en co-apprentissage.** Précise D-24, point 4.
+  - Un vrai livret de pilote à deux pages : celle d'Henri (une case pour son nom) et celle de Moussi, dessiné en tenue de pilote ; Moussi et Henri passent leur brevet ensemble.
+  - Un tampon animé et sonore par commande maîtrisée, collé sur les deux pages à la fois.
+  - Moussi hésite, se trompe parfois de commande et demande à Henri de lui montrer : Henri est alors l'instructeur.
+  - De petits objets à gagner tout au long du parcours pour habiller le carnet (ailes de pilote, écusson de la mission choisie, autocollant de l'Écureuil…), un par étape finie.
+  - Les garde-fous restent : rien ne s'échange, rien n'ouvre l'atelier, aucune perte, pas de score affiché, pas de chrono ; dessins originaux, cibles de 56 px.
+
+  Source : demande de Louis transmise à la session de construction le 07/11/2026 ; construit dans `modules/helicopteres/` (README).
 
 ## Écarté, avec la raison
 

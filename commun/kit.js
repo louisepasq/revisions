@@ -78,6 +78,8 @@
       note(1047, 0.5, 0.7, 'triangle');
       note(1319, 0.5, 0.7, 'sine', 0.12);
     },
+    // Un tampon qu'on abat sur le carnet de pilote (hélicoptères, D-25) : un coup sourd, puis un tintement.
+    tampon: () => { note(110, 0, 0.18, 'triangle', 0.3); note(70, 0.02, 0.22, 'sine', 0.25); note(1175, 0.22, 0.35, 'triangle', 0.1); },
   };
   KR.son = function (nom) {
     if (!KR.reglages().sons || !SONS[nom]) return;
@@ -251,9 +253,17 @@
 <symbol id="i-fiole" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3.5h5M10.5 3.5v6L5 18.6A1.6 1.6 0 006.4 21h11.2a1.6 1.6 0 001.4-2.4L13.5 9.5v-6"/><path d="M7.6 15h8.8"/></g></symbol>
 <symbol id="i-bulle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h16A1.5 1.5 0 0121.5 6v9.5A1.5 1.5 0 0120 17h-9.5L6 20.5V17H4a1.5 1.5 0 01-1.5-1.5V6A1.5 1.5 0 014 4.5z"/><path d="M7 9h10M7 12.5h6"/></g></symbol>
 <symbol id="i-cible" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/></symbol>
+<symbol id="i-helico" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h16M11 5v3"/><path d="M6 13.5c0-3 2.4-5.5 6-5.5h1.5c2.8 0 5 2.3 5 5s-2 4-4.5 4H9.5C7.5 17 6 15.6 6 13.5z"/><path d="M6 12.5L2.5 11v-2M8 20h11M10 17v3M16 17v3"/></g></symbol>
 <symbol id="i-carte" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.2l6-2.4 6 2.4 6-2.4v14l-6 2.4-6-2.4-6 2.4z"/><path d="M9 3.8v14M15 6.2v14"/></g></symbol>
 </defs></svg>`;
 
+  /* Drapeau d'un choix de langue de contenu ('en' ou 'fr'), dessiné comme celui du zoom. */
+  KR.drapeau = function (langue, classe) {
+    const c = classe ? ` class="${classe}"` : '';
+    return langue === 'en'
+      ? `<svg${c} viewBox="0 0 60 40" aria-hidden="true"><clipPath id="kr-uk"><path d="M0 0h60v40H0z"/></clipPath><g clip-path="url(#kr-uk)"><path d="M0 0h60v40H0z" fill="#012169"/><path d="M0 0l60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l60 40M60 0L0 40" stroke="#C8102E" stroke-width="3"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7"/></g></svg>`
+      : `<svg${c} viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h20v40H0z" fill="#002395"/><path d="M20 0h20v40H20z" fill="#fff"/><path d="M40 0h20v40H40z" fill="#ED2939"/></svg>`;
+  };
   KR.icone = (nom, classe) => `<svg class="ico${classe ? ' ' + classe : ''}" aria-hidden="true"><use href="#i-${nom}"/></svg>`;
   /* attitude : attend, aide, fete, repos */
   KR.mascotte = function (attitude, classe) {

@@ -19,6 +19,7 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
   Ce sont les tests du serveur, de la fusion, des accès, du portail (catalogue, « Today », résumés publiés) et des moteurs des modules.
 - **Le portail au rendu** : `uv run commun/test_portail.py` (Henri et Clara, peu de données et état riche, aux trois formats ; captures dans `commun/captures/`).
 - **Le module des tables au rendu** (Playwright, avec Chrome installé) : `uv run modules/tables/test_parcours.py`. Il fait le parcours complet aux trois formats (iPad paysage, iPad portrait, iPhone) et range ses captures dans `modules/tables/captures/`, ignoré par git. **Regarder les captures**, pas seulement le résultat.
+- **Les autres modules au rendu** : `uv run modules/zoom/test_parcours.py`, `uv run modules/cible/test_parcours.py`, `uv run modules/helicopteres/test_parcours.py`, sur le même modèle.
 - **Le site complet, codes et sauvegarde compris** : lancer les deux configurations de `.claude/launch.json`, `faux-upstash` (une base factice qui parle comme Upstash) puis `nos-revisions` (`vercel dev` sur le port 3170, code parent d'essai `parent-essai-local`). Ensuite :
 
   ```bash
@@ -33,7 +34,7 @@ Mode d'emploi pour toute personne, ou toute session Claude, qui modifie le site.
 1. **Faire relire l'idée avant de coder** par `relecteur-pedagogique` (programme, méthode, âge), et par `designer-apps-enfants` dès qu'il y a de l'interface. Les relectures se rangent dans `docs/revues/AAAA-MM-JJ_<sujet>.md`.
 2. **Écrire le plan** dans `docs/<module>/PLAN.md` : ce que l'enfant apprend, pourquoi cette méthode, les décisions.
 3. **Structure du code**, comme le module des tables :
-   - une logique pure et testée en node (`modules/<module>/moteur.js` et ses `*.test.js`) ;
+   - une logique pure et testée en node (`modules/<module>/moteur.js` et ses `*.test.js`), ajoutée à `npm test` dans `package.json` ; un moteur existant se réutilise plutôt que de se recopier (les hélicoptères chargent les boîtes de Leitner du zoom) ;
    - une interface qui réutilise le kit (`commun/kit.css`, `commun/kit.js`, classes `kr-*`) ;
    - une page fine par enfant (`henri/<module>.html`, `clara/<module>.html`), sur le modèle de `henri/tables.html`, avec `data-module="<module>"` sur `<html>` et `commun/modules.js` chargé avant `commun/sync.js`.
 4. **Le brancher au portail : une ligne au catalogue et un résumé, `commun/portail.js` ne change pas.**

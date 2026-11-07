@@ -75,6 +75,16 @@
       objet: 'Zoom',
       noteParent: 'parent_cartes',
     },
+    helicopteres: {
+      // Le premier projet de science d'Henri (D-23, D-24, D-25).
+      titre: { en: 'Helicopters', fr: 'Les hélicoptères' },
+      matiere: 'sciences',
+      icone: 'helico',
+      page: 'helicopteres.html',
+      enfants: ['henri'],
+      etat: 'actif',
+      objet: 'Helico',
+    },
   };
 
   /* Les modules d'un enfant, dans l'ordre du catalogue : [{ id, ...ligne }]. */

@@ -41,7 +41,7 @@ test('catalogue : chaque module a une matière connue, une icône du sprite, des
     assert.ok(m.enfants.every(e => ['henri', 'clara'].includes(e)), `${id} : enfants`);
   }
   assert.deepEqual(ici(g.ModulesDe('clara').map(m => m.id)), ['tables', 'cible', 'zoom'], 'le planisphère est à Henri');
-  assert.deepEqual(ici(g.ModulesDe('henri').map(m => m.id)), ['tables', 'cible', 'planisphere', 'zoom']);
+  assert.deepEqual(ici(g.ModulesDe('henri').map(m => m.id)), ['tables', 'cible', 'planisphere', 'zoom', 'helicopteres'], 'les hélicoptères sont à Henri (D-23)');
 });
 
 test('Today : les révisions d\'abord, une matière à la fois au premier passage, trois au plus', () => {

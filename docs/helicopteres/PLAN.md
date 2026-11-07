@@ -1,6 +1,6 @@
 # Le projet de science d'Henri : comprendre un hélicoptère, l'Écureuil d'Airbus, pas à pas
 
-Plan posé le 07/11/2026 par Henri (le sujet, ses envies) et Louis (le cadre). **Rien n'est construit** : le plan passe d'abord par `relecteur-pedagogique` et `designer-apps-enfants` (D-15), puis par l'accord des parents.
+Plan posé le 07/11/2026 par Henri (le sujet, ses envies) et Louis (le cadre), relu par `relecteur-pedagogique` et `designer-apps-enfants` (D-15), validé par Louis (D-24) et **construit le 07/11/2026** avec le carnet de pilote de D-25 : `modules/helicopteres/README.md` (dont la liste des faits affichés et leur source).
 
 ## Ce qu'Henri veut (07/11/2026, dans ses mots)
 
@@ -57,5 +57,5 @@ Relecture complète : `../revues/2026-11-07_relecture-helicopteres.md`.
 
 ## Avant de construire
 
-- **Le feu vert de Louis pour la construction**, distinct de la validation du plan.
-- **Les faits à sourcer** : chaque chiffre de l'app vient d'une source citée, jamais de mémoire. La liste et la source de chacun sont dans la relecture, section 7 ; vérifiés à ce jour : les chiffres de la fiche EASA.R.008 et l'âge minimal de 17 ans (règle FCL.200 de l'EASA). Les records restent à confirmer à la base de la FAI.
+- **Le feu vert de Louis pour la construction**, distinct de la validation du plan : donné le 07/11/2026 (D-25).
+- **Les faits à sourcer** : chaque chiffre de l'app vient d'une source citée, jamais de mémoire. La liste et la source de chacun sont dans la relecture, section 7 ; vérifiés à ce jour : les chiffres de la fiche EASA.R.008 et l'âge minimal de 17 ans (règle FCL.200 de l'EASA). Les records ont été lus à la FAI le 07/11/2026 ; la liste complète des faits affichés, avec leur source, et des faits écartés est dans `modules/helicopteres/README.md`.

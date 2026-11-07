@@ -74,6 +74,12 @@ for (const mascotte of ['Moussi', 'Pooh Bear']) {
 }
 ajouter('en', X.t('cible_indice_cout', { n: CI.COUT_INDICE }, 'en'));
 
+// Module des hélicoptères (D-23 à D-25), dans ses deux langues (l'enfant choisit) : chaque écran, Moussi qui
+// demande à Henri de lui montrer une commande, les cartes et leurs explications, la scène radio, les records.
+require(path.join(racine, 'modules/helicopteres/contenu.js'));
+const HE = globalThis.HeliContenu;
+for (const lg of HE.LANGUES) for (const p of HE.toutesLesPhrases(lg)) ajouter(lg, p);
+
 for (const langue of ['en', 'fr']) {
   X.choisirLangue(langue);
   for (const cle of Object.keys(X.TEXTES)) {

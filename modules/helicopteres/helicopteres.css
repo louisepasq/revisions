@@ -1,0 +1,387 @@
+/* Module des hélicoptères : écrans propres au module. Les composants (boutons, bulles, mascotte,
+   barre, pavé, semaine) viennent de commun/kit.css. Formats : iPad paysage (900 px et plus), iPad
+   portrait, iPhone (600 px et moins). Ni rouge ni croix ; cibles de 56 px au moins. */
+a.rond{text-decoration:none}
+
+/* ---------- Couleurs : une par commande (ses flèches, ses tampons), le ciel, le sol ---------- */
+:root{
+  --h-collectif:#1E73C8; --h-manche:#8340A8; --h-pedales:#C4600F;
+  --h-ciel:#DDEFFB; --h-sol:#A8D08D; --h-encart:rgba(255,255,255,.9); --h-page:#FFFDF6; --h-page-trait:#E5D9C3;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --h-collectif:#6FB3F2; --h-manche:#C59BE0; --h-pedales:#F2A65A;
+    --h-ciel:#22304D; --h-sol:#3E5B34; --h-encart:rgba(33,37,58,.92); --h-page:#262A40; --h-page-trait:#3B4060;
+  }
+}
+
+/* ---------- Dessins ---------- */
+.h-dessin{display:block;overflow:visible}
+.h-grand{width:100%;height:100%;max-height:480px;min-height:0}
+.h-moyen{width:100%;max-width:360px;height:auto}
+.h-disque{fill:rgba(38,42,69,.12)}
+.h-disque-queue{fill:rgba(38,42,69,.12)}
+.h-disque-queue.actif{fill:var(--h-pedales);fill-opacity:.45}
+.h-pales.tourne{transform-box:fill-box;transform-origin:center;animation:h-pale .16s linear infinite alternate}
+.h-rotor-queue.tourne{transform-box:fill-box;transform-origin:center;animation:h-tourne .2s linear infinite}
+@keyframes h-pale{from{transform:scaleX(1)}to{transform:scaleX(.12)}}
+@keyframes h-tourne{to{transform:rotate(360deg)}}
+.h-surligne{filter:drop-shadow(0 0 4px #FFD400) drop-shadow(0 0 7px #FFD400)}
+.h-partie{cursor:pointer}
+.h-svg-texte{font-family:var(--f-texte);font-weight:700;font-size:13px;fill:var(--encre)}
+.h-svg-petit{font-family:var(--f-texte);font-size:10px;fill:var(--encre-douce)}
+.h-air-bas path{animation:h-air 1s linear infinite}
+@keyframes h-air{to{stroke-dashoffset:-26}}
+
+/* ---------- Accueil du module ---------- */
+.h-accueil-grille{flex:1;display:grid;gap:24px;padding-top:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+.h-colonne{display:flex;flex-direction:column;gap:16px}
+.h-vitrine{background:var(--h-ciel);border-radius:var(--r-l);padding:18px 12px 8px;border:3px solid var(--trait)}
+.h-vitrine .h-dessin{width:100%;height:auto;max-height:200px}
+.h-go{white-space:normal;line-height:1.1;text-align:left;justify-content:flex-start}
+.h-cartes-btn{white-space:normal;line-height:1.1;justify-content:flex-start;text-align:left}
+.h-cartes-btn[aria-disabled="true"]{background:transparent;border:3px dashed var(--pointille);box-shadow:none;color:var(--encre-douce)}
+.h-compte{margin-left:auto;min-width:44px;height:44px;border-radius:22px;background:var(--e-100);color:var(--e-900);display:grid;place-items:center;font-size:24px}
+.h-carnet-btn{display:flex;align-items:center;gap:14px;min-height:96px;padding:8px 18px 8px 8px;background:var(--h-page);border:3px solid var(--h-page-trait);border-radius:var(--r-m);box-shadow:0 4px 0 var(--h-page-trait);text-align:left;transition:transform .08s,box-shadow .08s}
+.h-carnet-btn:active{transform:translateY(4px);box-shadow:none}
+.h-carnet-masc{flex:none;width:80px;height:84px;border-radius:50%;background:var(--e-100);display:grid;place-items:center;overflow:hidden}
+.h-carnet-masc .masc{width:74px;height:80px;margin-top:8px}
+.h-carnet-btn b{flex:1;font-family:var(--f-jeu);font-weight:700;font-size:24px;line-height:1.1;color:var(--encre)}
+.h-carnet-tampons{display:flex;gap:6px}
+.h-carnet-tampons i{width:24px;height:24px;border-radius:50%;border:2.5px dashed var(--pointille)}
+.h-carnet-tampons i.pose{border:4px solid var(--encre)}
+.h-etapes{display:flex;flex-direction:column;gap:10px}
+.h-etapes h2{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1;color:var(--e-900)}
+.h-etape{display:flex;align-items:center;gap:14px;min-height:68px;padding:6px 12px 6px 8px;text-align:left;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-m);box-shadow:0 4px 0 var(--e-200);transition:transform .08s,box-shadow .08s}
+.h-etape:active{transform:translateY(4px);box-shadow:none}
+.h-etape.fermee{background:transparent;border-style:dashed;border-color:var(--pointille);box-shadow:none;cursor:default}
+.h-etape.fermee:active{transform:none}
+.h-etape-n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--e-100);color:var(--e-900);display:grid;place-items:center;font-family:var(--f-jeu);font-weight:800;font-size:22px}
+.h-etape.faite .h-etape-n{background:var(--juste-100);color:var(--juste-700)}
+.h-etape-texte{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.h-etape-texte b{font-family:var(--f-jeu);font-weight:700;font-size:21px;line-height:1.1;color:var(--encre)}
+.h-etape .pastille{align-self:flex-start;min-height:30px;font-size:15px;white-space:normal}
+.h-fait{background:var(--juste-100);color:var(--juste-700)}
+.h-fait .ico{font-size:18px}
+.h-etape-objet{flex:none;width:46px;height:46px}
+.h-objet{width:100%;height:100%;display:block}
+
+/* ---------- Choix de la langue (D-24, point 5) ---------- */
+.h-langue-corps{flex:1;display:flex;align-items:center;justify-content:center;gap:40px;padding:20px 0 40px}
+.h-langue-masc .masc{width:220px;height:238px}
+.h-langue-cartes{display:flex;gap:24px}
+.h-langue-carte{width:240px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:32px;line-height:1.1;color:var(--e-900);transition:transform .08s,box-shadow .08s}
+.h-langue-carte:active{transform:translateY(var(--relief));box-shadow:none}
+.h-langue-carte[aria-pressed="true"]{border-color:var(--e-700);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.h-langue-carte .h-drapeau{width:120px;height:80px;border-radius:10px;box-shadow:0 0 0 2px var(--trait)}
+.h-langue-btn .h-drapeau{width:36px;height:24px;border-radius:4px;box-shadow:0 0 0 1.5px var(--trait)}
+.h-nav-langue .nom{white-space:nowrap}
+
+/* ---------- Diapo : un dessin, la bulle de Moussi, Next ---------- */
+.h-titre-etape{font-size:34px}
+.h-illu{align-items:center;justify-content:center;min-height:180px}
+.h-texte{gap:14px}
+.h-texte .retour-masc .masc{width:120px;height:130px}
+.h-texte .bulle.parle{font-size:22px;line-height:1.3}
+.h-boutons{display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-end;align-items:center;width:100%}
+.h-suivant.inactif{background:transparent;color:var(--encre-douce);border:3px dashed var(--pointille);box-shadow:none}
+.h-note{font-size:18px;color:var(--encre-douce);width:100%}
+.h-reps{display:grid;grid-template-columns:1fr;gap:10px;width:100%}
+.h-rep{white-space:normal;line-height:1.15;min-height:64px;font-size:22px}
+.h-rep.choisie{background:var(--e-700);color:var(--sur-e);border-color:var(--e-700);box-shadow:0 var(--relief) 0 var(--e-relief)}
+.h-rep.h-bon,.h-choix-btn.h-bon{background:var(--juste-700);color:var(--sur-juste);border-color:var(--juste-700);box-shadow:0 var(--relief) 0 var(--juste-900)}
+.h-a-toucher{background:var(--surligneur) !important;color:#1E2147 !important;border-color:#9A7A00 !important;box-shadow:0 var(--relief) 0 #9A7A00 !important}
+.h-ecarte{background:transparent !important;border:3px dashed var(--pointille) !important;box-shadow:none !important;color:var(--encre-douce) !important}
+.h-ecarte .h-picto{opacity:.5}
+
+.h-puces{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.h-puce{min-height:56px;padding:6px 16px;border-radius:99px;border:3px solid var(--e-200);background:var(--carte);color:var(--e-900);font-family:var(--f-texte);font-weight:700;font-size:18px}
+.h-puce.vue{background:var(--e-100)}
+.h-puce[aria-pressed="true"]{background:var(--e-700);border-color:var(--e-700);color:var(--sur-e)}
+.h-missions{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:560px}
+.h-mission{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:150px;padding:12px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-l);box-shadow:0 var(--relief) 0 var(--e-200);font-family:var(--f-jeu);font-weight:700;font-size:22px;color:var(--encre)}
+.h-mission.choisie{border-color:var(--e-700);box-shadow:0 var(--relief) 0 var(--e-relief);background:var(--e-50)}
+.h-mission-ico{width:84px;height:84px}
+.h-apercu{width:100%;flex:1;min-height:0;display:flex;align-items:center}
+.h-couleurs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.h-couleur{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px;min-height:80px;padding:6px;border-radius:var(--r-s);border:3px solid transparent;font-size:15px;font-weight:700}
+.h-couleur svg{width:44px;height:44px}
+.h-couleur.choisie{border-color:var(--e-700);background:var(--e-50)}
+.h-pales-duo{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
+.h-pales-duo .h-dessin{width:45%;height:auto;max-height:240px}
+.h-fleche-texte{font-size:40px;color:var(--h-collectif)}
+.h-pales-duo .h-air{stroke:#8CC3DE}
+
+/* ---------- Fin d'étape : l'objet du carnet ---------- */
+.h-objet-corps{flex:1;display:flex;align-items:center;justify-content:center;gap:36px}
+.h-objet-masc .masc{width:240px;height:260px}
+.h-objet-texte{max-width:540px;display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.h-objet-texte .bulle{font-size:24px}
+.h-objet-grand{display:flex;align-items:center;gap:18px;background:var(--h-page);border:3px solid var(--h-page-trait);border-radius:var(--r-l);padding:14px 22px}
+.h-objet-grand .h-objet{width:120px;height:120px}
+.h-objet-grand b{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.1}
+.h-objet-grand.nouveau .h-objet{animation:h-pop .7s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes h-pop{from{transform:scale(.2) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- Le cockpit ---------- */
+.h-cockpit{gap:10px}
+.h-cp-consigne{display:flex;align-items:center;gap:12px;flex:none}
+.h-cp-masc{flex:none;width:96px;height:104px}
+.h-cp-masc .masc{width:96px;height:104px}
+.h-cp-consigne .bulle{flex:1;min-width:0;font-size:21px}
+.h-cp-consigne .medaillon-zone{display:none}
+.h-cp-suite{flex:none}
+.h-cp-grille{flex:1;min-height:0;display:grid;gap:12px;grid-template-columns:170px minmax(0,1fr) 210px;grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"coll scene manche" "coll pedales manche"}
+.h-scene-boite{grid-area:scene;min-height:0;border-radius:var(--r-l);overflow:hidden;border:3px solid var(--trait);background:var(--h-ciel)}
+.h-scene{display:block;width:100%;height:100%}
+.h-ciel{fill:var(--h-ciel)}
+.h-sol{fill:var(--h-sol)}
+.h-encart-fond{fill:var(--h-encart);stroke:var(--trait-fort);stroke-width:1.5}
+.h-encart-dessus{opacity:.45;transition:opacity .2s}
+.h-encart-dessus.actif{opacity:1}
+.h-cmd{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;border-radius:var(--r-l);background:var(--carte);border:3px solid var(--trait);transition:box-shadow .2s}
+.h-cmd-collectif{grid-area:coll}
+.h-cmd-manche{grid-area:manche}
+.h-cmd-pedales{grid-area:pedales;flex-direction:row;justify-content:center;gap:14px}
+.h-cmd.h-brille{border-color:#E0B800;box-shadow:0 0 0 5px var(--surligneur)}
+.h-picto{width:76px;height:76px;flex:none}
+.h-nom-cmd{display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.1}
+.h-nom-cmd b{font-family:var(--f-jeu);font-weight:700;font-size:20px;color:var(--encre)}
+.h-nom-cmd span{font-size:16px;color:var(--encre-douce);font-style:italic}
+.h-nom-cmd.petit b{font-size:16px}
+.h-nom-cmd.petit span{font-size:14px}
+.h-ctl-col{display:flex;flex-direction:column;gap:10px}
+.h-ctl{width:72px;height:72px;border-radius:var(--r-m);background:var(--carte);border:4px solid var(--c);color:var(--c);box-shadow:0 var(--relief) 0 var(--c);display:grid;place-items:center;touch-action:none;transition:transform .08s,box-shadow .08s}
+.h-ctl .ico{font-size:38px}
+.h-ctl.appuye{transform:translateY(var(--relief));box-shadow:none;background:var(--c);color:var(--carte)}
+.h-ctl-manche{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px);gap:4px;grid-template-areas:". av ." "ga . dr" ". ar ."}
+.h-ctl-manche .h-ctl{width:64px;height:64px}
+.h-ctl-manche [data-dir="avant"]{grid-area:av}.h-ctl-manche [data-dir="arriere"]{grid-area:ar}.h-ctl-manche [data-dir="gauche"]{grid-area:ga}.h-ctl-manche [data-dir="droite"]{grid-area:dr}
+.h-cmd-pedales .h-ctl{width:96px;height:72px}
+.h-pedale{width:100%;height:100%}
+.h-pedale.g{clip-path:inset(0 50% 0 0)}
+.h-pedale.d{clip-path:inset(0 0 0 50%)}
+.h-cmd-pedales [data-dir="gauche"] .h-pedale{transform:translateX(22%)}
+.h-cmd-pedales [data-dir="droite"] .h-pedale{transform:translateX(-22%)}
+.h-ctl.appuye .h-pedale rect{fill:var(--carte) !important}
+
+/* ---------- L'atelier ---------- */
+.h-verifs{display:flex;flex-direction:column;gap:12px;width:100%;max-width:520px}
+.h-verif{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 16px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-m);font-weight:700;font-size:21px;text-align:left}
+.h-case{flex:none;width:40px;height:40px;border-radius:10px;border:3px solid var(--e-500);display:grid;place-items:center;color:transparent}
+.h-case .ico{font-size:28px}
+.h-verif.cochee{background:var(--juste-100);border-color:var(--juste-500)}
+.h-verif.cochee .h-case{background:var(--juste-700);border-color:var(--juste-700);color:var(--sur-juste)}
+.h-fichier{min-width:72px}
+.h-mesures{gap:12px}
+.h-mes-consigne .masc{width:100px;height:108px}
+.h-mes-consigne .bulle{font-size:20px}
+.h-mes-modeles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.h-modele{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:96px;padding:8px;background:var(--carte);border:3px solid var(--e-200);border-radius:var(--r-m);font-size:17px}
+.h-modele b{font-family:var(--f-jeu);font-weight:700;font-size:20px;line-height:1.1;text-align:center}
+.h-modele[aria-pressed="true"]{border-color:var(--e-700);background:var(--e-50)}
+.h-mes-pts{display:flex;gap:6px;margin-top:4px}
+.h-mes-pts i{width:14px;height:14px;border-radius:50%;border:2px dashed var(--pointille)}
+.h-mes-pts i.pris{background:var(--e-700);border:2px solid var(--e-700)}
+.h-mes-corps{flex:1;display:flex;gap:20px;align-items:flex-start}
+.h-mes-cases{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.h-mes-case{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:110px;justify-content:center;background:var(--carte);border:3px dashed var(--pointille);border-radius:var(--r-m)}
+.h-mes-case.pleine{border-style:solid;border-color:var(--e-300)}
+.h-mes-case.ici{border:4px solid var(--e-700);background:var(--e-50)}
+.h-mes-case b{font-family:var(--f-jeu);font-weight:800;font-size:34px;line-height:1}
+.h-mes-n{font-size:16px;color:var(--encre-douce)}
+.h-mes-outils{flex:none;width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.h-chrono{min-height:110px;font-size:32px}
+.h-chrono.en-cours{background:var(--or-vif);color:#1E2147;box-shadow:0 var(--relief) 0 var(--or-relief)}
+.h-saisie{font-family:var(--f-jeu);font-weight:800;font-size:34px;text-align:center;min-height:44px}
+.h-pave-hote .pave{width:100%;--touche-h:60px;--pave-gap:8px;grid-template-columns:repeat(3,1fr);grid-template-rows:none;
+  grid-template-areas:"k1 k2 k3" "k4 k5 k6" "k7 k8 k9" "eff k0 val"}
+.h-pave-hote .touche{font-size:34px}
+.h-pave-hote .touche .mot{font-size:16px}
+.h-pave-hote .touche.valider{flex-direction:row;gap:6px}
+.h-res{width:100%;max-width:640px;display:flex;flex-direction:column;gap:16px}
+.h-res-titre{font-weight:700;color:var(--encre-douce)}
+.h-res-ligne{display:grid;grid-template-columns:150px 1fr 80px;align-items:center;gap:12px}
+.h-res-nom{display:flex;flex-direction:column;line-height:1.15;font-size:16px}
+.h-res-nom b{font-family:var(--f-jeu);font-size:19px}
+.h-res-piste{position:relative;height:36px;border-radius:12px;background:var(--e-50);border:2px solid var(--e-200)}
+.h-res-barre{position:absolute;left:0;top:0;bottom:0;border-radius:10px;background:var(--e-300)}
+.h-res-pt{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--e-900);border:2px solid var(--carte)}
+.h-res-val{font-family:var(--f-jeu);font-weight:800;font-size:22px}
+
+/* ---------- Radio, records, musée ---------- */
+.h-idee{background:var(--astuce-fond);border:3px solid var(--astuce-trait);border-radius:var(--r-m);padding:12px 16px;font-size:20px;line-height:1.35;width:100%;max-width:620px}
+.h-record{width:100%;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.h-legende-grande{font-family:var(--f-jeu);font-weight:700;font-size:26px;text-align:center;color:var(--encre)}
+.h-legendes{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;font-weight:700;font-size:18px}
+.h-legendes i{display:inline-block;width:16px;height:16px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+.h-pastille-gris{background:#9AA6B8}.h-pastille-bleu{background:#3C7BD9}.h-pastille-jaune{background:#F2C230}
+.h-vitesses{width:100%;max-width:640px;display:flex;flex-direction:column;gap:18px}
+.h-vit{display:grid;grid-template-columns:170px 1fr 110px;align-items:center;gap:12px}
+.h-vit-nom{font-weight:700;font-size:18px;line-height:1.15}
+.h-vit-piste{height:40px;border-radius:12px;background:var(--e-50);border:2px solid var(--e-200);position:relative;overflow:hidden}
+.h-vit-barre{position:absolute;inset:0 auto 0 0;background:var(--b);border-right:3px solid #262A45}
+.h-vit b{font-family:var(--f-jeu);font-weight:800;font-size:22px;text-align:right}
+.h-vit-fort .h-vit-piste{box-shadow:0 0 0 4px var(--surligneur)}
+
+/* ---------- Cartes de Leitner ---------- */
+.h-seance .corps{gap:16px}
+.h-q{flex:none;padding:14px 18px}
+.h-q-texte{font-family:var(--f-jeu);font-weight:700;font-size:26px;line-height:1.15;text-align:center}
+.h-choix{display:grid;grid-template-columns:1fr;gap:10px;width:100%}
+.h-choix-btn{white-space:normal;line-height:1.15;min-height:64px;font-size:22px;padding:8px 16px}
+.h-choix-cmd{grid-template-columns:repeat(3,1fr)}
+.h-choix-cmd .h-choix-btn{flex-direction:column;min-height:150px;padding:8px 6px;gap:4px}
+.h-choix-cmd .h-picto{width:64px;height:64px}
+.h-choix-cmd .h-nom-cmd b{font-size:17px}
+.h-choix-cmd .h-nom-cmd span{font-size:14px}
+.h-q-moussi .masc{width:220px;height:238px}
+.h-q-dessin{width:100%;display:flex;justify-content:center}
+.h-panneau{align-items:stretch !important}
+.h-panneau .retour-masc .masc{width:110px;height:119px}
+.h-suite-q{position:relative;overflow:hidden;align-self:stretch}
+.h-suite-q:disabled{opacity:.55}
+.h-jauge{position:absolute;left:18px;right:18px;bottom:9px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--sur-e) 30%,transparent);overflow:hidden}
+.h-jauge i{display:block;height:100%;width:0;border-radius:3px;background:var(--sur-e)}
+.h-feuille-arret{width:min(520px,100%);text-align:center}
+.h-feuille-arret h2{margin:6px 0 22px}
+.h-feuille-arret .boutons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- Fin d'une séance de cartes ---------- */
+.h-fin{flex-direction:row;align-items:center;gap:40px}
+.h-fin-masc .masc{width:260px;height:282px}
+.h-fin-contenu{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.h-fin-contenu h1{font-family:var(--f-jeu);font-weight:700;font-size:48px;line-height:1;color:var(--e-900)}
+.h-fin-ligne{display:flex;align-items:center;gap:12px;font-family:var(--f-jeu);font-weight:700;font-size:26px}
+.h-fin-ligne .ico{color:var(--juste-700);font-size:30px}
+.h-fin-tampon{background:var(--or-clair);border-radius:var(--r-m);padding:10px 16px}
+.h-fin-tampon .ico{color:var(--or-fonce)}
+.h-ligne-fin{display:flex;align-items:center;gap:20px;background:var(--carte);border:3px solid var(--trait);border-radius:var(--r-l);padding:12px 18px}
+.h-jours-n{font-weight:700;font-size:19px;color:var(--e-900)}
+
+/* ---------- Le carnet de pilote (D-25) ---------- */
+.h-carnet{gap:14px}
+.h-carnet-ensemble{font-size:20px;color:var(--encre-douce)}
+.h-livret{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--h-page);border:3px solid var(--h-page-trait);border-radius:var(--r-l);box-shadow:0 6px 0 var(--h-page-trait);overflow:hidden}
+.h-page{padding:18px;display:flex;flex-direction:column;gap:14px}
+.h-page + .h-page{border-left:3px dashed var(--h-page-trait)}
+.h-page-tete{display:flex;align-items:center;gap:14px}
+.h-photo{flex:none;width:110px;height:120px;border-radius:12px;border:3px solid var(--h-page-trait);background:var(--carte);display:grid;place-items:center;overflow:hidden;padding:6px}
+.h-photo .h-objet,.h-photo .h-dessin{width:100%;height:100%}
+.h-photo-moussi .masc{width:100px;height:108px;margin-top:10px}
+.h-nom-case{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.h-nom-case span{font-size:15px;color:var(--encre-douce)}
+.h-nom-case b{font-family:var(--f-jeu);font-weight:700;font-size:28px;line-height:1.1;border-bottom:3px dotted var(--h-page-trait);padding-bottom:2px}
+.h-tampons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.h-tampon-case{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border:2.5px dashed var(--h-page-trait);border-radius:var(--r-m)}
+.h-tampon-fond,.h-tampon-encre{width:84px;height:84px;display:grid;place-items:center}
+.h-tampon-fond .h-picto{width:56px;height:56px;opacity:.35}
+.h-tampon-encre{position:absolute;top:6px;opacity:0;transform:scale(1.8) rotate(-25deg);pointer-events:none}
+.h-tampon-svg{width:84px;height:84px}
+.h-tampon-case.pose .h-tampon-encre{opacity:1;transform:rotate(-10deg)}
+.h-tampon-case.pose .h-tampon-fond{opacity:0}
+.h-tampon-case.abat .h-tampon-encre{animation:h-abat .55s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes h-abat{0%{opacity:0;transform:scale(2) rotate(-30deg)}60%{opacity:1;transform:scale(.92) rotate(-8deg)}100%{opacity:1;transform:rotate(-10deg)}}
+.h-etagere h2{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900);margin-bottom:8px}
+.h-objets{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.h-objet-case{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:96px;padding:6px;border-radius:var(--r-m);border:2.5px dashed var(--pointille);font-size:14px;text-align:center;line-height:1.15}
+.h-objet-case.a{border:3px solid var(--h-page-trait);background:var(--h-page)}
+.h-objet-case .h-objet{width:64px;height:64px}
+.h-objet-vide{font-family:var(--f-jeu);font-weight:800;font-size:30px;color:var(--pointille);margin:auto}
+
+/* ---------- Impression du gabarit : la feuille seule ---------- */
+#h-impression{display:none}
+@media print{
+  @page{size:A4 portrait;margin:10mm}
+  body{background:#fff !important}
+  body > *:not(#h-impression){display:none !important}
+  #h-impression{display:block !important}
+}
+
+/* ===================================================================
+   iPad paysage : dessin à gauche, texte et boutons à droite
+   =================================================================== */
+@media (orientation: landscape) and (min-width: 900px){
+  .h-diapo .action,.h-seance .action{width:400px;flex:none;justify-content:center}
+  .h-cockpit{height:100vh;height:100dvh}
+}
+/* iPad portrait et iPhone : dessin en haut, texte dessous */
+@media (orientation: portrait), (max-width: 899px){
+  .h-accueil-grille{grid-template-columns:1fr}
+  .h-diapo .action,.h-seance .action{width:100%}
+  .h-cp-grille{grid-template-columns:1fr 1fr;grid-template-rows:minmax(260px,1fr) auto auto;grid-template-areas:"scene scene" "coll manche" "pedales pedales"}
+  .h-cmd-collectif{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .h-ctl-col{flex-direction:row}
+  .h-objet-corps,.h-langue-corps{flex-direction:column;gap:20px}
+  .h-fin{flex-direction:column;align-items:stretch;gap:14px}
+  .h-fin-masc{display:flex;justify-content:center}
+  .h-fin-masc .masc{width:170px;height:184px}
+  .h-mes-corps{flex-direction:column;align-items:stretch}
+  .h-mes-outils{width:100%}
+  .h-livret{grid-template-columns:1fr}
+  .h-page + .h-page{border-left:0;border-top:3px dashed var(--h-page-trait)}
+  .h-objets{grid-template-columns:repeat(4,1fr)}
+}
+@media (orientation: portrait) and (min-width: 601px){
+  .h-cockpit{height:100vh;height:100dvh}
+  .h-diapo .h-illu{max-height:52%}
+}
+
+/* iPhone */
+@media (max-width: 600px){
+  .h-accueil-grille{gap:14px;padding-top:8px}
+  .h-titre-etape{font-size:24px}
+  .h-vitrine .h-dessin{max-height:130px}
+  .h-carnet-btn b{font-size:20px}
+  .h-etape-texte b{font-size:18px}
+  .h-texte .bulle.parle{font-size:18px}
+  .h-illu{min-height:140px}
+  .h-diapo .h-illu{max-height:42%}
+  .h-langue-masc .masc{width:130px;height:140px}
+  .h-langue-cartes{flex-direction:column;gap:16px;width:100%;align-items:center}
+  .h-langue-carte{width:100%;max-width:320px;min-height:110px;flex-direction:row;gap:20px;font-size:28px}
+  .h-langue-carte .h-drapeau{width:84px;height:56px}
+  .h-missions{gap:10px}
+  .h-mission{min-height:120px;font-size:18px}
+  .h-mission-ico{width:60px;height:60px}
+  .h-rep,.h-choix-btn{font-size:18px;min-height:56px}
+  .h-q-texte{font-size:20px}
+  .h-q-moussi .masc{width:130px;height:140px}
+  .h-cp-consigne .bulle{font-size:16px;padding:6px 10px}
+  .h-cp-masc,.h-cp-masc .masc{width:64px;height:70px}
+  .h-cp-grille{gap:8px;grid-template-rows:minmax(200px,1fr) auto auto}
+  .h-picto{width:52px;height:52px}
+  .h-nom-cmd b{font-size:16px}
+  .h-nom-cmd span{font-size:13px}
+  .h-ctl{width:60px;height:60px}
+  .h-ctl .ico{font-size:30px}
+  .h-ctl-manche{grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);gap:2px}
+  .h-ctl-manche .h-ctl{width:56px;height:56px}
+  .h-cmd{padding:6px;gap:4px}
+  .h-cmd-pedales .h-ctl{width:84px;height:60px}
+  .h-objet-masc .masc{width:140px;height:152px}
+  .h-objet-texte .bulle{font-size:19px}
+  .h-objet-grand .h-objet{width:84px;height:84px}
+  .h-objet-grand b{font-size:20px}
+  .h-mes-modeles{gap:6px}
+  .h-modele{min-height:84px;font-size:14px}
+  .h-modele b{font-size:16px}
+  .h-mes-cases{gap:6px}
+  .h-mes-case{min-height:84px}
+  .h-mes-case b{font-size:24px}
+  .h-mes-consigne .masc{display:none}
+  .h-res-ligne{grid-template-columns:96px 1fr 64px;gap:6px}
+  .h-res-val{font-size:17px}
+  .h-vit{grid-template-columns:100px 1fr 84px;gap:6px}
+  .h-vit-nom{font-size:14px}
+  .h-vit b{font-size:17px}
+  .h-idee{font-size:16px}
+  .h-fin-contenu h1{font-size:32px;text-align:center}
+  .h-fin-ligne{font-size:20px}
+  .h-ligne-fin{flex-direction:column;align-items:flex-start;gap:8px}
+  .h-photo{width:84px;height:92px}
+  .h-nom-case b{font-size:22px}
+  .h-tampon-fond,.h-tampon-encre,.h-tampon-svg{width:64px;height:64px}
+  .h-objets{grid-template-columns:repeat(3,1fr)}
+  .h-boutons .btn{flex:1 1 auto}
+}
