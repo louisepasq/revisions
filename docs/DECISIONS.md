@@ -121,6 +121,7 @@ Format : numéro, date, qui, la décision, la raison, la source.
   - Les garde-fous restent : rien ne s'échange, rien n'ouvre l'atelier, aucune perte, pas de score affiché, pas de chrono ; dessins originaux, cibles de 56 px.
 
   Source : demande de Louis transmise à la session de construction le 07/11/2026 ; construit dans `modules/helicopteres/` (README).
+- **D-26, 07/11/2026, Louis : la barre très haut, et la 3D plutôt que la 2D.** Le module des hélicoptères doit faire comprendre à Henri qu'en science « on va pouvoir faire des trucs de ouf », et qu'il s'éclate : qualité d'interaction et rendu 3D au meilleur niveau. Méthode : d'abord un prototype 3D du cœur du module (l'Écureuil et son pilotage), mis en ligne à part pour qu'Henri l'essaie sur l'iPad ; puis, s'il convainc, le reste du parcours passe en 3D là où elle apporte quelque chose. La version 2D reste en ligne et sert de repli.
 
 ## Écarté, avec la raison
 
