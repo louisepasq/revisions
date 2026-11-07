@@ -95,6 +95,16 @@ Format : numéro, date, qui, la décision, la raison, la source.
   - Un indice de Moussi, à la demande de l'enfant, montre un calcul d'une solution et coûte des points, annoncés avant de le prendre.
   - Diviser par 1 ne compte pas (validé par Louis le 01/11/2026), sinon on gagnerait 3 points sans calculer. À rouvrir seulement si la maîtresse l'accepte en classe.
 
+## Sciences : le projet hélicoptères d'Henri
+
+- **D-23, 07/11/2026, Henri et Louis : le premier projet de science d'Henri porte sur les hélicoptères, avec un seul appareil, le civil le plus vendu d'Airbus Helicopters (l'H125, de la famille Écureuil, né à Marignane).**
+  - Trois dimensions : comment ça vole ; qui a le droit de voler, où et avec quelle autorisation ; les faits et records, et la différence avec un drone.
+  - Un modèle en papier à fabriquer, et une visite à combiner (Musée de l'Aviation de Saint-Victoret, ou Airbus si une activité existe).
+  - Pas à pas : les drones et les taxis volants viendront après.
+  - Le choix de l'appareil par Henri devient le choix de la mission de son Écureuil.
+
+  Rien n'est construit avant la relecture des experts (D-15). Source : `helicopteres/PLAN.md`.
+
 ## Écarté, avec la raison
 
 - **La reconnaissance vocale pour répondre à l'oral** : l'API est absente des web apps de l'écran d'accueil sur iPadOS (ticket WebKit 225298). À confirmer par un essai sur l'iPad. Source : `revues/2026-11-01_relecture-audio.md`.
