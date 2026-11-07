@@ -38,6 +38,7 @@ Mis à jour le 07/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 
 - **Henri et Louis, 07/11 : le vol 3D en Écureuil « a très bien marché ».** Seul défaut : une phrase coupait parfois la fin de la précédente ; corrigé le même jour (file de phrases dans `modules/helicopteres/vol3d.js`).
 - **Henri, 07/11 : la vue de trois quarts sur le côté le perturbe un peu.** Il préfère être dans l'axe, derrière l'hélicoptère, ou pouvoir changer de vue : demandé à la construction en cours (caméra derrière par défaut, bouton de vues).
+- **Henri, 07/11 : certaines définitions des parties sont trop courtes** (exemple : la poutre de queue). Il veut le pourquoi et le lien entre les parties (la poutre porte le rotor de queue loin, pour qu'il retienne mieux la cabine que le rotor principal fait tourner), avec une petite animation : demandé à la construction en cours, en 3D et dans la 2D de repli.
 
 ## Prochains modules
 
