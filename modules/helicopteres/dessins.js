@@ -160,6 +160,24 @@
       <g transform="translate(26 26) scale(.4)">${commande(cmd, couleur)}</g></g></svg>`;
   }
 
+  /* ---------- Les tampons des missions de vol du prototype 3D (D-26), même forme que ceux des commandes. */
+  const ICONES_VOL = {
+    decoller: k => `<path d="M14 82 H86" stroke="${k}" stroke-width="7" stroke-linecap="round"/><path d="M50 70 V22 M32 40 L50 20 L68 40" fill="none" stroke="${k}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`,
+    stationnaire: k => `<path d="M32 26 V74 M68 26 V74 M32 50 H68" fill="none" stroke="${k}" stroke-width="9" stroke-linecap="round"/><circle cx="50" cy="50" r="40" fill="none" stroke="${k}" stroke-width="5"/>`,
+    tour: k => `<path d="M42 86 L45 40 H55 L58 86 Z" fill="${k}"/><path d="M28 22 H72 L66 42 H34 Z" fill="${k}"/><path d="M50 22 V8" stroke="${k}" stroke-width="5" stroke-linecap="round"/><path d="M18 86 H82" stroke="${k}" stroke-width="6" stroke-linecap="round"/>`,
+    tourner: k => `<path d="M78 50 A28 28 0 1 1 64 25.8" fill="none" stroke="${k}" stroke-width="8" stroke-linecap="round"/><path d="M56 12 L72 26 L52 34" fill="none" stroke="${k}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`,
+    poser: k => `<path d="M50 12 V58 M32 42 L50 62 L68 42" fill="none" stroke="${k}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 78 H80 M30 70 V86 M70 70 V86" stroke="${k}" stroke-width="6" stroke-linecap="round"/>`,
+  };
+  /* L'encre de chaque mission de vol (pas de rouge). */
+  const ENCRE_VOL = { decoller: '#1E88E5', stationnaire: '#00897B', tour: '#8E44AD', tourner: '#E67E22', poser: '#2E7D32' };
+  function tamponVol(id, couleur) {
+    const icone = ICONES_VOL[id] || ICONES_VOL.decoller;
+    return `<svg class="h-tampon-svg" viewBox="0 0 100 100" aria-hidden="true"><g opacity=".9">
+      <circle cx="50" cy="50" r="44" fill="none" stroke="${couleur}" stroke-width="5"/>
+      <circle cx="50" cy="50" r="35" fill="none" stroke="${couleur}" stroke-width="2" stroke-dasharray="3 4"/>
+      <g transform="translate(26 26) scale(.48)">${icone(couleur)}</g></g></svg>`;
+  }
+
   /* ---------- Le gabarit du modèle en papier, en millimètres pour une feuille A4 (190 x 270 mm
      imprimables). Trois modèles identiques sauf la longueur des pales : 6, 8 et 10 cm. Corps de
      5 cm de large et de 5 cm de haut, pied de 2 cm replié ; fentes de 1,5 cm de chaque côté.
@@ -276,6 +294,6 @@
 
   racine.HeliDessins = {
     TRAIT, helico, svgHelico, vueDessus, pale, compteur, commande, svgCommande, moussiPilote, objet, svgObjet, svgMission,
-    tampon, gabarit, manuel, altitude, vitesses, everest, drone, famille, tour, champ, licence, musee,
+    tampon, tamponVol, ENCRE_VOL, gabarit, manuel, altitude, vitesses, everest, drone, famille, tour, champ, licence, musee,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

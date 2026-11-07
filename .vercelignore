@@ -10,3 +10,4 @@ docs/design-system/archive/**/*.png
 test
 **/*.test.js
 **/test_*.py
+modules/helicopteres/captures-3d

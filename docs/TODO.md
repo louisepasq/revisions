@@ -7,6 +7,7 @@ Mis à jour le 07/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 ## Ce qui attend Louis
 
 - **Codes des enfants et apps sur l'iPad** : faits ; l'app de Clara réinstallée le 02/11 avec Pooh Bear, après le correctif de l'adresse sans barre finale.
+- **Faire essayer le prototype 3D des hélicoptères à Henri** (D-26, construit le 07/11/2026, pas encore commité ni mis en ligne) : page à part, `henri/helicopteres-3d.html`, hors du catalogue ; la version 2D reste le module en service. Après le déploiement, l'ouvrir sur l'iPad dans Safari, à `https://nos-revisions.vercel.app/henri/helicopteres-3d.html` (l'app de l'écran d'accueil n'a pas de barre d'adresse ; le cookie du code suffit, et le partage « Sur l'écran d'accueil » en fait une icône si l'essai doit durer), le laisser seul, et noter ici, au regard des quatre critères de D-26 : a-t-il compris (le collectif, le compteur de tours qui ne bouge pas, le manche, les pédales) ; a-t-il fini sans aide ; a-t-il ri, et à quoi ; en a-t-il parlé ensuite. À vérifier sur l'iPad lui-même : la fréquence d'images (ajouter `?fps` à l'adresse : le compteur s'affiche en haut), le son du rotor au premier toucher, deux doigts sur la scène pour tourner autour, et la chaleur de l'iPad après dix minutes. Détail et ce qui reste dans `modules/helicopteres/README.md`, « Prototype 3D ». S'il convainc : décider quelles autres étapes passent en 3D (propositions au même endroit).
 
 ## Ce qui attend Louise
 

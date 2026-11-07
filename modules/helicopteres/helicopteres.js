@@ -1048,6 +1048,10 @@
         <span class="h-tampon-encre">${D.tampon(c.id, ENCRE_CMD[c.id])}</span>
         ${nomCmd(c.id, 'petit')}</div>`;
     }).join('');
+    // Les tampons des missions du vol en 3D (prototype, D-26), s'il y en a : une ligne de plus sur chaque page.
+    const vols3d = etat.vol3d && etat.vol3d.missions ? Object.keys(etat.vol3d.missions) : [];
+    const vols = () => (vols3d.length ? `<div class="h-vols"><span lang="${lg()}">${esc(ui('vols'))}</span><div>${['decoller', 'stationnaire', 'tour', 'tourner', 'poser']
+      .filter(id => vols3d.includes(id)).map(id => `<i>${D.tamponVol(id, D.ENCRE_VOL[id])}</i>`).join('')}</div></div>` : '');
     const objets = Object.keys(HC.OBJETS).map(id => (etat.objets[id]
       ? `<div class="h-objet-case a" title="${esc(ch(HC.OBJETS[id]))}">${D.svgObjet(id, etat.mission, teinte())}<span lang="${lg()}">${esc(ch(HC.OBJETS[id]))}</span></div>`
       : '<div class="h-objet-case"><span class="h-objet-vide">?</span></div>')).join('');
@@ -1060,12 +1064,12 @@
         <section class="h-page">
           <div class="h-page-tete"><div class="h-photo">${etat.mission ? D.svgObjet('ecusson', etat.mission, teinte()) : D.svgHelico({ couleur: teinte() })}</div>
             <div class="h-nom-case"><span lang="${lg()}">${esc(ui('nom_pilote'))}</span><b>${esc(KR.prenom())}</b></div></div>
-          <div class="h-tampons">${cases('enfant')}</div>
+          <div class="h-tampons">${cases('enfant')}</div>${vols()}
         </section>
         <section class="h-page">
           <div class="h-page-tete"><div class="h-photo h-photo-moussi">${D.moussiPilote()}</div>
             <div class="h-nom-case"><span lang="${lg()}">${esc(ui('nom_pilote'))}</span><b lang="${lg()}">${esc(ui('pilote_moussi'))}</b></div></div>
-          <div class="h-tampons">${cases('moussi')}</div>
+          <div class="h-tampons">${cases('moussi')}</div>${vols()}
         </section>
       </div>
       <section class="h-etagere"><h2 lang="${lg()}">${esc(ui('objets'))}</h2><div class="h-objets">${objets}</div></section>

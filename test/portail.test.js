@@ -37,11 +37,11 @@ test('catalogue : chaque module a une matière connue, une icône du sprite, des
     assert.ok(sprite.includes(`id="i-${m.icone}"`), `${id} : icône ${m.icone}`);
     assert.ok(m.titre.en && m.titre.fr && !/^my /i.test(m.titre.en), `${id} : titres`);
     assert.ok(['actif', 'bientot'].includes(m.etat), `${id} : état`);
-    assert.ok(/^[a-z-]+\.html$/.test(m.page), `${id} : page`);
+    assert.ok(/^[a-z0-9-]+\.html$/.test(m.page), `${id} : page`);
     assert.ok(m.enfants.every(e => ['henri', 'clara'].includes(e)), `${id} : enfants`);
   }
   assert.deepEqual(ici(g.ModulesDe('clara').map(m => m.id)), ['tables', 'cible', 'zoom'], 'le planisphère est à Henri');
-  assert.deepEqual(ici(g.ModulesDe('henri').map(m => m.id)), ['tables', 'cible', 'planisphere', 'zoom', 'helicopteres'], 'les hélicoptères sont à Henri (D-23)');
+  assert.deepEqual(ici(g.ModulesDe('henri').map(m => m.id)), ['tables', 'cible', 'planisphere', 'zoom', 'helicopteres', 'vol3d'], 'les hélicoptères sont à Henri (D-23)');
 });
 
 test('Today : les révisions d\'abord, une matière à la fois au premier passage, trois au plus', () => {

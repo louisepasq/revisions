@@ -1,0 +1,210 @@
+/* Prototype 3D du module des hélicoptères (D-26) : la scène en plein écran, et par-dessus, l'interface à
+   la main : Back et Listen, les cinq missions, Moussi et sa bulle, le compteur de tours et la pale en
+   coupe, puis les trois commandes à leur vraie place (collectif à gauche, pédales en bas, manche à droite,
+   D-05). Cibles de 56 px au moins, aucun rouge. Couleurs des commandes reprises de la 2D. */
+
+.v-corps{position:fixed;inset:0;overflow:hidden;background:#CFE5F2;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.v-ecran{position:fixed;inset:0;overflow:hidden}
+.v-scene,.v-toile{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.v-hud{position:absolute;inset:0;pointer-events:none;
+  --bord:max(16px, env(safe-area-inset-left)); --bas:max(18px, env(safe-area-inset-bottom)); --haut:max(12px, env(safe-area-inset-top))}
+.v-hud > *{pointer-events:auto}
+.v-hud .v-doigt,.v-hud .v-toast{pointer-events:none}
+
+/* ---------- En haut : Back, les missions, Listen ---------- */
+.v-haut{position:absolute;top:var(--haut);left:var(--bord);right:var(--bord);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none}
+.v-haut > *{pointer-events:auto}
+.v-haut .nav .nom{color:#14304F;text-shadow:0 1px 0 rgba(255,255,255,.85),0 0 8px rgba(255,255,255,.8)}
+.v-missions{flex:0 1 auto;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--carte);border:3px solid var(--e-200);border-radius:24px;padding:8px 18px 10px;box-shadow:0 6px 18px rgba(20,40,70,.18)}
+.v-missions ol{display:flex;gap:10px;list-style:none;margin:0;padding:0}
+.v-pastille{position:relative;width:44px;height:44px;border-radius:50%;border:3px dashed var(--pointille);display:grid;place-items:center;transition:transform .25s}
+.v-pastille .v-num{font-family:var(--f-jeu);font-weight:700;font-size:20px;color:var(--encre-douce)}
+.v-pastille .v-tamp{position:absolute;inset:-6px;opacity:0;display:grid;place-items:center}
+.v-pastille .v-tamp svg{width:52px;height:52px;transform:rotate(-10deg)}
+.v-pastille.courante{border:3px solid var(--encre);background:var(--or-clair);transform:scale(1.12)}
+.v-pastille.courante .v-num{color:var(--encre)}
+.v-pastille.faite{border-color:transparent}
+.v-pastille.faite .v-num{opacity:0}
+.v-pastille.faite .v-tamp{opacity:1}
+.v-pastille.gagne{animation:v-pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes v-pop{0%{transform:scale(.4)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+.v-titre-mission{margin:0;font-family:var(--f-jeu);font-weight:700;font-size:23px;line-height:1.1;color:var(--encre);text-align:center;min-height:25px}
+.v-jauge-mission{width:100%;max-width:300px;height:8px;border-radius:4px;background:var(--e-100);overflow:hidden}
+.v-jauge-mission i{display:block;height:100%;width:0;background:var(--juste-500, #3AA75A);border-radius:4px;transition:width .25s}
+
+/* ---------- Moussi et sa bulle ---------- */
+.v-moussi{position:absolute;top:calc(var(--haut) + 104px);left:var(--bord);display:flex;align-items:flex-start;gap:14px;max-width:min(470px, calc(100% - 2 * var(--bord) - 200px));pointer-events:none}
+.v-medaillon{flex:none;width:84px;height:84px;border-radius:50%;background:var(--e-100);border:3px solid var(--e-200);overflow:hidden;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,40,70,.18);transition:border-color .3s}
+.v-medaillon .masc{width:92px;height:100px;margin-top:14px}
+.v-medaillon.grand{width:140px;height:140px;margin:0 auto 6px}
+.v-medaillon.grand .masc{width:150px;height:160px;margin-top:22px}
+.v-moussi[data-attitude="fete"] .v-medaillon{border-color:var(--or-vif)}
+.v-moussi[data-attitude="aide"] .v-medaillon{border-color:var(--e-500)}
+.v-bulle{box-shadow:0 6px 18px rgba(20,40,70,.16);font-size:21px}
+.v-bulle:empty{display:none}
+.v-bulle.arrive{animation:v-bulle .35s cubic-bezier(.3,1.4,.5,1)}
+@keyframes v-bulle{from{transform:scale(.85) translateY(-6px);opacity:.2}to{transform:none;opacity:1}}
+.v-bulle.radio{background:#E8F2FF;border-color:#3C7BD9}
+.v-bulle.radio::before{background:#E8F2FF;border-color:#3C7BD9}
+.v-radio-etiq{display:block;font-size:16px;color:#245A99;margin-bottom:2px}
+
+/* ---------- Les instruments : le compteur de tours (il ne bouge pas en vol), la pale en coupe ---------- */
+.v-instruments{position:absolute;top:calc(var(--haut) + 104px);right:var(--bord);display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.v-instr{width:172px;background:var(--carte);border:3px solid var(--e-200);border-radius:18px;padding:6px 10px 8px;text-align:center;box-shadow:0 4px 12px rgba(20,40,70,.15);display:flex;flex-direction:column;align-items:center}
+.v-instr svg{width:132px;height:auto}
+.v-instr b{font-family:var(--f-jeu);font-weight:700;font-size:18px;line-height:1.1;color:var(--encre)}
+.v-instr span{font-size:16px;line-height:1.15;color:var(--encre-douce)}
+.v-pale .h-air{stroke:#5AA7DA}
+.v-aiguille{transition:d .2s}
+
+/* ---------- Les trois commandes ---------- */
+.v-cmd{position:absolute;bottom:var(--bas);display:flex;flex-direction:column;align-items:center;gap:8px}
+.v-nom-cmd{display:flex;flex-direction:column;align-items:center;background:var(--carte);border:3px solid var(--c);border-radius:14px;padding:3px 12px 4px;text-align:center;line-height:1.1;box-shadow:0 3px 10px rgba(20,40,70,.16)}
+.v-nom-cmd b{font-family:var(--f-jeu);font-weight:700;font-size:19px;color:var(--encre)}
+.v-nom-cmd span{font-size:16px;color:var(--encre-douce)}
+
+.v-collectif{left:var(--bord);--h:300px;--hp:76px}
+.v-rail{position:relative;width:108px;height:var(--h);border-radius:30px;background:linear-gradient(90deg,#2A3346,#3E4A62 50%,#2A3346);border:4px solid rgba(255,255,255,.75);box-shadow:0 8px 20px rgba(10,20,40,.3);touch-action:none;cursor:grab}
+.v-rail::before{content:"";position:absolute;left:50%;top:calc(var(--hp) / 2);bottom:calc(var(--hp) / 2);width:8px;margin-left:-4px;border-radius:4px;background:#161C28}
+.v-bande{position:absolute;left:8px;right:8px;bottom:calc(var(--hp) / 2 + (var(--h) - var(--hp) - 8px) * .42);height:calc((var(--h) - var(--hp) - 8px) * .16);border-radius:10px;background:rgba(255,255,255,.22);border:2px dashed rgba(255,255,255,.6)}
+.v-poignee{position:absolute;left:6px;right:6px;bottom:0;height:var(--hp);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c) 45%);box-shadow:0 5px 0 color-mix(in srgb,var(--c) 60%,#000),0 8px 14px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;will-change:transform}
+.v-poignee i{display:block;width:56%;height:5px;border-radius:3px;background:rgba(255,255,255,.75)}
+
+.v-pedales{left:50%;transform:translateX(-50%)}
+.v-duo{display:flex;gap:16px}
+.v-pedale{width:104px;height:100px;border-radius:24px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 75%,#fff),var(--c) 55%);color:#fff;border:4px solid rgba(255,255,255,.75);box-shadow:0 7px 0 color-mix(in srgb,var(--c) 55%,#000),0 10px 18px rgba(0,0,0,.25);display:grid;place-items:center;touch-action:none;transition:transform .06s,box-shadow .06s}
+.v-pedale svg{width:56px;height:56px}
+.v-pedale.tenue{transform:translateY(7px);box-shadow:0 0 0 transparent,0 0 24px var(--c)}
+
+.v-manche{right:var(--bord)}
+.v-socle{position:relative;width:224px;height:224px;border-radius:50%;background:radial-gradient(circle at 50% 45%,#46536D,#252D3E 70%);border:4px solid rgba(255,255,255,.75);box-shadow:0 8px 20px rgba(10,20,40,.3),inset 0 0 0 26px rgba(255,255,255,.05);touch-action:none;cursor:grab}
+.v-repere{position:absolute;width:0;height:0;border:11px solid transparent;opacity:.75}
+.v-repere.h{top:8px;left:50%;margin-left:-11px;border-bottom:14px solid #fff;border-top:0}
+.v-repere.b{bottom:8px;left:50%;margin-left:-11px;border-top:14px solid #fff;border-bottom:0}
+.v-repere.g{left:8px;top:50%;margin-top:-11px;border-right:14px solid #fff;border-left:0}
+.v-repere.d{right:8px;top:50%;margin-top:-11px;border-left:14px solid #fff;border-right:0}
+.v-bouton{position:absolute;left:calc(50% - 46px);top:calc(50% - 46px);width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 38% 32%,color-mix(in srgb,var(--c) 45%,#fff),var(--c) 60%,color-mix(in srgb,var(--c) 70%,#000));box-shadow:0 6px 14px rgba(0,0,0,.35);will-change:transform}
+.v-socle:not(.tenu) .v-bouton{transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+
+.v-cmd.actif .v-rail,.v-cmd.actif .v-socle,.v-cmd.actif .v-duo{box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 50%,transparent),0 0 34px var(--c)}
+.v-cmd.actif .v-duo{border-radius:28px}
+.v-cmd.halo .v-rail,.v-cmd.halo .v-socle,.v-cmd.halo .v-duo,.v-radio.halo{animation:v-halo 1.1s ease-in-out infinite}
+@keyframes v-halo{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c, #F2B632) 0%,transparent)}50%{box-shadow:0 0 0 16px color-mix(in srgb,var(--c, #F2B632) 55%,transparent),0 0 40px var(--c, #F2B632)}}
+
+/* Le bouton radio, près de la tour. */
+.v-radio{position:absolute;right:var(--bord);bottom:calc(var(--bas) + 310px);min-height:76px;font-size:24px;animation:v-entre .4s cubic-bezier(.3,1.5,.5,1)}
+.v-radio[hidden]{display:none}
+.v-radio .ico{width:34px;height:34px}
+@keyframes v-entre{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+
+/* Le gros bouton pour démarrer le moteur. */
+.v-demarrer{position:absolute;left:50%;bottom:calc(var(--bas) + 160px);transform:translateX(-50%)}
+.v-gros{min-height:96px;padding:0 44px;font-size:34px;animation:v-respire 1.8s ease-in-out infinite}
+.v-gros .ico{width:40px;height:40px}
+@keyframes v-respire{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.v-ecran[data-phase="attente"] .v-cmd,.v-ecran[data-phase="attente"] .v-instr-pale{opacity:.35;pointer-events:none}
+
+/* Le doigt qui montre où toucher. */
+.v-doigt{position:fixed;left:0;top:0;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:50%;background:rgba(255,255,255,.55);border:4px solid #fff;box-shadow:0 0 0 3px rgba(20,40,70,.35),0 6px 16px rgba(0,0,0,.25);opacity:0;transition:opacity .3s;z-index:5}
+.v-doigt.voit{opacity:1}
+.v-doigt.voit[data-geste="collectif"]{animation:v-glisse-haut 1.6s ease-in-out infinite}
+.v-doigt.voit[data-geste="manche"]{animation:v-pousse 1.4s ease-in-out infinite}
+.v-doigt.voit[data-geste="pedales"],.v-doigt.voit[data-geste="radio"]{animation:v-appuie 1.2s ease-in-out infinite}
+@keyframes v-glisse-haut{0%{transform:translateY(20px)}70%,100%{transform:translateY(-110px)}}
+@keyframes v-pousse{0%{transform:none}60%,100%{transform:translateY(-62px)}}
+@keyframes v-appuie{0%,100%{transform:scale(1)}50%{transform:scale(.8)}}
+
+/* Le carnet qui reçoit le tampon, en haut de l'écran, sans arrêter le vol. */
+.v-toast{position:absolute;top:calc(var(--haut) + 104px);right:var(--bord);transform:translate(0,-20px);opacity:0;transition:opacity .35s,transform .35s;background:var(--carte);border:3px solid var(--or-vif);border-radius:22px;padding:10px 16px 12px;text-align:center;box-shadow:0 10px 30px rgba(20,40,70,.25);z-index:4}
+.v-toast.voit{opacity:1;transform:none}
+.v-toast > b{font-family:var(--f-jeu);font-weight:700;font-size:20px;color:var(--encre)}
+.v-livret{display:flex;gap:10px;margin-top:6px}
+.v-page{width:140px;background:#FFFDF6;border:3px solid #E5D9C3;border-radius:14px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.v-page-nom{font-family:var(--f-jeu);font-weight:700;font-size:17px;color:#3B3B4F}
+.v-page-tampon{width:84px;height:84px;opacity:0;transform:scale(1.8) rotate(-25deg)}
+.v-page-tampon svg{width:84px;height:84px}
+.v-page-tampon.abat{animation:v-abat .55s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes v-abat{0%{opacity:0;transform:scale(1.9) rotate(-28deg)}60%{opacity:1;transform:scale(.92) rotate(-8deg)}100%{opacity:1;transform:scale(1) rotate(-10deg)}}
+
+/* Les fiches par-dessus la scène (fin du vol) et les écrans d'avant le vol. */
+.v-voile{position:fixed;inset:0;display:grid;place-items:center;background:rgba(18,30,52,.42);padding:16px;z-index:6}
+.v-voile[hidden]{display:none}
+.v-fiche{width:min(760px, 100%);background:var(--carte);border-radius:28px;border:3px solid var(--e-200);padding:22px 22px 26px;box-shadow:0 20px 50px rgba(10,20,40,.3);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.v-fiche h2{margin:0;font-family:var(--f-jeu);font-weight:700;font-size:32px;line-height:1.1;color:var(--encre)}
+.v-grand-livret{display:flex;gap:14px;width:100%}
+.v-grand-page{flex:1;background:#FFFDF6;border:3px solid #E5D9C3;border-radius:18px;padding:10px}
+.v-grand-page h3{margin:0 0 8px;font-family:var(--f-jeu);font-weight:700;font-size:22px;color:#3B3B4F}
+.v-grand-tampons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.v-grand-tampons span{width:60px;height:60px;border-radius:50%;border:2.5px dashed #D3C6AE;display:grid;place-items:center}
+.v-grand-tampons span.pose{border-color:transparent}
+.v-grand-tampons svg{width:64px;height:64px;transform:rotate(-10deg)}
+.v-fiche-boutons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.v-avant{background:linear-gradient(180deg,#5FA6E6,#CFE5F2 70%,#E6DCC6);display:grid;place-items:center;padding:16px}
+.v-langues{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.v-langue{width:220px;min-height:180px;border-radius:24px;background:var(--carte);border:3px solid var(--e-200);box-shadow:0 6px 0 var(--e-200);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:var(--f-jeu);font-weight:700;font-size:28px;color:var(--encre)}
+.v-langue:active,.v-mission-carte:active{transform:translateY(6px);box-shadow:none}
+.v-drapeau{width:120px;height:80px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.v-missions-choix{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px;width:100%}
+.v-mission-carte{min-height:150px;border-radius:22px;background:var(--carte);border:4px solid var(--t);box-shadow:0 6px 0 var(--t);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--encre)}
+.v-ecusson svg{width:84px;height:84px}
+.v-fps{position:fixed;left:50%;top:2px;transform:translateX(-50%);font:600 14px/1 ui-monospace,monospace;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:6px;z-index:9;pointer-events:none}
+
+/* ---------- iPad en portrait : plus de ciel, les commandes un peu plus petites ---------- */
+@media (orientation: portrait) and (min-width: 601px){
+  .v-collectif{--h:280px}
+  .v-socle{width:210px;height:210px}
+  .v-moussi{max-width:min(520px, calc(100% - 2 * var(--bord) - 200px))}
+}
+
+/* ---------- iPhone (600 px ou moins) : tout se resserre, chaque commande garde 56 px au moins ---------- */
+@media (max-width: 600px){
+  .v-hud{--bord:max(10px, env(safe-area-inset-left)); --bas:max(12px, env(safe-area-inset-bottom))}
+  .v-haut .rond{width:56px;height:56px}
+  .v-haut .nav .nom{font-size:15px}
+  .v-missions{padding:6px 10px 8px;border-radius:18px;gap:4px}
+  .v-missions ol{gap:5px}
+  .v-pastille{width:32px;height:32px}
+  .v-pastille .v-num{font-size:16px}
+  .v-pastille .v-tamp svg{width:40px;height:40px}
+  .v-titre-mission{font-size:17px;min-height:19px}
+  .v-moussi{top:calc(var(--haut) + 96px);max-width:calc(100% - 2 * var(--bord));gap:8px}
+  .v-medaillon{width:58px;height:58px}
+  .v-medaillon .masc{width:64px;height:70px;margin-top:10px}
+  .v-bulle{font-size:17px}
+  .v-bulle.parle{font-size:18px}
+  .v-instruments{top:auto;bottom:calc(var(--bas) + 252px);right:var(--bord)}
+  .v-instr{width:132px;padding:4px 6px 6px;border-radius:14px}
+  .v-instr svg{width:96px}
+  .v-instr b{font-size:16px}
+  .v-instr span{font-size:16px}
+  .v-instr-pale{display:none}
+  .v-cmd{gap:6px}
+  .v-nom-cmd{padding:2px 6px 3px;border-radius:10px;max-width:118px}
+  .v-nom-cmd b{font-size:16px}
+  .v-nom-cmd span{font-size:16px}
+  .v-collectif{--h:200px;--hp:60px;width:104px}
+  .v-rail{width:74px;border-radius:22px}
+  .v-poignee{border-radius:14px}
+  .v-duo{gap:8px}
+  .v-pedale{width:58px;height:66px;border-radius:16px}
+  .v-pedale svg{width:38px;height:38px}
+  .v-socle{width:150px;height:150px}
+  .v-bouton{width:66px;height:66px;left:calc(50% - 33px);top:calc(50% - 33px)}
+  .v-repere{border-width:8px}
+  .v-radio{bottom:calc(var(--bas) + 400px);right:0;left:0;margin:0 auto;width:max-content;min-height:64px;font-size:20px;padding:0 18px}
+  .v-demarrer{bottom:calc(var(--bas) + 400px)}
+  .v-gros{min-height:84px;font-size:28px;padding:0 30px}
+  .v-toast{top:calc(var(--haut) + 92px);left:50%;transform:translate(-50%,-20px)}
+  .v-toast.voit{transform:translate(-50%,0)}
+  .v-page{width:118px}
+  .v-page-tampon,.v-page-tampon svg{width:70px;height:70px}
+  .v-grand-livret{flex-direction:column}
+  .v-fiche h2{font-size:26px}
+  .v-langue{width:150px;min-height:150px;font-size:24px}
+  .v-drapeau{width:96px;height:64px}
+  .v-mission-carte{min-height:130px;font-size:20px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .v-gros,.v-doigt.voit,.v-cmd.halo .v-rail,.v-cmd.halo .v-socle,.v-cmd.halo .v-duo{animation:none}
+}

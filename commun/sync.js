@@ -126,7 +126,7 @@
     const compte = l => (Array.isArray(l) ? l.filter(v => typeof v === 'number').length : 0);
     const mesures = {};
     for (const k of new Set([...Object.keys(ma), ...Object.keys(mb)])) mesures[k] = compte(mb[k]) >= compte(ma[k]) ? mb[k] : ma[k];
-    return {
+    const f = {
       ...z,
       etapes: plusAncien(a.etapes, b.etapes),
       brevet: plusAncien(a.brevet, b.brevet),
@@ -139,6 +139,11 @@
       conception: ou(b.conception, a.conception),
       experience: { ...xa, ...xb, hypothese: ou(xb.hypothese, xa.hypothese), conclusion: ou(xb.conclusion, xa.conclusion), verifs: unionTriee(xa.verifs, xb.verifs), mesures },
     };
+    // Prototype 3D (D-26) : champ facultatif, les tampons des missions de vol réunis (la date la plus ancienne).
+    const va = estObjet(a.vol3d) ? a.vol3d : null;
+    const vb = estObjet(b.vol3d) ? b.vol3d : null;
+    if (va || vb) f.vol3d = { ...(va || {}), ...(vb || {}), missions: plusAncien(va && va.missions, vb && vb.missions) };
+    return f;
   }
 
   /* Résumé publié pour le portail (D-19), commun à tous les modules : le plus récent (ecritLe)

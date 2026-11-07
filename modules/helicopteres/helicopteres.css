@@ -280,6 +280,9 @@ a.rond{text-decoration:none}
 .h-tampon-svg{width:84px;height:84px}
 .h-tampon-case.pose .h-tampon-encre{opacity:1;transform:rotate(-10deg)}
 .h-tampon-case.pose .h-tampon-fond{opacity:0}
+.h-vols{display:flex;align-items:center;gap:10px;margin-top:10px;font-family:var(--f-jeu);font-weight:700;font-size:17px;color:var(--encre-douce)}
+.h-vols div{display:flex;flex-wrap:wrap;gap:4px}
+.h-vols i .h-tampon-svg{width:46px;height:46px;transform:rotate(-8deg)}
 .h-tampon-case.abat .h-tampon-encre{animation:h-abat .55s cubic-bezier(.3,1.5,.5,1) both}
 @keyframes h-abat{0%{opacity:0;transform:scale(2) rotate(-30deg)}60%{opacity:1;transform:scale(.92) rotate(-8deg)}100%{opacity:1;transform:rotate(-10deg)}}
 .h-etagere h2{font-family:var(--f-jeu);font-weight:700;font-size:24px;color:var(--e-900);margin-bottom:8px}

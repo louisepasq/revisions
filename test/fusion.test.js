@@ -213,4 +213,15 @@ for (const [nom, impl] of [['serveur', serveur.fusionner], ['client', (m, a, b) 
     }
     assert.deepEqual(impl('helicopteres', ipadH, {}), ipadH);
   });
+  test(`${nom} : hélicoptères, les tampons du vol en 3D (champ facultatif) se réunissent`, () => {
+    const a = { ...JSON.parse(JSON.stringify(ipadH)), vol3d: { missions: { decoller: '2026-11-08', tour: '2026-11-08' } } };
+    const b = { ...JSON.parse(JSON.stringify(iphoneH)), vol3d: { missions: { decoller: '2026-11-07', poser: '2026-11-09' } } };
+    for (const [x, y] of [[a, b], [b, a]]) {
+      const f = impl('helicopteres', JSON.parse(JSON.stringify(x)), JSON.parse(JSON.stringify(y)));
+      assert.deepEqual(f.vol3d.missions, { decoller: '2026-11-07', poser: '2026-11-09', tour: '2026-11-08' });
+    }
+    const f = impl('helicopteres', JSON.parse(JSON.stringify(ipadH)), JSON.parse(JSON.stringify(b)));
+    assert.deepEqual(f.vol3d.missions, b.vol3d.missions, 'un appareil sans vol 3D ne fait rien perdre');
+    assert.ok(!('vol3d' in impl('helicopteres', JSON.parse(JSON.stringify(ipadH)), JSON.parse(JSON.stringify(iphoneH)))), 'sans vol 3D, le champ n apparaît pas');
+  });
 }

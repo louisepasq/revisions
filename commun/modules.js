@@ -85,6 +85,16 @@
       etat: 'actif',
       objet: 'Helico',
     },
+    vol3d: {
+      // Prototype 3D du vol (D-26) : il partage l'état du module des hélicoptères, synchronisé par lui.
+      titre: { en: 'Fly the Écureuil (3D)', fr: "Pilote l'Écureuil (3D)" },
+      matiere: 'sciences',
+      icone: 'helico',
+      page: 'helicopteres-3d.html',
+      enfants: ['henri'],
+      etat: 'actif',
+      synchro: false,
+    },
   };
 
   /* Les modules d'un enfant, dans l'ordre du catalogue : [{ id, ...ligne }]. */

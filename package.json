@@ -6,7 +6,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "test": "node --test test/*.test.js test/*.test.mjs && node modules/tables/moteur.test.js && node modules/tables/seance.test.js && node modules/tables/album.test.js &&node modules/zoom/moteur.test.js && node modules/zoom/geometrie.test.js && node modules/cible/moteur.test.js && node modules/cible/etat.test.js && node modules/helicopteres/moteur.test.js"
+    "test": "node --test test/*.test.js test/*.test.mjs && node modules/tables/moteur.test.js && node modules/tables/seance.test.js && node modules/tables/album.test.js &&node modules/zoom/moteur.test.js && node modules/zoom/geometrie.test.js && node modules/cible/moteur.test.js && node modules/cible/etat.test.js && node modules/helicopteres/moteur.test.js && node modules/helicopteres/vol.test.js"
   },
   "dependencies": {
     "@upstash/redis": "^1.35.0",

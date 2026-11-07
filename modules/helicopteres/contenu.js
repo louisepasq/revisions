@@ -276,6 +276,72 @@
     objet: { fr: 'Un nouvel objet pour ton carnet !', en: 'Something new for your logbook!' },
   };
 
+  /* ---------- Le prototype 3D (D-26) : un vol d'Écureuil en cinq missions ----------
+     Aucun chiffre : chaque phrase redit une idée déjà sourcée dans README.md (le rotor garde sa vitesse,
+     les pales inclinées poussent l'air vers le bas, le manche penche le disque, les pédales et le rotor de
+     queue, la tour dit oui par radio). `nom` : le titre d'une mission, écrit, jamais dit. Moussi demande à
+     Henri de lui montrer avec les phrases de COCKPIT.enseigner (D-25). */
+  const VOL3D = {
+    bienvenue: { fr: 'Bienvenue à bord ! Je suis ton copilote. Touche le gros bouton pour démarrer le moteur.', en: "Welcome aboard! I'm your co-pilot. Touch the big button to start the engine." },
+    demarrage: { fr: 'Le moteur démarre. Regarde le rotor prendre sa vitesse...', en: 'The engine is starting. Watch the rotor speed up...' },
+    pret: { fr: 'Le rotor a pris sa vitesse. Regarde le compteur de tours : maintenant, il ne bougera plus !', en: "The rotor is up to speed. Look at the rotor counter: now it won't move any more!" },
+    missions: {
+      decoller: {
+        nom: { fr: 'Décoller', en: 'Take off' },
+        consigne: { fr: 'Première mission : décolle ! Monte doucement le collectif, le levier bleu à ta main gauche.', en: 'First mission: take off! Slowly raise the collective lever, the blue lever in your left hand.' },
+        aide: { fr: 'Pose ton doigt sur le levier bleu et fais-le glisser vers le haut.', en: 'Put your finger on the blue lever and slide it up.' },
+        bravo: { fr: "On monte ! Tu as levé le collectif : les pales s'inclinent et poussent plus d'air vers le bas. Et le compteur de tours n'a pas bougé !", en: "We're going up! You raised the collective lever: the blades tilt and push more air down. And the rotor counter didn't move!" },
+      },
+      stationnaire: {
+        nom: { fr: 'Rester au-dessus du H', en: 'Hover over the H' },
+        consigne: { fr: "Deuxième mission : reste en l'air, juste au-dessus du H. Le levier au milieu, et on ne bouge plus.", en: 'Second mission: stay in the air, right above the H. Lever in the middle, and keep still.' },
+        aide: { fr: "Mets le levier bleu au milieu, sur la bande claire, et lâche le manche : l'hélicoptère s'arrête tout seul.", en: 'Put the blue lever in the middle, on the light band, and let go of the stick: the helicopter stops by itself.' },
+        bravo: { fr: "Bravo ! Tu restes sur place, en l'air : c'est le vol stationnaire. Les pales poussent l'air vers le bas juste assez pour nous porter.", en: "Well done! You're staying still in the air: that's hovering. The blades push the air down just enough to hold us up." },
+      },
+      tour: {
+        nom: { fr: 'Aller à la tour', en: 'Fly to the tower' },
+        consigne: { fr: "Troisième mission : avance jusqu'à la tour de contrôle avec le manche, à ta main droite. Puis appelle la tour à la radio.", en: 'Third mission: fly to the control tower with the cyclic stick, in your right hand. Then call the tower on the radio.' },
+        aide: { fr: "Pousse le manche violet vers le haut : le disque des pales penche vers l'avant, et l'hélicoptère avance.", en: 'Push the purple stick up: the spinning blades tilt forward, and the helicopter moves forward.' },
+        radio: { fr: 'On est près de la tour. Touche le bouton radio pour demander la permission !', en: "We're near the tower. Touch the radio button to ask permission!" },
+        bravo: { fr: "La tour a dit oui, par radio. À un aéroport, c'est le contrôleur qui décide !", en: 'The tower said yes, by radio. At an airport, the controller decides!' },
+      },
+      tourner: {
+        nom: { fr: 'Tourner sur place', en: 'Turn on the spot' },
+        consigne: { fr: 'Quatrième mission : tourne sur place avec les pédales, pour regarder vers le H.', en: 'Fourth mission: turn on the spot with the pedals, to face the H.' },
+        aide: { fr: 'Garde le doigt sur une pédale orange : le rotor de queue pousse, et le nez tourne.', en: 'Hold an orange pedal: the tail rotor pushes, and the nose turns.' },
+        bravo: { fr: 'Les pédales changent la poussée du rotor de queue : le nez tourne, sans avancer. Le H est devant nous !', en: 'The pedals change how hard the tail rotor pushes: the nose turns without moving forward. The H is in front of us!' },
+      },
+      poser: {
+        nom: { fr: 'Se poser sur le H', en: 'Land on the H' },
+        consigne: { fr: 'Dernière mission : reviens au-dessus du H avec le manche, puis baisse doucement le collectif pour te poser.', en: 'Last mission: fly back over the H with the stick, then slowly lower the collective lever to land.' },
+        aide: { fr: "Avance jusqu'au cercle doré, puis fais glisser le levier bleu vers le bas.", en: 'Fly to the golden ring, then slide the blue lever down.' },
+        bravo: { fr: 'Posé tout en douceur ! Tu as baissé le collectif : les pales poussent moins, et on descend.', en: 'A soft landing! You lowered the collective lever: the blades push less, and down we go.' },
+      },
+    },
+    radio: {
+      moussi: { fr: "Tour, ici Moussi dans l'Écureuil. Je peux me poser sur le H ?", en: 'Tower, this is Moussi in the Écureuil. May I land on the H?' },
+      tour: { fr: 'Écureuil, ici la tour : autorisé à atterrir sur le H.', en: 'Écureuil, this is the tower: cleared to land on the H.' },
+      merci: { fr: 'Merci, la tour !', en: 'Thank you, tower!' },
+    },
+    coupe: { fr: 'On coupe le moteur. Regarde le rotor ralentir : tu vois ses trois pales ?', en: 'Engine off. Watch the rotor slow down: can you see its three blades?' },
+    fin: { fr: 'Bravo, pilote ! Toutes nos missions sont dans le carnet. On refait un vol ?', en: 'Well done, pilot! All our missions are in the logbook. Shall we fly again?' },
+    libre: { fr: 'Vol libre ! Va où tu veux : le sol arrête toujours la descente.', en: 'Free flight! Go wherever you like: the ground always stops you going down.' },
+    air: { fr: "Tu vois l'air poussé vers le bas ? C'est lui qui nous porte !", en: "See the air being pushed down? That's what holds us up!" },
+    haut: { fr: 'Waouh, regarde comme on est haut ! On voit la montagne, tout là-bas.', en: 'Wow, look how high we are! We can see the mountain, far away.' },
+    montrer: { fr: 'Regarde, je te montre où toucher.', en: "Look, I'll show you where to touch." },
+    tampon: { fr: 'Un tampon pour notre carnet de pilote !', en: 'A stamp for our pilot logbook!' },
+    deja: { fr: 'Encore réussi ! Ce tampon est déjà dans notre carnet.', en: 'Done again! This stamp is already in our logbook.' },
+    rigolo: {
+      wiii: { fr: 'Wiiiiii !', en: 'Wheeeee!' },
+      vert: { fr: 'Oh là là, ça tourne... je suis tout vert !', en: "Oh dear, it's spinning... I've gone all green!" },
+      casque: { fr: 'Oups, mon casque ! Rattrapé !', en: 'Oops, my headset! Got it!' },
+      mouette: { fr: 'Oh, une mouette ! Salut, la mouette !', en: 'Oh, a seagull! Hello, seagull!' },
+      atchoum: { fr: 'Atchoum ! Que de poussière !', en: 'Atchoo! So much dust!' },
+      tour: { fr: 'Oups, la tour ! On recule un peu.', en: "Oops, the tower! Let's back off a little." },
+      bord: { fr: 'On va trop loin ! Faisons demi-tour.', en: "We're going too far! Let's turn back." },
+    },
+  };
+
   /* ---------- Les cartes de Leitner : une vingtaine (D-24) ----------
      type : partie (une partie montrée sur le dessin), choix (trois réponses écrites), commande
      (Moussi veut faire quelque chose et demande à Henri de lui montrer la bonne commande, D-25).
@@ -364,6 +430,8 @@
       nom_pilote: 'Nom du pilote', pilote_moussi: 'Moussi, copilote', vue_dessus: 'Vu de dessus', manuel: 'Le manuel',
       experience: "L'expérience", objets: 'Mes objets', apprends: 'Apprends à Moussi', choix_mission: 'Mission', choix_couleur: 'Couleur',
       plier: 'pointillés : plier', couper: 'traits pleins : couper', trombone: 'trombone', fichier: 'Le fichier',
+      demarrer: 'Démarrer', radio: 'Appeler la tour', encore: 'Encore un vol', vols: 'Nos vols', version2d: 'La version 2D',
+      pas3d: 'Cet appareil ne sait pas afficher la 3D.', continuer: 'Continuer', mission: 'Mission',
     },
     en: {
       titre: 'My helicopter', etapes: 'My steps', plus_tard: 'Later', fait: 'Done', carnet: 'My pilot logbook',
@@ -376,6 +444,8 @@
       nom_pilote: "Pilot's name", pilote_moussi: 'Moussi, co-pilot', vue_dessus: 'Seen from above', manuel: 'The manual',
       experience: 'The experiment', objets: 'My things', apprends: 'Teach Moussi', choix_mission: 'Mission', choix_couleur: 'Colour',
       plier: 'dotted lines: fold', couper: 'solid lines: cut', trombone: 'paper clip', fichier: 'The file',
+      demarrer: 'Start', radio: 'Call the tower', encore: 'Fly again', vols: 'Our flights', version2d: 'The 2D version',
+      pas3d: "This device can't show 3D.", continuer: 'Carry on', mission: 'Mission',
     },
   };
 
@@ -401,13 +471,13 @@
       if (typeof o[lg] === 'string') l.push(o[lg]);
       Object.keys(o).forEach(k => { if (k !== 'fr' && k !== 'en') visiter(o[k], k); });
     };
-    [ETAPES.map(e => ({ dit: e.nom })), PARTIES, COMMANDES, MISSIONS, HELICO, VOL, COCKPIT, ATELIER, RADIO, RECORDS, SORTIE, CARNET, CARTES]
+    [ETAPES.map(e => ({ dit: e.nom })), PARTIES, COMMANDES, MISSIONS, HELICO, VOL, COCKPIT, ATELIER, RADIO, RECORDS, SORTIE, CARNET, CARTES, VOL3D]
       .forEach(o => visiter(o, ''));
     return Array.from(new Set(l.filter(s => s && !s.includes('{'))));
   }
 
   racine.HeliContenu = {
     LANGUES, ETAPES, OBJETS, PARTIES, COMMANDES, MISSIONS, COULEURS, HELICO, VOL, COCKPIT, ATELIER, RADIO, RECORDS,
-    SORTIE, CARNET, CARTES, UI, COMPTEUR, champ, etape, carte, commande, partie, toutesLesPhrases,
+    SORTIE, CARNET, CARTES, VOL3D, UI, COMPTEUR, champ, etape, carte, commande, partie, toutesLesPhrases,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

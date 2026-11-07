@@ -28,7 +28,7 @@ const EM = String.fromCharCode(0x2014);
     Object.keys(o).forEach(k => { if (k !== 'fr' && k !== 'en') visiter(o[k]); });
   };
   visiter([HC.ETAPES, HC.OBJETS, HC.PARTIES, HC.COMMANDES, HC.MISSIONS, HC.COULEURS, HC.HELICO, HC.VOL, HC.COCKPIT,
-    HC.ATELIER, HC.RADIO, HC.RECORDS, HC.SORTIE, HC.CARNET, HC.CARTES, HC.COMPTEUR]);
+    HC.ATELIER, HC.RADIO, HC.RECORDS, HC.SORTIE, HC.CARNET, HC.CARTES, HC.COMPTEUR, HC.VOL3D]);
   champs.forEach(c => assert.ok(typeof c.fr === 'string' && c.fr && typeof c.en === 'string' && c.en, `deux langues : ${JSON.stringify(c)}`));
   assert.ok(Object.keys(HC.UI.fr).every(k => HC.UI.en[k]), 'chaque étiquette a son anglais');
   assert.ok(HC.CARTES.length >= 18 && HC.CARTES.length <= 24, `une vingtaine de cartes (${HC.CARTES.length})`);
@@ -45,13 +45,13 @@ const EM = String.fromCharCode(0x2014);
   assert.deepStrictEqual(HC.ETAPES.map(e => e.id), ['helico', 'vol', 'cockpit', 'atelier', 'radio', 'records', 'sortie']);
   assert.deepStrictEqual(HC.etape('atelier').apres, ['helico', 'vol', 'cockpit']);
   // Les faits affichés : les chiffres vérifiés à la source (README.md), et aucun autre.
-  const tout = JSON.stringify([HC.VOL, HC.RECORDS, HC.RADIO, HC.PARTIES, HC.SORTIE, HC.COMPTEUR, HC.CARTES]);
+  const tout = JSON.stringify([HC.VOL, HC.RECORDS, HC.RADIO, HC.PARTIES, HC.SORTIE, HC.COMPTEUR, HC.CARTES, HC.VOL3D]);
   ['375', '405', '12 442', '12,442', '8 848', '8,848', '400 km/h', '130 km/h', '252 km/h', '7 200', '7,200', '120 m', '17', '1972', '1986', '2005'].forEach(f => assert.ok(tout.includes(f), `fait attendu : ${f}`));
   const nombres = (tout.match(/\d[\d  ,.]*\d|\d/g) || []).map(n => n.replace(/[  ,]/g, ''));
   const AUTORISES = new Set(['375', '405', '6', '12442', '8848', '400', '130', '252', '7200', '120', '17', '1972', '1986', '2005', '3', '2', '5', '10', '30', '1', '350', '125']); // 125 et 350 : les noms H125 et AS 350 B3
   nombres.forEach(n => assert.ok(AUTORISES.has(n), `nombre non listé dans les faits vérifiés : ${n}`));
   // Ni tiret cadratin, ni rouge dans les peintures.
-  const fichiers = ['contenu.js', 'moteur.js', 'dessins.js', 'resume.js', 'helicopteres.js', 'helicopteres.css', 'README.md'];
+  const fichiers = ['contenu.js', 'moteur.js', 'dessins.js', 'resume.js', 'helicopteres.js', 'helicopteres.css', 'README.md', 'vol.js', 'vol3d.js', 'vol3d.css'];
   fichiers.forEach(f => { const p = path.join(__dirname, f); if (fs.existsSync(p)) assert.ok(!fs.readFileSync(p, 'utf8').includes(EM), `tiret cadratin dans ${f}`); });
   assert.ok(!Object.keys(HC.COULEURS).includes('rouge'));
   // Les phrases dites : toutes les phrases des écrans, dans les deux langues, sans gabarit.
