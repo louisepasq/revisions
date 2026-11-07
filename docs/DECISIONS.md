@@ -33,7 +33,7 @@ Format : numéro, date, qui, la décision, la raison, la source.
   - **les tables** : les énoncés des multiplications (questions et faits dits à voix haute) et les astuces restent en français, parce qu'elles construisent la compréhension et les automatismes, qui se retrouvent dans la langue où on les a appris (Spelke et Tsivkin, 2001) ; les consignes autour passent en anglais ;
   - **la géographie** : l'enfant choisit au début, en anglais ou en français, comme le faisait au départ le planisphère ; le choix se retient et se change à tout moment.
 
-  Un module futur part en anglais ; le français n'y entre que pour une matière qui l'exige (la dictée, l'orthographe). Le coin parent reste en français. Source : demande de Louis du 01/11/2026, après l'essai d'Henri.
+  Un module futur part en anglais ; le français n'y entre que pour une matière qui l'exige (la dictée, l'orthographe). Troisième exception, ajoutée par D-24 : le module des hélicoptères, au choix de l'enfant comme la géographie. Le coin parent reste en français. Source : demande de Louis du 01/11/2026, après l'essai d'Henri.
 
 ## Dictée et retour de Claude (décidés, pas encore construits)
 
@@ -104,6 +104,15 @@ Format : numéro, date, qui, la décision, la raison, la source.
   - Le choix de l'appareil par Henri devient le choix de la mission de son Écureuil.
 
   Rien n'est construit avant la relecture des experts (D-15). Source : `helicopteres/PLAN.md`.
+- **D-24, 07/11/2026, Louis, sur proposition des experts : les six ajustements du plan hélicoptères.** Source : `revues/2026-11-07_relecture-helicopteres.md`.
+  1. Le cockpit montre un compteur de tours qui ne bouge pas : on monte en inclinant les pales (le pas collectif), pas en les faisant tourner plus vite.
+  2. L'atelier du modèle en papier passe en troisième étape, après le cockpit, et devient une expérience : une question, une hypothèse, une seule variable (la longueur des pales), une durée de chute mesurée trois fois.
+  3. Les règles de vol se réduisent à trois idées jouées en dialogue radio avec la tour de contrôle.
+  4. L'atelier s'ouvre une fois les trois premières étapes faites, jamais sur un score ; la réussite se reconnaît par le brevet de pilote de Moussi, un tampon par commande maîtrisée, qui n'ouvre rien et ne s'échange contre rien.
+  5. **Exception à D-21** : la langue du module se choisit au début, comme pour la géographie, le français proposé à Henri ; le cadre reste en anglais, et le nom anglais de chaque commande s'affiche sous le nom français.
+  6. Le cockpit est un dessin original et simplifié, vu de côté, avec trois commandes à leur vraie place, sans photo et sans crash possible.
+
+  La construction attend un feu vert distinct de Louis.
 
 ## Écarté, avec la raison
 

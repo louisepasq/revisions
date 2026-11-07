@@ -37,21 +37,25 @@ Plan posé le 07/11/2026 par Henri (le sujet, ses envies) et Louis (le cadre). *
 - **Le Musée de l'Aviation de Saint-Victoret**, musée municipal à côté de Marignane, expose d'anciens hélicoptères de Marignane, **dont un Écureuil**, et aussi Alouette, Gazelle et Dauphin. Ouvert le matin, de 9 h à 12 h, du lundi au samedi d'après la commune ; les sources se contredisent sur le lundi, donc appeler avant : 04 42 34 59 16, 147 boulevard Barthélémy Abbadie, 13730 Saint-Victoret ([Provence-Alpes-Côte d'Azur Tourisme](https://provence-alpes-cotedazur.com/que-faire/culture-et-patrimoine/lieux/le-musee-de-laviation-saint-victoret-fr-2868035/), [magazine municipal](https://www.saintvictoret.fr/fileadmin/user_upload/SVAC108.pdf)). Des bénévoles y commentent les visites, d'après un programme ancien.
 - **Airbus Helicopters à Marignane** : aucune visite publique ni activité pour les enfants trouvée en ligne le 07/11/2026. Pistes : les Journées européennes du patrimoine, ou un contact chez Airbus.
 
-## Le parcours proposé, à faire relire
+## Le parcours, relu par les experts et validé par Louis (D-24, 07/11/2026)
 
-- a) **Mon hélicoptère** : Henri découvre l'Écureuil et choisit sa mission.
-- b) **Comment il vole** : les pales, le rotor de queue, la portance, montrés en images qui bougent.
-- c) **Le cockpit** : il appuie sur chaque commande (le manche, le pas collectif, les palonniers) et voit ce que fait l'hélicoptère, avec des flèches et la voix.
-- d) **Qui décide où on vole** : la tour de contrôle, les autorisations, le permis de pilote.
-- e) **Les records et les faits étonnants**, puis la différence entre un drone et un hélicoptère.
-- f) **L'atelier** : le manuel du modèle en papier, puis l'expérience à la maison (la longueur des pales change-t-elle la vitesse de chute ?).
+Relecture complète : `../revues/2026-11-07_relecture-helicopteres.md`.
+
+- a) **Mon hélicoptère** : Henri découvre l'Écureuil H125, nomme ses parties et choisit sa mission.
+- b) **Comment il vole** : les pales, le rotor de queue, montrés en images qui bougent ; le rotor tourne presque à vitesse constante (375 à 405 tours par minute, fiche EASA.R.008, vérifié par l'expert), et le pilote monte en inclinant les pales (le pas collectif), pas en les faisant tourner plus vite.
+- c) **Le cockpit** : un dessin original et simplifié, vu de côté, avec trois commandes à leur vraie place (le collectif à gauche, le manche à droite, les pédales en bas), des flèches de la couleur de la commande touchée, un seul instrument (le compteur de tours, qui ne bouge pas), sans photo et sans crash possible.
+- d) **L'atelier** (en troisième place, juste après le cockpit) : il s'ouvre une fois les trois premières étapes faites, jamais sur un score. Le manuel du modèle en papier, puis une vraie expérience : une question, une hypothèse, une seule chose qui change (la longueur des pales), la durée de chute mesurée trois fois au chronomètre.
+- e) **Qui décide où on vole** : trois idées jouées en dialogue radio avec la tour de contrôle (la tour dit oui ou non ; ailleurs, il faut un endroit autorisé ; on devient pilote à 17 ans au plus tôt).
+- f) **Les records et les faits étonnants**, présentés en comparaisons, puis la différence entre un drone et un hélicoptère.
 - g) **La sortie** : la visite au Musée de l'Aviation de Saint-Victoret, pour voir un vrai Écureuil.
 
-Chaque étape a de courts exercices, avec la même mécanique que les autres modules (boîtes de Leitner, erreur sans punition), et en anglais par défaut (D-21).
+**Le brevet de pilote de Moussi** : un tampon par commande maîtrisée, qui reconnaît la réussite qu'Henri réclamait ; il n'ouvre rien et ne s'échange contre rien (esprit de D-20).
 
-## Questions pour les relecteurs et les parents
+**Exercices** : une vingtaine de cartes en boîtes de Leitner (les parties de l'appareil, chaque commande et son effet, les trois idées des règles, quelques records en comparaisons), erreur sans punition ; tout le reste est de la découverte.
 
-1. **La récompense** : Henri veut débloquer le manuel en réussissant très bien les exercices. Pour les tables, un tampon ne s'échange jamais contre une récompense (D-20). Reco : présenter l'atelier comme la suite naturelle du parcours (« tu as tout exploré, place à l'expérience »), et non comme le prix d'un score.
-2. **La langue** : les termes techniques (« pas collectif », « palonniers ») en anglais d'abord (D-21), ou la géographie comme modèle, avec un choix de langue au début ? Reco : le choix de langue, comme pour le voyage, parce que la visite au musée se fera en français.
-3. **Le cockpit** : un dessin simplifié et original, pas une photo d'un vrai tableau de bord, pour qu'Henri ne voie que les commandes qui comptent.
-4. **Les faits** : chaque chiffre de l'app (vitesse de rotation des pales, records) vient d'une source citée dans ce dossier, jamais de mémoire.
+**Langue** : un choix au début, comme pour la géographie, avec le français proposé à Henri ; le cadre de l'app reste en anglais, et le nom anglais de chaque commande s'affiche sous le nom français (exception à D-21, décidée en D-24).
+
+## Avant de construire
+
+- **Le feu vert de Louis pour la construction**, distinct de la validation du plan.
+- **Les faits à sourcer** : chaque chiffre de l'app vient d'une source citée, jamais de mémoire. La liste et la source de chacun sont dans la relecture, section 7 ; vérifiés à ce jour : les chiffres de la fiche EASA.R.008 et l'âge minimal de 17 ans (règle FCL.200 de l'EASA). Les records restent à confirmer à la base de la FAI.
