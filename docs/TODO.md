@@ -37,6 +37,7 @@ Mis à jour le 07/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 - **Henri, 01/11 : au milieu du voyage, la voix disait « Je suis une professeure… »** : Gemini lisait sa consigne de style à voix haute sur 126 clips. Refaits et en ligne le 01/11 à 17 h 23 ; `voix.py` refait désormais tout clip trop long pour son texte (`voix.py controler` pour un contrôle).
 
 - **Henri et Louis, 07/11 : le vol 3D en Écureuil « a très bien marché ».** Seul défaut : une phrase coupait parfois la fin de la précédente ; corrigé le même jour (file de phrases dans `modules/helicopteres/vol3d.js`).
+- **Henri, 07/11 : la vue de trois quarts sur le côté le perturbe un peu.** Il préfère être dans l'axe, derrière l'hélicoptère, ou pouvoir changer de vue : demandé à la construction en cours (caméra derrière par défaut, bouton de vues).
 
 ## Prochains modules
 
