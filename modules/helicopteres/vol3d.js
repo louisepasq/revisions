@@ -43,13 +43,28 @@ const nomCmd = id => {
 let tempsSim = 0;
 let occupeJusqu = 0;
 const dureeDite = texte => 1.2 + texte.length * 0.062;
+/* Les phrases passent en file : la suivante attend la fin de la précédente au lieu de la couper
+   (retour de Louis et Henri du 07/11/2026). La bulle s'affiche au moment où sa phrase commence.
+   Au plus deux phrases en attente : au-delà, la plus ancienne en attente saute. */
+const fileVoix = [];
+let voixEnCours = false;
+function phraseSuivante() {
+  const p = fileVoix.shift();
+  if (!p) { voixEnCours = false; return; }
+  voixEnCours = true;
+  hud.bulle(p.texte, p.attitude, p.radio);
+  KR.lireSuite([{ texte: p.texte, langue: lg() }], 15000).then(phraseSuivante, phraseSuivante);
+}
 function dire(texte, attitude, o) {
   o = o || {};
   if (!texte) return;
-  if (o.siLibre && tempsSim < occupeJusqu) return false;
+  if (o.siLibre && (tempsSim < occupeJusqu || voixEnCours || fileVoix.length)) return false;
   occupeJusqu = tempsSim + dureeDite(texte);
-  hud.bulle(texte, attitude || 'attend', o.radio);
-  if (KR.reglages().voix) KR.lireSuite([{ texte, langue: lg() }], 15000);
+  const p = { texte, attitude: attitude || 'attend', radio: o.radio };
+  if (!KR.reglages().voix) { hud.bulle(p.texte, p.attitude, p.radio); return true; }
+  fileVoix.push(p);
+  while (fileVoix.length > 2) fileVoix.shift();
+  if (!voixEnCours) phraseSuivante();
   return true;
 }
 const direObj = (o, attitude, opt) => dire(ch(o), attitude, opt);

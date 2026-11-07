@@ -36,6 +36,8 @@ Mis à jour le 07/11/2026. Chaque entrée dit qui la porte. Une idée des parent
 
 - **Henri, 01/11 : au milieu du voyage, la voix disait « Je suis une professeure… »** : Gemini lisait sa consigne de style à voix haute sur 126 clips. Refaits et en ligne le 01/11 à 17 h 23 ; `voix.py` refait désormais tout clip trop long pour son texte (`voix.py controler` pour un contrôle).
 
+- **Henri et Louis, 07/11 : le vol 3D en Écureuil « a très bien marché ».** Seul défaut : une phrase coupait parfois la fin de la précédente ; corrigé le même jour (file de phrases dans `modules/helicopteres/vol3d.js`).
+
 ## Prochains modules
 
 - **Le jeu du nombre cible, façon Mathador** (Henri, 01/11/2026, fait en classe) : un nombre cible, cinq petits nombres, et les quatre opérations pour l'atteindre. Barème d'Henri : addition et multiplication 1 point, soustraction 2 points, division 3 points ; 13 points quand on utilise tous les nombres et les quatre opérations. Eduscol cite Mathador comme entraînement au calcul réfléchi (fiche d'intervention de début de CM2). Règles fixées avec Henri le 01/11 (D-18) : cinq nombres, cible jusqu'à 99, chrono en option choisie par l'enfant, indice de Moussi qui coûte des points. **Construit le 01/11** (`modules/cible/README.md`, pages `henri/cible.html` et `clara/cible.html`), parcours Playwright vert aux trois formats. Branché au portail par le catalogue, voix fabriquées et mis en ligne le 01/11. Les quatre questions de la relecture sont tranchées (D-22) et appliquées le 01/11 : hors du « Today » sauf pour sa découverte, plus de cible en un calcul pour Henri, voix sur les deux bulles et « −3 » en gros, badge gardé et bulle « Perfect move! Can you do it again without a hint? ». Reste : le faire essayer aux enfants sur l'iPad.

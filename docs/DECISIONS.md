@@ -126,6 +126,7 @@ Format : numéro, date, qui, la décision, la raison, la source.
   2. il est en autonomie sur l'app, sans adulte ;
   3. il rigole de temps en temps, ça l'amuse ;
   4. il en parle avec émerveillement.
+- **D-27, 07/11/2026, Louis, après l'essai d'Henri : le prototype 3D convainc, on continue.** Le reste du parcours passe en 3D là où elle apporte quelque chose (l'Écureuil en vitrine, le rotor au ralenti, l'Everest à l'échelle, la radio depuis la vigie), avec les mêmes quatre critères de succès ; l'atelier en papier et la visite au musée restent en vrai. La 2D reste en repli.
 
 ## Écarté, avec la raison
 
